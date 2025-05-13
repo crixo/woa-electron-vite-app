@@ -33,7 +33,7 @@ $ npm run build:mac
 $ npm run build:linux
 ```
 
-## My Project Setup
+## Project Initial Setup
 
 - [Create project scaffolding](https://electron-vite.org/guide/) 
 
@@ -50,7 +50,7 @@ After the installation is completed, add this to your package.json
     ...
     "scripts": {
         ...             
-        "rebuild": "electron-rebuild -f -w better-sqlite3",
+        "rebuild-sqlite3": "electron-rebuild -f -w better-sqlite3",
     }
 }
 ```
@@ -69,4 +69,18 @@ npm install --save-dev react-toastify
 ```
 
 - Configure [Tailwindcss](https://tailwindcss.com/docs/installation/using-vite) in electron.vite.config.mjs
+
+## Project Run
+
+First initialization from remote repo
+```
+git clone https://github.com/crixo/woa-electron-vite-app.git
+npm install
+npm run rebuild-sqlite3
+npm run dev
+```
+
+## Logbook
+
+- Use BrowserRouter works w/ Electron final package (win, mac, ..) BrowserRouter does not. BrowserRoute works only in dev mode.
 

@@ -1,12 +1,43 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import { dirname, join } from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'url';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon.png?asset';
+import log from 'electron-log';
 import Database from "better-sqlite3";
 import os from 'os';
 import { setupPazienteDAL } from './pazienteDAL';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const homeDir = os.homedir();
+
+// Configure electron-log
+log.transports.file.resolvePathFn = () => {
+    const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD format
+    return path.join(app.getAppPath(), 'logs', `${today}.log`);
+};
+log.transports.file.maxSize = 1024 * 1024; // Limit file size if needed (1MB)
+log.transports.console.level = 'info'; // Set log level for console
+// log.transports.file.level = 'warn'; // Logs only warnings, errors, and higher severity messages
+// log.transports.console.level = 'info'; // Console logs at 'info' level and above
+
+//console.log = log.log;
+
+// Sample usage
+log.info('Application started');
+
+//This will print the absolute path to the application's root directory where your package.json file is located. 
+//If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.
+console.log(`__dirname:${__dirname}`);
+console.log(`app.getAppPath():${app.getAppPath()}`);
+console.log(`process.cwd(():${process.cwd()}`);
+
+
+console.log("App Path:", path.join(__dirname, "../dist/index.html"));
+console.log("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
+console.log("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
 
 // Initialize the database
 function initDatabase() {
