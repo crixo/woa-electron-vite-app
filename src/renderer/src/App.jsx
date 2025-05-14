@@ -1,11 +1,15 @@
 import { Routes,Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import CreaPaziente from "./pages/CreaPaziente";
+import HomePage from "./pages/HomePage";
+import CreaPazientePage from "./pages/CreaPazientePage";
+import ModificaPazientePage from "./pages/ModificaPazientePage";
+import PazientePage from "./pages/PazientePage";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PazienteProvider } from "./data/PazienteContext";
 
 export default function App() {
   return (
+    <PazienteProvider>
     <div>
 
       <nav className="bg-gray-800">
@@ -16,12 +20,15 @@ export default function App() {
 
       <div className="container mx-auto p-2 h-full">
       <Routes>
-        <Route index element={<Home/>}></Route>
-        <Route path="/create" element={<CreaPaziente/>}></Route>
+        <Route index element={<HomePage/>}></Route>
+        <Route path="/create" element={<CreaPazientePage/>}></Route>
+        <Route path="/paziente/:id" element={<PazientePage/>}></Route>
+        <Route path="/paziente/:id/edit" element={<ModificaPazientePage/>}></Route>
       </Routes>
       </div>
       <ToastContainer />
 
     </div>
+    </PazienteProvider>
   );
 }

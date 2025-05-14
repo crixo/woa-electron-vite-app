@@ -42,7 +42,7 @@ console.log("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.
 // Initialize the database
 function initDatabase() {
   //const dbPath = "/Users/crixo/coding/js/woa-electron-app/woa-sample.db";//"./woa-sample.db";
-  const dbPath = homeDir + "/coding/js/woa-electron-vite-app/woa-sample.db";
+  const dbPath = path.join(app.getAppPath(), "./woa-sample.db");
   let db = new Database(dbPath);
   db.pragma("journal_mode = WAL");
 

@@ -24,5 +24,6 @@ console.log('preload.js');
 
 contextBridge.exposeInMainWorld('dal', {
   getPazienti: (searchCriteria) => ipcRenderer.invoke('paziente-search', searchCriteria),
-  addPaziente: (p) => ipcRenderer.invoke('add-paziente', p),
+  addPaziente: (paziente) => ipcRenderer.invoke('paziente-add', paziente),
+  getPaziente: (pazienteId) => ipcRenderer.invoke('paziente-get', pazienteId),
 })
