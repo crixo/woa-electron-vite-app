@@ -50,5 +50,43 @@ export function setupPazienteDAL(db){
       console.log('IPC Error:', error);
       throw error; // Sends error back to renderer
     }
-  });         
+  });       
+  
+  ipcMain.handle('anamnesiremota-add', async (_, entity) => {
+    try {
+      console.log('anamnesiremota-add'+entity);
+      const sql = "INSERT INTO anamnesi_remota (id_paziente,data,tipo,descrizione) VALUES (?,?,?,?)";
+      const stmt = db.prepare(sql);
+      const info = stmt.run(entity.pazienteId, entity.data, entity.tipo, entity.descrizione);
+      const id = info.lastInsertRowid;
+      console.log(`id:${id}`);
+      entity.id = id;
+      console.log(entity);
+      return entity;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });  
+
+  ipcMain.handle('anamnesiremota-all', async (_, pazienteId) => {
+    try {
+      console.log('anamnesiremote-all:'+pazienteId);
+      const sql = "SELECT * FROM anamnesi_remota WHERE ID_paziente = ?"
+      const res =  db.prepare(sql).all(pazienteId);
+      console.log(res);
+  
+      const stringify = JSON.stringify(res);
+      // console.log(stringify);
+      // console.log(JSON.parse(stringify));
+  
+      return stringify;
+      //return {"test":"test"};
+      //return "test:";
+      //throw new Error('Oops! Something went wrong.');
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  }); 
 }

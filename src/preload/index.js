@@ -26,4 +26,6 @@ contextBridge.exposeInMainWorld('dal', {
   getPazienti: (searchCriteria) => ipcRenderer.invoke('paziente-search', searchCriteria),
   addPaziente: (paziente) => ipcRenderer.invoke('paziente-add', paziente),
   getPaziente: (pazienteId) => ipcRenderer.invoke('paziente-get', pazienteId),
+  getAnamnesiRemote: (pazienteId) => ipcRenderer.invoke('anamnesiremota-all', pazienteId),
+  addAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-add', entity),
 })

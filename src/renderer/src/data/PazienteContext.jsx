@@ -6,9 +6,15 @@ export const PazienteProvider = ({ children }) => {
     const [paziente, setPaziente] = useState(null);
 
     const fetchPaziente = async (pazienteId) => {
-        let rawResponse = await dal.getPaziente(pazienteId);
-        console.log(rawResponse); 
-        const p = JSON.parse(rawResponse);
+        let pRawResponse = await dal.getPaziente(pazienteId);
+        console.log(pRawResponse); 
+        const p = JSON.parse(pRawResponse);
+
+        let arsRawResponse = await dal.getAnamnesiRemote(pazienteId);
+        console.log(arsRawResponse); 
+        const ars = JSON.parse(arsRawResponse);  
+        p.anamnesiRemote = ars;        
+
         setPaziente(p);
     };
 
