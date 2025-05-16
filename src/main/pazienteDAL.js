@@ -51,6 +51,19 @@ export function setupPazienteDAL(db){
       throw error; // Sends error back to renderer
     }
   });       
+
+  ipcMain.handle('paziente-update', async (_, p) => {
+    try {
+      console.log(p);
+      const sql = "UPDATE paziente SET nome=?,cognome=?,professione=?,indirizzo=?,citta=?,telefono=?,cellulare=?,prov=?,cap=?,email=?,data_nascita=? WHERE ID=?";
+      const stmt = db.prepare(sql);
+      const info = stmt.run(p.nome,p.cognome,p.professione,p.indirizzo,p.citta,p.telefono,p.cellulare,p.prov,p.cap,p.email,p.data_nascita,p.ID);
+      return p;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });  
   
   ipcMain.handle('anamnesiremota-add', async (_, entity) => {
     try {

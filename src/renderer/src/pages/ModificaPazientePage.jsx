@@ -3,27 +3,16 @@ import PazienteForm from "../components/PazienteForm"
 import { PazienteContext } from "../data/PazienteContext";
 import { toast } from "react-toastify";
 
-const ModificaPazientePage = ({ pazienteId }) => {
+const ModificaPazientePage = () => {
   const { paziente, updatePaziente } = useContext(PazienteContext);
   //const paziente = pazienti.find(p => p.id === pazienteId);
-  const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    // this effect is required to avoid broadcasting patiente changes triggered previously into the Context
-    setIsReady(true);
-  }, []);// Empty dependency array ensures it runs once at the start  
 
-  useEffect(() => {
-    if(isReady && paziente){
-        onPazienteChanged();
-    }
-  }, [paziente]); // Runs when `paziente` changes     
+  const savePaziente = async (formData) => {
+    console.log(formData);
+    const pazienteUpdated = await updatePaziente(formData);
 
-  const onPazienteChanged = () => {
-    //if(!isReady) return;
-    console.log(paziente);
-
-    toast.success(`save ${paziente.nome} ${paziente.cognome} successuflly`, {
+    toast.success(`save ${pazienteUpdated.nome} ${pazienteUpdated.cognome} successuflly`, {
         position: 'top-center'
     })
 
@@ -31,7 +20,7 @@ const ModificaPazientePage = ({ pazienteId }) => {
     // navigate("/paziente/"+paziente.id);
   }  
     
-  return paziente ? <PazienteForm paziente={paziente} onSubmit={updatePaziente} /> : <p>Loading...</p>;
+  return paziente ? <PazienteForm paziente={paziente} onSubmit={savePaziente} /> : <p>Loading...</p>;
 };
 
 export default ModificaPazientePage;

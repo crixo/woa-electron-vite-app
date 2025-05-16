@@ -28,7 +28,7 @@ export const PazienteProvider = ({ children }) => {
 
     const updatePaziente = async (pazienteData) => {
         console.log(pazienteData);    
-        const paziente = pazienteData;
+        const paziente = await dal.updatePaziente(pazienteData);
         console.log(paziente);        
         setPaziente(paziente);
         return paziente;
