@@ -80,6 +80,10 @@ npm run rebuild-sqlite3
 npm run dev
 ```
 
+## Note
+
+- [DaisyUI](https://yon.fun/top-tailwind-component-libs/)
+
 ## Logbook
 
 - Use BrowserRouter works w/ Electron final package (win, mac, ..) BrowserRouter does not. BrowserRoute works only in dev mode.

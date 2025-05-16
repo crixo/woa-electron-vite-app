@@ -36,9 +36,7 @@ const CreaPazientePage = () => {
             //setIsLoading(false);
         }
     }
-
-
- 
+    
     return <PazienteForm paziente={{ nome: '', cognome: '', data_nascita: '' }} onSubmit={savePaziente} /> 
 }
 

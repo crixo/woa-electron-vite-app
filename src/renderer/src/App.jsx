@@ -8,7 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PazienteProvider } from "./data/PazienteContext";
 import { AnamnesiRemotaProvider } from "./data/AnamnesiRemotaContext"
 import CreaAnamnesiRemotaPage from "./pages/CreaAnamnesiRemotaPage"
-//        
+import { ConsultoProvider } from "./data/ConsultoContext"
+import CreaConsultoPage from "./pages/CreaConsultoPage"
 
 export default function App() {
   return (
@@ -26,13 +27,16 @@ export default function App() {
         <Route path="/create" element={<CreaPazientePage/>}></Route>
         <Route path="/paziente/:id" element={<PazientePage/>}></Route>
         <Route path="/paziente/:id/edit" element={<ModificaPazientePage/>}></Route>
-        <Route path="/paziente/:id/anamnesi-remota/create" element={
+        <Route path="/paziente/:id/anamnesi-remote/create" element={
           <AnamnesiRemotaProvider>
             <CreaAnamnesiRemotaPage/>
           </AnamnesiRemotaProvider>
-          
-        }
-        ></Route>
+        }/>
+        <Route path="/paziente/:id/consulti/create" element={
+          <ConsultoProvider>
+            <CreaConsultoPage/>
+          </ConsultoProvider>
+        }/>
       </Routes>
       </div>
       <ToastContainer />
