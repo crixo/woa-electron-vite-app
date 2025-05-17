@@ -1,47 +1,64 @@
-import { createContext, useState } from "react";
+import { createContext, useState } from 'react'
 
-export const PazienteContext = createContext();
+export const PazienteContext = createContext()
 
 export const PazienteProvider = ({ children }) => {
-    const [paziente, setPaziente] = useState(null);
+  const [paziente, setPaziente] = useState(null)
+//   const [paziente, setPaziente] = useState(() => {
+//     // Retrieve from localStorage on initial load
+//     const storedPaziente = localStorage.getItem("paziente");
+//     return storedPaziente ? JSON.parse(storedPaziente) : null;
+// });
 
-    const fetchPaziente = async (pazienteId) => {
-        let pRawResponse = await dal.getPaziente(pazienteId);
-        console.log(pRawResponse); 
-        const p = JSON.parse(pRawResponse);
+// useEffect(() => {
+//     async function fetchPaziente() {
+//         const response = await fetch("/api/paziente");
+//         const data = await response.json();
+//         setPaziente(data);
+//         localStorage.setItem("paziente", JSON.stringify(data)); // Persist update
+//     }
 
-        let arsRawResponse = await dal.getAnamnesiRemote(pazienteId);
-        console.log(arsRawResponse); 
-        const ars = JSON.parse(arsRawResponse);  
-        p.anamnesiRemote = ars;        
+//     if (!paziente) {
+//         fetchPaziente();
+//     }
+// }, []);   
 
-        setPaziente(p);
-    };
+  const fetchPaziente = async (pazienteId) => {
+    const pRawResponse = await dal.getPaziente(pazienteId)
+    const p = JSON.parse(pRawResponse)
 
-    const addPaziente = async (pazienteData) => {
-        console.log(pazienteData);    
-        const paziente = await dal.addPaziente(pazienteData);
-        console.log(paziente);        
-        setPaziente(paziente);
-        return paziente;
-    }
+    const arsRawResponse= await dal.getAnamnesiRemoteByPaziente(pazienteId)
+    const ars = JSON.parse(arsRawResponse)
+    p.anamnesiRemote = ars
 
-    const updatePaziente = async (pazienteData) => {
-        console.log(pazienteData);    
-        const paziente = await dal.updatePaziente(pazienteData);
-        console.log(paziente);        
-        setPaziente(paziente);
-        return paziente;
-    }    
+    const cRawResponse = await dal.getConsultiByPaziente(pazienteId)
+    const cs = JSON.parse(cRawResponse)
+    p.consulti = cs
 
-    const resetPaziente = () => {
-        setPaziente(null);
-    };
+    setPaziente(p)
+  }
 
+  const addPaziente = async (pazienteData) => {
+    const paziente = await dal.addPaziente(pazienteData)
+    setPaziente(paziente)
+    return paziente
+  }
 
-    return (
-        <PazienteContext.Provider value={{ paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente }}>
-            {children}
-        </PazienteContext.Provider>
-    );
-};
+  const updatePaziente = async (pazienteData) => {
+    const paziente = await dal.updatePaziente(pazienteData)
+    setPaziente(paziente)
+    return paziente
+  }
+
+  const resetPaziente = () => {
+    setPaziente(null)
+  }
+
+  return (
+    <PazienteContext.Provider
+      value={{ paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente }}
+    >
+      {children}
+    </PazienteContext.Provider>
+  )
+}

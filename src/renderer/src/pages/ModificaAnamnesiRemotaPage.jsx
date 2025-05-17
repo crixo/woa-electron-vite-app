@@ -3,23 +3,29 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { PazienteContext } from '../data/PazienteContext'
 import { AnamnesiRemotaContext } from '../data/AnamnesiRemotaContext'
+import { useParams } from 'react-router-dom'
 //import { VITE_BACKEND_URL } from "../App";
 
-const CreaAnamnesiRemotaPage = () => {
-  const [descrizione, setDescrizione] = useState('')
-  const [tipo, setTipo] = useState('')
-  const [data, setData] = useState('')
-
+const ModificaAnamnesiRemotaPage = () => {
   const [isLoading, setIsLoading] = useState('')
   const navigate = useNavigate()
-  const { add } = useContext(AnamnesiRemotaContext)
+  const { update } = useContext(AnamnesiRemotaContext)
   const { paziente } = useContext(PazienteContext)
 
+  const { id } = useParams() // Extracts the ID from URL
   console.log(paziente)
+  //const [anamnesiRemote, setAnamnesiRemote] = useState(paziente.anamnesiRemote)
+  const arToUpd = paziente.anamnesiRemote.find(e=>e.ID==id)
+  const [entity, setEntity] = useState(arToUpd)
+  console.log(entity)
+
+  const handleChange = (e) => {
+    setEntity({ ...entity, [e.target.name]: e.target.value })
+  }
 
   const saveAnamnesiRemota = async (e) => {
     e.preventDefault()
-    if (data === '' || tipo === '' || descrizione === '') {
+    if (entity.data === '' || entity.tipo === '' || entity.descrizione === '') {
       toast.warn('please fill all input completely', {
         position: 'top-right'
       })
@@ -27,16 +33,8 @@ const CreaAnamnesiRemotaPage = () => {
     }
     try {
       setIsLoading(true)
-
-      const entity = {
-        pazienteId: paziente.ID,
-        data: data,
-        tipo: tipo,
-        descrizione: descrizione
-      }
-      let newE = await add(entity)
-      console.log(newE)
-      toast.success(`save ${newE.tipo} successuflly`, {
+      await update(entity)
+      toast.success(`save ${entity.tipo} successuflly`, {
         position: 'top-center'
       })
 
@@ -54,15 +52,16 @@ const CreaAnamnesiRemotaPage = () => {
   return (
     <div className="max-w-lg bg-white shadow-lg mx-auto p-7 rounded mt-6">
       <h2 className="font-semibold text-2xl mb-4 block text-center">
-        Create una nuova Anamnesi Remota
+        Modifca Anamnesi Remota
       </h2>
       <form onSubmit={saveAnamnesiRemota}>
         <div className="space-y-2">
           <label>Data</label>
           <input
             type="date"
-            value={data}
-            onChange={(e) => setData(e.target.value)}
+            name='data'
+            value={entity.data}
+            onChange={handleChange}
             className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
             placeholder="enter Data"
           />
@@ -72,8 +71,9 @@ const CreaAnamnesiRemotaPage = () => {
           <label>Tipo</label>
           <input
             type="text"
-            value={tipo}
-            onChange={(e) => setTipo(e.target.value)}
+            name="tipo"
+            value={entity.tipo}
+            onChange={handleChange}
             className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
             placeholder="enter Tipo"
           />
@@ -82,8 +82,9 @@ const CreaAnamnesiRemotaPage = () => {
           <label>Descrizione</label>
           <input
             type="text"
-            value={descrizione}
-            onChange={(e) => setDescrizione(e.target.value)}
+            name="descrizione"
+            value={entity.descrizione}
+            onChange={handleChange}
             className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
             placeholder="enter Descrizione"
           />
@@ -91,7 +92,7 @@ const CreaAnamnesiRemotaPage = () => {
         <div>
           {!isLoading && (
             <button className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
-              Crea Anamnesi Remota
+              Modifica Anamnesi Remota
             </button>
           )}
         </div>
@@ -100,4 +101,4 @@ const CreaAnamnesiRemotaPage = () => {
   )
 }
 
-export default CreaAnamnesiRemotaPage
+export default ModificaAnamnesiRemotaPage

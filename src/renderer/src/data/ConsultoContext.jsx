@@ -1,42 +1,36 @@
-import { createContext, useState } from "react";
+import { createContext, useState } from 'react'
 
-export const ConsultoContext = createContext();
+export const ConsultoContext = createContext()
 
 export const ConsultoProvider = ({ children }) => {
-    const [entity, setEntity] = useState(null);
+  const [entity, setEntity] = useState(null)
 
-    // const fetchPaziente = async (pazienteId) => {
-    //     let pRawResponse = await dal.getPaziente(pazienteId);
-    //     console.log(pRawResponse); 
-    //     const p = JSON.parse(pRawResponse);
+  // const fetchPaziente = async (pazienteId) => {
+  //     let pRawResponse = await dal.getPaziente(pazienteId);
+  //     console.log(pRawResponse);
+  //     const p = JSON.parse(pRawResponse);
 
-    //     let arsRawResponse = await dal.getAnamnesiRemote(pazienteId);
-    //     console.log(arsRawResponse); 
-    //     const ars = JSON.parse(arsRawResponse);  
-    //     p.anamnesiRemote = ars;        
+  //     let arsRawResponse = await dal.getAnamnesiRemote(pazienteId);
+  //     console.log(arsRawResponse);
+  //     const ars = JSON.parse(arsRawResponse);
+  //     p.anamnesiRemote = ars;
 
-    //     setPaziente(p);
-    // };
+  //     setPaziente(p);
+  // };
 
-    const add = async (arData) => {
-        console.log(arData);    
-        const ar = await dal.addConsulto(arData);
-        console.log(ar);        
-        setEntity(ar);
-        return ar;
-    }
+  const add = async (consultoData) => {
+    const consulto = await dal.addConsulto(consultoData)
+    setEntity(consulto)
+    return consulto
+  }
 
-    // const updatePaziente = async (pazienteData) => {
-    //     console.log(pazienteData);    
-    //     const paziente = pazienteData;
-    //     console.log(paziente);        
-    //     setPaziente(paziente);
-    //     return paziente;
-    // }    
+  const update = async (consulto) => {
+      const res = await dal.updateConsulto(consulto);
+      // console.log('dal.updateConsulto -> ' + res)
+      // if(!res) throw new Error("updateConsulto failed");
+      
+      setEntity(consulto);
+  }
 
-    return (
-        <ConsultoContext.Provider value={{ add }}>
-            {children}
-        </ConsultoContext.Provider>
-    );
-};
+  return <ConsultoContext.Provider value={{ add, update }}>{children}</ConsultoContext.Provider>
+}

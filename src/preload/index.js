@@ -27,6 +27,14 @@ contextBridge.exposeInMainWorld('dal', {
   addPaziente: (paziente) => ipcRenderer.invoke('paziente-add', paziente),
   getPaziente: (pazienteId) => ipcRenderer.invoke('paziente-get', pazienteId),
   updatePaziente: (paziente) => ipcRenderer.invoke('paziente-update', paziente),
-  getAnamnesiRemote: (pazienteId) => ipcRenderer.invoke('anamnesiremota-all', pazienteId),
+
+  updateAnamnesiRemote: (entity) => ipcRenderer.invoke('anamnesiremota-update', entity),
   addAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-add', entity),
+  updateAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-update', entity),
+  getAnamnesiRemoteByPaziente: (pazienteId) => ipcRenderer.invoke('anamnesiremota-all', pazienteId),
+
+  getConsultiByPaziente: (pazienteId) => ipcRenderer.invoke('consulti-all', pazienteId),
+  getConsulto: (consultoId) => ipcRenderer.invoke('consulto-get', consultoId),
+  updateConsulto: (entity) => ipcRenderer.invoke('consulto-update', entity),
+  addConsulto: (entity) => ipcRenderer.invoke('consulto-add', entity),  
 })

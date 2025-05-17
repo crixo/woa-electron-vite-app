@@ -23,6 +23,7 @@ export default [
       'react-refresh': eslintPluginReactRefresh
     },
     rules: {
+      'react/prop-types': 'off', // Disables the missing prop validation rule
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules
     }
