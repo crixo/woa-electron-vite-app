@@ -1,18 +1,13 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ConsultoContext } from '../data/ConsultoContext'
-import EsameForm from '../components/EsameForm'
-import { useParams } from 'react-router-dom'
+import TrattamentoForm from '../components/TrattamentoForm'
 
-const ModificaEsamePage = () => {
-    const { consulto, updateEsame } = useContext(ConsultoContext)
+const CreaTrattamentoPage = () => {
+    const { consulto, addTrattamento } = useContext(ConsultoContext)
     const navigate = useNavigate()
     console.log(consulto)
-
-    const { id } = useParams() // Extracts the ID from URL
-    const eToUpd = consulto.esami.find(e=>e.ID==id)
-    const [entity, setEntity] = useState(eToUpd)    
   
     const saveEsame = async (formData) => {
       if (formData.data === '' || formData.tipo === '' || formData.descrizione === '') {
@@ -23,8 +18,9 @@ const ModificaEsamePage = () => {
       }
       try {
         //setIsLoading(true);
-        await updateEsame(formData)
-        toast.success(`Esame del ${formData.data} updated successuflly`, {
+        const entityCreated = await addTrattamento(formData)
+        console.log(entityCreated)
+        toast.success(`Trattamento del ${entityCreated.data} saved successuflly`, {
           position: 'top-center'
         })
   
@@ -41,10 +37,11 @@ const ModificaEsamePage = () => {
   
     return (
       <>
-      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica esame</h2>
-      <EsameForm esame={entity} onSubmit={saveEsame} />
+      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuovo Trattamento</h2>
+      <TrattamentoForm entity={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID, data:'', descrizione:'' }} onSubmit={saveEsame} />
       </>
     )
   }
+  
 
-export default ModificaEsamePage
+export default CreaTrattamentoPage

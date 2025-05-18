@@ -6,7 +6,14 @@ export const DataTable = ({ idConfig, data }) => {
   if (!data || data.length === 0) {
     return <p>No data available</p>
   }
-  const headers = Object.keys(data[0])
+
+  const dataNoFK = data.map(obj => {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([key]) => !key.startsWith("ID_"))
+    );
+  });
+
+  const headers = Object.keys(dataNoFK[0])
   console.log(idConfig)
 
   return (
@@ -22,7 +29,7 @@ export const DataTable = ({ idConfig, data }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {dataNoFK.map((item, index) => (
             <tr
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               key={index}

@@ -14,12 +14,26 @@ export const ConsultoProvider = ({ children }) => {
       const apsRawResponse = await dal.getAnamnesiProssimeByConsulto(idConsulto);
       console.log(apsRawResponse);
       const aps = JSON.parse(apsRawResponse);
-      c.anamnesiProssime = aps;
+      const apsWithId = aps.map(obj => ({
+        ID: `${obj.ID_paziente}-${obj.ID_consulto}`,
+        ...obj
+      }));
+      c.anamnesiProssime = apsWithId;
 
       const eRawResponse = await dal.getEsamiByConsulto(idConsulto);
       console.log(eRawResponse);
       const es = JSON.parse(eRawResponse);
       c.esami = es;
+
+      const tRawResponse = await dal.getTrattamentiByConsulto(idConsulto);
+      console.log(tRawResponse);
+      const ts = JSON.parse(tRawResponse);
+      c.trattamenti = ts;      
+
+      const vRawResponse = await dal.getValutazioniByConsulto(idConsulto);
+      console.log(vRawResponse);
+      const vs = JSON.parse(vRawResponse);
+      c.valutazioni = vs
 
       setConsulto(c);
   };
@@ -38,6 +52,22 @@ export const ConsultoProvider = ({ children }) => {
       setConsulto(consulto);
   }
 
+  const addAnamnesiProssima = async (entityData) => {
+    // console.log(consulto.ID)
+    // console.log(esameData)
+    const entity = await dal.addAnamnesiProssima(entityData)
+    //await fetchConsulto(consulto.ID)
+    return entity
+  }
+
+  const updateAnamnesiProssima  = async (entity) => {
+      const res = await dal.updateAnamnesiProssima(entity);
+      // console.log('dal.updateConsulto -> ' + res)
+      // if(!res) throw new Error("updateConsulto failed");
+      
+      //setConsulto(esame);
+  }  
+
   const addEsame = async (esameData) => {
     // console.log(consulto.ID)
     // console.log(esameData)
@@ -51,8 +81,40 @@ export const ConsultoProvider = ({ children }) => {
       // console.log('dal.updateConsulto -> ' + res)
       // if(!res) throw new Error("updateConsulto failed");
       
-      setConsulto(esame);
+      //setConsulto(esame);
   }  
 
-  return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, addEsame }}>{children}</ConsultoContext.Provider>
+  const addTrattamento = async (entityData) => {
+    // console.log(consulto.ID)
+    // console.log(esameData)
+    const entity = await dal.addTrattamento(entityData)
+    //await fetchConsulto(consulto.ID)
+    return entity
+  }
+
+  const updateTrattamento = async (entity) => {
+      const res = await dal.updateTrattamento(entity);
+      // console.log('dal.updateConsulto -> ' + res)
+      // if(!res) throw new Error("updateConsulto failed");
+      
+      //setConsulto(esame);
+  }  
+  const addValutazione = async (entityData) => {
+    // console.log(consulto.ID)
+    // console.log(esameData)
+    const entity = await dal.addValutazione(entityData)
+    //await fetchConsulto(consulto.ID)
+    return entity
+  }
+
+  const updateValutazione = async (entity) => {
+      const res = await dal.updateValutazione(entity);
+  }  
+
+  return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, 
+      addEsame, updateEsame, 
+      addTrattamento, updateTrattamento, 
+      addAnamnesiProssima, updateAnamnesiProssima,
+      addValutazione, updateValutazione
+    }}>{children}</ConsultoContext.Provider>
 }

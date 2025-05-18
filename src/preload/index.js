@@ -33,13 +33,24 @@ contextBridge.exposeInMainWorld('dal', {
   updateAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-update', entity),
   getAnamnesiRemoteByPaziente: (pazienteId) => ipcRenderer.invoke('anamnesiremota-all', pazienteId),
 
-  getConsultiByPaziente: (pazienteId) => ipcRenderer.invoke('consulti-all', pazienteId),
+  getConsultiByPaziente: (pazienteId) => ipcRenderer.invoke('consulto-all', pazienteId),
   getConsulto: (consultoId) => ipcRenderer.invoke('consulto-get', consultoId),
   updateConsulto: (entity) => ipcRenderer.invoke('consulto-update', entity),
   addConsulto: (entity) => ipcRenderer.invoke('consulto-add', entity),  
 
-  getAnamnesiProssimeByConsulto: (idConsulto) => ipcRenderer.invoke('anamnesi-prossime-all', idConsulto),
+  getAnamnesiProssimeByConsulto: (idConsulto) => ipcRenderer.invoke('anamnesi-prossima-all', idConsulto),
+  addAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-add', entity),  
+  updateAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-update', entity),  
 
-  getEsamiByConsulto: (idConsulto) => ipcRenderer.invoke('esami-all', idConsulto),
+  getEsamiByConsulto: (idConsulto) => ipcRenderer.invoke('esame-all', idConsulto),
   addEsame: (entity) => ipcRenderer.invoke('esame-add', entity),  
+  updateEsame: (entity) => ipcRenderer.invoke('esame-update', entity),  
+
+  getTrattamentiByConsulto: (idConsulto) => ipcRenderer.invoke('trattamento-all', idConsulto),
+  addTrattamento: (entity) => ipcRenderer.invoke('trattamento-add', entity),  
+  updateTrattamento: (entity) => ipcRenderer.invoke('trattamento-update', entity),  
+
+  getValutazioniByConsulto: (idConsulto) => ipcRenderer.invoke('valutazione-all', idConsulto),
+  addValutazione: (entity) => ipcRenderer.invoke('valutazione-add', entity),  
+  updateValutazione: (entity) => ipcRenderer.invoke('valutazione-update', entity),  
 })

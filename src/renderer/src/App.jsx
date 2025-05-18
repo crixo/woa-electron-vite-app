@@ -15,6 +15,13 @@ import ModificaConsultoPage from './pages/ModificaConsultoPage'
 import ConsultoPage from './pages/ConsultoPage'
 import CreaEsamePage from './pages/CreaEsamePage'
 import ModificaEsamePage from './pages/ModificaEsamePage'
+import CreaTrattamentoPage from './pages/CreaTrattamentoPage'
+import ModificaTrattamentoPage from './pages/ModificaTrattamentoPage'
+import CreaAnamnesiProssimaPage from './pages/CreaAnamnesiProssimaPage'
+import ModificaAnamnesiProssimaPage from './pages/ModificaAnamnesiProssimaPage'
+import CreaValutazionePage from './pages/CreaValutazionePage'
+import ModificaValutazionePage from './pages/ModificaValutazionePage'
+
 
 export default function App() {
   return (
@@ -55,8 +62,17 @@ export default function App() {
             <Route path="/consulto/:id/edit" element={<ModificaConsultoPage />}  />    
             <Route path="/consulto/:id" element={<ConsultoPage />} />    
 
+            <Route path="/anamnesi-prossima/:id/edit" element={ <ModificaAnamnesiProssimaPage />}></Route>
+            <Route path="/consulto/:id/anamnesi-prossime/create" element={ <CreaAnamnesiProssimaPage />}></Route>     
+
             <Route path="/esame/:id/edit" element={ <ModificaEsamePage />}></Route>
             <Route path="/consulto/:id/esami/create" element={ <CreaEsamePage />}></Route>
+
+            <Route path="/trattamento/:id/edit" element={ <ModificaTrattamentoPage />}></Route>
+            <Route path="/consulto/:id/trattamenti/create" element={ <CreaTrattamentoPage />}></Route>          
+
+            <Route path="/valutazione/:id/edit" element={ <ModificaValutazionePage />}></Route>
+            <Route path="/consulto/:id/valutazioni/create" element={ <CreaValutazionePage />}></Route>                
           </Routes>         
         </div>
         <ToastContainer />

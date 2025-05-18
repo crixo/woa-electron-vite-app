@@ -2,20 +2,20 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ConsultoContext } from '../data/ConsultoContext'
-import EsameForm from '../components/EsameForm'
+import TrattamentoForm from '../components/TrattamentoForm'
 import { useParams } from 'react-router-dom'
 
-const ModificaEsamePage = () => {
-    const { consulto, updateEsame } = useContext(ConsultoContext)
+const ModificaTrattamentoPage = () => {
+    const { consulto, updateTrattamento } = useContext(ConsultoContext)
     const navigate = useNavigate()
     console.log(consulto)
 
     const { id } = useParams() // Extracts the ID from URL
-    const eToUpd = consulto.esami.find(e=>e.ID==id)
-    const [entity, setEntity] = useState(eToUpd)    
+    const entityToUpd = consulto.trattamenti.find(e=>e.ID==id)
+    const [entity, setEntity] = useState(entityToUpd)    
   
-    const saveEsame = async (formData) => {
-      if (formData.data === '' || formData.tipo === '' || formData.descrizione === '') {
+    const saveTrattamento = async (formData) => {
+      if (formData.data === '' || formData.descrizione === '') {
         toast.warn('please fill all input completely', {
           position: 'top-right'
         })
@@ -23,8 +23,8 @@ const ModificaEsamePage = () => {
       }
       try {
         //setIsLoading(true);
-        await updateEsame(formData)
-        toast.success(`Esame del ${formData.data} updated successuflly`, {
+        await updateTrattamento(formData)
+        toast.success(`Trattamento del ${formData.data} updated successuflly`, {
           position: 'top-center'
         })
   
@@ -41,10 +41,10 @@ const ModificaEsamePage = () => {
   
     return (
       <>
-      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica esame</h2>
-      <EsameForm esame={entity} onSubmit={saveEsame} />
+      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica Trattamento</h2>
+      <TrattamentoForm entity={entity} onSubmit={saveTrattamento} />
       </>
     )
   }
 
-export default ModificaEsamePage
+export default ModificaTrattamentoPage
