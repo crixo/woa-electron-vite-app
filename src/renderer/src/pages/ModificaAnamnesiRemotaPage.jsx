@@ -13,7 +13,7 @@ const ModificaAnamnesiRemotaPage = () => {
   const { paziente } = useContext(PazienteContext)
 
   const { id } = useParams() // Extracts the ID from URL
-  console.log(paziente)
+  console.log(id)
   //const [anamnesiRemote, setAnamnesiRemote] = useState(paziente.anamnesiRemote)
   const arToUpd = paziente.anamnesiRemote.find(e=>e.ID==id)
   const [entity, setEntity] = useState(arToUpd)

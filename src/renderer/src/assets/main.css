@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/* .h2-primary{
+    @apply ext-xl font-semibold text-blue-700 mb-2;
+} */
+

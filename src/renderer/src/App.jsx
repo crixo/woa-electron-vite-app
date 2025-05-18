@@ -12,10 +12,14 @@ import ModificaAnamnesiRemotaPage from './pages/ModificaAnamnesiRemotaPage'
 import { ConsultoProvider } from './data/ConsultoContext'
 import CreaConsultoPage from './pages/CreaConsultoPage'
 import ModificaConsultoPage from './pages/ModificaConsultoPage'
+import ConsultoPage from './pages/ConsultoPage'
+import CreaEsamePage from './pages/CreaEsamePage'
+import ModificaEsamePage from './pages/ModificaEsamePage'
 
 export default function App() {
   return (
     <PazienteProvider>
+      <ConsultoProvider>
       <div>
         <nav className="bg-gray-800">
           <div className="container mx-auto p-2">
@@ -46,27 +50,18 @@ export default function App() {
                   <ModificaAnamnesiRemotaPage />
                 </AnamnesiRemotaProvider>
               }
-            />            
-            <Route
-              path="/paziente/:id/consulti/create"
-              element={
-                <ConsultoProvider>
-                  <CreaConsultoPage />
-                </ConsultoProvider>
-              }
-            />
-          <Route
-              path="/consulto/:id/edit"
-              element={
-                <ConsultoProvider>
-                  <ModificaConsultoPage />
-                </ConsultoProvider>
-              }
-            />    
+            />         
+            <Route path="/paziente/:id/consulti/create" element={<CreaConsultoPage />} />
+            <Route path="/consulto/:id/edit" element={<ModificaConsultoPage />}  />    
+            <Route path="/consulto/:id" element={<ConsultoPage />} />    
+
+            <Route path="/esame/:id/edit" element={ <ModificaEsamePage />}></Route>
+            <Route path="/consulto/:id/esami/create" element={ <CreaEsamePage />}></Route>
           </Routes>         
         </div>
         <ToastContainer />
       </div>
+      </ConsultoProvider> 
     </PazienteProvider>
   )
 }

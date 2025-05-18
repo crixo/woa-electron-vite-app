@@ -1,26 +1,32 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 export const ConsultoContext = createContext()
 
 export const ConsultoProvider = ({ children }) => {
-  const [entity, setEntity] = useState(null)
+  const [consulto, setConsulto] = useState(null)
 
-  // const fetchPaziente = async (pazienteId) => {
-  //     let pRawResponse = await dal.getPaziente(pazienteId);
-  //     console.log(pRawResponse);
-  //     const p = JSON.parse(pRawResponse);
+  const fetchConsulto = async (idConsulto) => {
+      console.log('fetching consulto for ID: '+idConsulto)
+      const cRawResponse = await dal.getConsulto(idConsulto);
+      console.log(cRawResponse);
+      const c = JSON.parse(cRawResponse);
 
-  //     let arsRawResponse = await dal.getAnamnesiRemote(pazienteId);
-  //     console.log(arsRawResponse);
-  //     const ars = JSON.parse(arsRawResponse);
-  //     p.anamnesiRemote = ars;
+      const apsRawResponse = await dal.getAnamnesiProssimeByConsulto(idConsulto);
+      console.log(apsRawResponse);
+      const aps = JSON.parse(apsRawResponse);
+      c.anamnesiProssime = aps;
 
-  //     setPaziente(p);
-  // };
+      const eRawResponse = await dal.getEsamiByConsulto(idConsulto);
+      console.log(eRawResponse);
+      const es = JSON.parse(eRawResponse);
+      c.esami = es;
+
+      setConsulto(c);
+  };
 
   const add = async (consultoData) => {
     const consulto = await dal.addConsulto(consultoData)
-    setEntity(consulto)
+    setConsulto(consulto)
     return consulto
   }
 
@@ -29,8 +35,24 @@ export const ConsultoProvider = ({ children }) => {
       // console.log('dal.updateConsulto -> ' + res)
       // if(!res) throw new Error("updateConsulto failed");
       
-      setEntity(consulto);
+      setConsulto(consulto);
   }
 
-  return <ConsultoContext.Provider value={{ add, update }}>{children}</ConsultoContext.Provider>
+  const addEsame = async (esameData) => {
+    // console.log(consulto.ID)
+    // console.log(esameData)
+    const esame = await dal.addEsame(esameData)
+    //await fetchConsulto(consulto.ID)
+    return esame
+  }
+
+  const updateEsame = async (esame) => {
+      const res = await dal.updateEsame(esame);
+      // console.log('dal.updateConsulto -> ' + res)
+      // if(!res) throw new Error("updateConsulto failed");
+      
+      setConsulto(esame);
+  }  
+
+  return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, addEsame }}>{children}</ConsultoContext.Provider>
 }

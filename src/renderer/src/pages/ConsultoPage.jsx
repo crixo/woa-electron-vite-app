@@ -1,32 +1,32 @@
 import { useContext, useEffect, useState } from 'react'
 import { PazienteContext } from '../data/PazienteContext'
+import { ConsultoContext } from '../data/ConsultoContext'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { DataTable } from '../components/DataTable'
 //
 
-const PazientePage = () => {
+const ConsultoPage = () => {
   const { id } = useParams() // Extracts the ID from URL
-
   const { paziente, fetchPaziente, resetPaziente } = useContext(PazienteContext)
-  const [pazienteId, setPazienteId] = useState(id)
+  const { consulto, fetchConsulto} = useContext(ConsultoContext)
+  //const [pazienteId, setPazienteId] = useState(id)
 
   useEffect(() => {
     //resetPaziente();
-    console.log('calling fetchPaziente')
-    fetchPaziente(pazienteId)
+    console.log('calling fetchPaziente from ConsultoPage:'+id)
+    fetchConsulto(id)
   }, [])
 
   return (
     <div>
-      {paziente ? (
+      {consulto ? (
         <>
           <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border">
             <div className="bg-blue-600 p-6 text-white text-center">
               <h2 className="text-xl font-semibold">
-                {paziente.nome} {paziente.cognome}
+                Consulto del {consulto.data}
               </h2>
-              <p className="opacity-80">{paziente.professione}</p>
             </div>
 
             <div className="flex items-center justify-between bg-gray-200 p-4">
@@ -34,7 +34,7 @@ const PazientePage = () => {
                 Mostra dettagli ▼
               </label>
               <Link
-                to={`/paziente/${paziente.ID}/edit`}
+                to={`/consulto/${consulto.ID}/edit`}
                 className="text-blue-500 hover:text-blue-700"
               >
                 <i className="fas fa-pencil-alt"></i>
@@ -45,36 +45,18 @@ const PazientePage = () => {
 
             <div className="p-6 space-y-2 text-gray-700 hidden peer-checked:block">
               <p>
-                <strong>Indirizzo:</strong> {paziente.indirizzo}
+                <strong>Data:</strong> {consulto.data}
               </p>
               <p>
-                <strong>Città:</strong> {paziente.citta}
-              </p>
-              <p>
-                <strong>Telefono:</strong> {paziente.telefono}
-              </p>
-              <p>
-                <strong>Cellulare:</strong> {paziente.cellulare}
-              </p>
-              <p>
-                <strong>Provincia:</strong> {paziente.prov}
-              </p>
-              <p>
-                <strong>CAP:</strong> {paziente.cap}
-              </p>
-              <p>
-                <strong>Email:</strong> {paziente.email}
-              </p>
-              <p>
-                <strong>Data di nascita:</strong> {paziente.data_nascita}
+                <strong>Problema Iniziale:</strong> {consulto.problema_iniziale}
               </p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Anamnesi Remote</h3>
+            <h3 className="text-lg font-bold">Anamnesi Prossime</h3>
             <Link
-              to={`/paziente/${paziente.ID}/anamnesi-remote/create`}
+              to={`/consulto/${consulto.ID}/anamnesi-prossime/create`}
               className="text-blue-600 hover:underline"
             >
               <i className="fa fa-plus"></i>
@@ -82,15 +64,15 @@ const PazientePage = () => {
           </div>
 
           <div>
-            <DataTable 
-              data={paziente.anamnesiRemote} 
-              idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}} />
+            <DataTable
+              data={consulto.anamnesiProssime}
+              idConfig={{entityUrlSegment:'/anamnesi-prossima/:id/edit', iconCss:'fas fa-pencil-alt'}}  />
           </div>
 
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Consulti</h3>
+            <h3 className="text-lg font-bold">Esami</h3>
             <Link
-              to={`/paziente/${paziente.ID}/consulti/create`}
+              to={`/consulto/${consulto.ID}/esami/create`}
               className="text-blue-600 hover:underline"
             >
               <i className="fa fa-plus"></i>
@@ -98,15 +80,31 @@ const PazientePage = () => {
           </div>
           <div>
             <DataTable 
-              data={paziente.consulti} 
-              idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}  />
+              data={consulto.esami}
+              idConfig={{entityUrlSegment:'/esame/:id/edit', iconCss:'fas fa-pencil-alt'}}  />
           </div>
+
+          <div className="flex items-center space-x-2">
+            <h3 className="text-lg font-bold">Trattamenti</h3>
+            <Link
+              to={`/consulto/${consulto.ID}/trattamenti/create`}
+              className="text-blue-600 hover:underline"
+            >
+              <i className="fa fa-plus"></i>
+            </Link>
+          </div>
+          <div>
+            <DataTable 
+              data={paziente.anamnesiRemote} 
+              idConfig={{entityUrlSegment:'/trattamento/:id/edit', iconCss:'fas fa-pencil-alt'}} />
+          </div>
+         
         </>
       ) : (
-        <p>No paziente found with id={pazienteId}</p>
+        <p>No consulto found with id={id}</p>
       )}
     </div>
   )
 }
 
-export default PazientePage
+export default ConsultoPage

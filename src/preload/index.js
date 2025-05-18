@@ -37,4 +37,9 @@ contextBridge.exposeInMainWorld('dal', {
   getConsulto: (consultoId) => ipcRenderer.invoke('consulto-get', consultoId),
   updateConsulto: (entity) => ipcRenderer.invoke('consulto-update', entity),
   addConsulto: (entity) => ipcRenderer.invoke('consulto-add', entity),  
+
+  getAnamnesiProssimeByConsulto: (idConsulto) => ipcRenderer.invoke('anamnesi-prossime-all', idConsulto),
+
+  getEsamiByConsulto: (idConsulto) => ipcRenderer.invoke('esami-all', idConsulto),
+  addEsame: (entity) => ipcRenderer.invoke('esame-add', entity),  
 })

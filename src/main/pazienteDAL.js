@@ -154,6 +154,18 @@ export function setupPazienteDAL(db){
     }
   });  
 
+  ipcMain.handle('consulto-get', async (_, idConsulto) => {
+    try {
+      console.log('consulto-get:'+idConsulto);
+      const sql = "SELECT * FROM consulto WHERE ID = ?"
+      const p =  db.prepare(sql).get(idConsulto);
+      return JSON.stringify(p);
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });     
+
   ipcMain.handle('consulto-update', async (_, entity) => {
     try {
       console.log('consulto-update:'+entity);
@@ -165,4 +177,45 @@ export function setupPazienteDAL(db){
       throw error; // Sends error back to renderer
     }
   });   
+
+  ipcMain.handle('anamnesi-prossime-all', async (_, idConsulto) => {
+    try {
+      const sql = "SELECT * FROM anamnesi_prossima WHERE ID_consulto= ?"
+      const res =  db.prepare(sql).all(idConsulto);
+      const stringify = JSON.stringify(res);
+      return stringify;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });  
+  
+  ipcMain.handle('esame-add', async (_, entity) => {
+    try {
+      console.log('esame-add'+entity);
+      const sql = "INSERT INTO esame (id_paziente,id_consulto,data,tipo,descrizione) VALUES (?,?,?,?,?)";
+      const stmt = db.prepare(sql);
+      const info = stmt.run(entity.ID_paziente, entity.ID_consulto, entity.data, entity.tipo, entity.descrizione);
+      const id = info.lastInsertRowid;
+      console.log(`id:${id}`);
+      entity.id = id;
+      console.log(entity);
+      return entity;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  }); 
+
+  ipcMain.handle('esami-all', async (_, idConsulto) => {
+    try {
+      const sql = "SELECT * FROM esame WHERE ID_consulto = ?"
+      const res =  db.prepare(sql).all(idConsulto);
+      const stringify = JSON.stringify(res);
+      return stringify;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });    
 }

@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 
-export const DataTable = ({ entityUrlSegment, data }) => {
+
+
+export const DataTable = ({ idConfig, data }) => {
   if (!data || data.length === 0) {
     return <p>No data available</p>
   }
-
   const headers = Object.keys(data[0])
+  console.log(idConfig)
 
   return (
     <div className="relative overflow-x-auto">
@@ -31,11 +33,11 @@ export const DataTable = ({ entityUrlSegment, data }) => {
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   key={header}
                 >
-                  { header=="ID"? (                  <Link
-                  to={`/${entityUrlSegment}/${item[header]}/edit`}
+                  { header=="ID"? (<Link
+                  to={`${idConfig.entityUrlSegment.replace(':id', item[header])}`}
                   className="text-blue-500 hover:text-blue-700"
                 >
-                  <i className="fas fa-pencil-alt"></i>
+                  <i className={idConfig.iconCss}></i>
                 </Link>) : (item[header]) }
                 </td>
               ))}
