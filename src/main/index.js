@@ -116,7 +116,7 @@ function createWindow() {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
 
     // Default open or close DevTools by F12 in development
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
@@ -159,3 +159,12 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+process.on('uncaughtException', (error) => {
+    log.error('Uncaught Exception:', error);
+    // Log the error or display an alert
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    log.error('Unhandled Promise Rejection:', reason);
+});

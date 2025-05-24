@@ -1,17 +1,18 @@
 import { Link } from 'react-router-dom'
+import { calculateAge } from '../utils'
 
 export const PazienteCard = ({paziente}) => {
 
     return(
         <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border">
-            <div className="bg-blue-600 p-6 text-white text-center">
+            <div className="bg-blue-600 p-2 text-white text-center">
               <h2 className="text-xl font-semibold">
-                {paziente.nome} {paziente.cognome}
+                {paziente.nome} {paziente.cognome} (eta' {calculateAge(paziente.data_nascita)})
               </h2>
               <p className="opacity-80">{paziente.professione}</p>
             </div>
 
-            <div className="flex items-center justify-between bg-gray-200 p-4">
+            <div className="flex items-center justify-between bg-gray-200 p-2">
               <label htmlFor="toggleDetails" className="font-semibold cursor-pointer">
                 Mostra dettagli ▼
               </label>
@@ -21,6 +22,12 @@ export const PazienteCard = ({paziente}) => {
               >
                 <i className="fas fa-user-alt"></i>
               </Link>
+              <Link
+                to={`/paziente/${paziente.ID}/edit`}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                <i className="fas fa-pencil-alt"></i>
+              </Link>              
             </div>
 
             <input type="checkbox" id="toggleDetails" className="hidden peer" />

@@ -5,6 +5,7 @@ import { PazienteContext } from '../data/PazienteContext'
 import { AnamnesiRemotaContext } from '../data/AnamnesiRemotaContext'
 import { useParams } from 'react-router-dom'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
+import { PazienteCard } from '../components/PazienteCard'
 //import { VITE_BACKEND_URL } from "../App";
 
 const ModificaAnamnesiRemotaPage = () => {
@@ -49,6 +50,7 @@ const ModificaAnamnesiRemotaPage = () => {
 
   return (
     <>
+    <PazienteCard paziente={paziente} />
     <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica Anamnesi Remota</h2>
     <AnamnesiRemotaForm entity={entity} onSubmit={saveEntity} />
     </>

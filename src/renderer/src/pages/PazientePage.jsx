@@ -18,6 +18,14 @@ const PazientePage = () => {
     fetchPaziente(pazienteId)
   }, [])
 
+  const deleteAnamnesiRemota = (entity) => {
+    console.log(entity)
+  }
+
+  const deleteConsulto = (entity) => {
+    console.log(entity)
+  }
+
   return (
     <div>
       {paziente ? (
@@ -37,7 +45,8 @@ const PazientePage = () => {
           <div>
             <DataTable 
               data={paziente.anamnesiRemote} 
-              idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}} />
+              idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
+              deleteHandler={deleteAnamnesiRemota} />
           </div>
 
           <div className="flex items-center space-x-2">
@@ -52,7 +61,8 @@ const PazientePage = () => {
           <div>
             <DataTable 
               data={paziente.consulti} 
-              idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}  />
+              idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}
+              deleteHandler={deleteConsulto}  />
           </div>
         </>
       ) : (

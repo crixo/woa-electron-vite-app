@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatDate } from '../utils'
 
 const PazienteForm = ({ paziente, onSubmit }) => {
   const [formData, setFormData] = useState(paziente)
@@ -7,11 +8,11 @@ const PazienteForm = ({ paziente, onSubmit }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const formatDate = (dateString) => {
-    if (dateString === undefined || dateString=="") return null
-    const date = new Date(dateString)
-    return date.toISOString().split('T')[0] // Extracts yyyy-MM-dd
-  }
+  // const formatDate = (dateString) => {
+  //   if (dateString === undefined || dateString=="") return null
+  //   const date = new Date(dateString)
+  //   return date.toISOString().split('T')[0] // Extracts yyyy-MM-dd
+  // }
 
   return (
     <form

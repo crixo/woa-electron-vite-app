@@ -4,26 +4,18 @@ export const PazienteContext = createContext()
 
 export const PazienteProvider = ({ children }) => {
   const [paziente, setPaziente] = useState(null)
-//   const [paziente, setPaziente] = useState(() => {
-//     // Retrieve from localStorage on initial load
-//     const storedPaziente = localStorage.getItem("paziente");
-//     return storedPaziente ? JSON.parse(storedPaziente) : null;
-// });
-
-// useEffect(() => {
-//     async function fetchPaziente() {
-//         const response = await fetch("/api/paziente");
-//         const data = await response.json();
-//         setPaziente(data);
-//         localStorage.setItem("paziente", JSON.stringify(data)); // Persist update
-//     }
-
-//     if (!paziente) {
-//         fetchPaziente();
-//     }
-// }, []);   
+  // const [paziente, setPaziente] = useState( () => {
+  //   const storedPaziente = localStorage.getItem('paziente')
+  //   return storedPaziente? JSON.parse(storedPaziente) : null
+  // })
+  // useEffect( () => {
+  //   localStorage.setItem('paziente', JSON.stringify(paziente))
+  // }, [paziente]) 
 
   const fetchPaziente = async (pazienteId) => {
+    // Before executing new fetch, I need to clear previous entity
+    setPaziente(null)
+    
     const pRawResponse = await dal.getPaziente(pazienteId)
     const p = JSON.parse(pRawResponse)
 

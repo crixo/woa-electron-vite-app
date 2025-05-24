@@ -18,29 +18,21 @@ const HomePage = () => {
     try {
       //start loading
       //setIsLoading(true)
-      console.log('pageNumber:'+pageNumber)
       setSearchNumber(searchNumber+1)
 
       const pageSize = 5
       let rawResponse = await dal.getPazienti(searchCriteria, pageSize+1, pageNumber-1)
-      console.log(rawResponse)
       const pazientiFromDb = JSON.parse(rawResponse)
-      console.log('pazientiFromDb.length:'+pazientiFromDb.length)
       const hasMorePazienti = pazientiFromDb.length > pageSize
       setHasMore(hasMorePazienti); // Backend should return `hasMore`
       setCurrentPage(pageNumber);
       setPazienti(hasMorePazienti? pazientiFromDb.slice(0, -1) : pazientiFromDb)
       //loading is finish
       //setIsLoading(false)
-      
-
       //setShowPazienti(true)
-
     } catch (error) {
       console.log(error)
     }
-
-
   }
 
 //   useEffect(() => {
@@ -50,16 +42,15 @@ const HomePage = () => {
   return (
     //if loading=yes, then display "loading"
     <div>
-      <div>
+      <div class="flex justify-end">
         <Link
           to="/create"
-          className="inline-block mt-4 shadow-md bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer"
-        >
+          className="inline-block mt-4 shadow-md bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer">
           Crea un nuovo paziente
         </Link>
       </div>
 
-      <form>
+      <div>
         <div className="space-y-2">
           <label>Cognome del paziente da cercare</label>
           <input
@@ -70,16 +61,16 @@ const HomePage = () => {
             placeholder="enter paziente da cercare"
           />
         </div>
-        <div>
-          <button onClick={(e) => {e.preventDefault(); getPazienti(1)}} className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
+        <div class="flex justify-center">
+          <button onClick={() => getPazienti(1)} className="inline-block mt-6 bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
             Cerca Paziente
           </button>
         </div>
-      </form>
+      </div>
 
       {pazienti.length > 0  ? (
         <>
-          <div className="cards">
+          <div className="grid grid-cols-3 lg:grid-cols-4 gap-4 mt-5">
             {pazienti.map((p, index) => (
               <div key={index} className="card">
                 <Paziente key={index} paziente={p} />

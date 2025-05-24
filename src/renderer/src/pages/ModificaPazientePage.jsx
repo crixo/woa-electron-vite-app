@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import PazienteForm from '../components/PazienteForm'
 import { PazienteContext } from '../data/PazienteContext'
 import { toast } from 'react-toastify'
+import { PazienteCard } from '../components/PazienteCard'
 
 const ModificaPazientePage = () => {
   const { paziente, updatePaziente } = useContext(PazienteContext)
@@ -19,7 +20,11 @@ const ModificaPazientePage = () => {
     // navigate("/paziente/"+paziente.id);
   }
 
-  return paziente ? <PazienteForm paziente={paziente} onSubmit={savePaziente} /> : <p>Loading...</p>
+  return paziente ? 
+    <>
+    <PazienteCard paziente={paziente} />
+    <PazienteForm paziente={paziente} onSubmit={savePaziente} />
+    </> : <p>Loading...</p>
 }
 
 export default ModificaPazientePage
