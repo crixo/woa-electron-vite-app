@@ -1,48 +1,51 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Pazienti from '../components/Pazienti'
+import Paziente from '../components/Paziente'
 //import { VITE_BACKEND_URL } from "../App";
 
 const HomePage = () => {
   const [searchCriteria, setSearchCriteria] = useState('')
-
-  const [showPazienti, setShowPazienti] = useState(false)
-
+  //const [showPazienti, setShowPazienti] = useState(false)
   const [pazienti, setPazienti] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  //const [isLoading, setIsLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState();
+  const [hasMore, setHasMore] = useState(true); // Assume more data available
+  const [searchNumber, setSearchNumber] = useState(0)
 
-  const getPazienti = async (e) => {
-    e.preventDefault()
+  const getPazienti = async (pageNumber = 0) => {
+    //e.preventDefault()
 
     try {
       //start loading
-      setIsLoading(true)
+      //setIsLoading(true)
+      console.log('pageNumber:'+pageNumber)
+      setSearchNumber(searchNumber+1)
 
-      // const response = {"data":[
-      //     {"nome":"John", "cognome":"Doe"},
-      //     {"nome":"Tom", "cognome":"Hanks"},]}//await axios.get(`https://be-node-api.onrender.com/api/products`);
-      let rawResponse = await dal.getPazienti(searchCriteria)
+      const pageSize = 5
+      let rawResponse = await dal.getPazienti(searchCriteria, pageSize+1, pageNumber-1)
       console.log(rawResponse)
-
-      const response = { data: JSON.parse(rawResponse) }
-      //let data = JSON.parse('[{"ID":2,"cognome":"Degiorgis","nome":"Cristiano","professione":null,"indirizzo":null,"citta":null,"telefono":null,"cellulare":null,"prov":null,"cap":null,"email":null,"data_nascita":"1972-10-05T00:00:00Z","created_at_utc":null,"updated_at_utc":null}]');//JSON.parse(rawResponse);
-
-      //set product into product variable from response data
-      setPazienti(response.data)
-
+      const pazientiFromDb = JSON.parse(rawResponse)
+      console.log('pazientiFromDb.length:'+pazientiFromDb.length)
+      const hasMorePazienti = pazientiFromDb.length > pageSize
+      setHasMore(hasMorePazienti); // Backend should return `hasMore`
+      setCurrentPage(pageNumber);
+      setPazienti(hasMorePazienti? pazientiFromDb.slice(0, -1) : pazientiFromDb)
       //loading is finish
-      setIsLoading(false)
+      //setIsLoading(false)
+      
 
-      setShowPazienti(true)
+      //setShowPazienti(true)
+
     } catch (error) {
       console.log(error)
     }
+
+
   }
 
-  //call useeffect when application first load
-  // useEffect(() => {
-  //     getPazienti();
-  // },[])
+//   useEffect(() => {
+//     console.log("Updated pazienti:", pazienti.length);
+// }, [pazienti]); // Runs every time users change
 
   return (
     //if loading=yes, then display "loading"
@@ -56,7 +59,7 @@ const HomePage = () => {
         </Link>
       </div>
 
-      <form onSubmit={getPazienti}>
+      <form>
         <div className="space-y-2">
           <label>Cognome del paziente da cercare</label>
           <input
@@ -68,13 +71,38 @@ const HomePage = () => {
           />
         </div>
         <div>
-          <button className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
+          <button onClick={(e) => {e.preventDefault(); getPazienti(1)}} className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
             Cerca Paziente
           </button>
         </div>
       </form>
 
-      <Pazienti isVisible={showPazienti} isLoading={isLoading} pazienti={pazienti} />
+      {pazienti.length > 0  ? (
+        <>
+          <div className="cards">
+            {pazienti.map((p, index) => (
+              <div key={index} className="card">
+                <Paziente key={index} paziente={p} />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center space-x-2 mt-4">
+            <button 
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50"
+              onClick={() => getPazienti(currentPage - 1)} 
+              disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span className="px-4 py-2 bg-purple-500 text-white font-bold shadow-md">Page {currentPage}</span>
+            <button 
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50"
+              onClick={() => getPazienti(currentPage + 1)} 
+              disabled={!hasMore}>
+              Next
+            </button>
+          </div>
+        </>
+      ) : ( searchNumber>0  && <>no pazienti found</>)}
     </div>
   )
 }

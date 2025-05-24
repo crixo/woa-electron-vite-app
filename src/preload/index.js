@@ -20,10 +20,9 @@
 // }
 
 const { contextBridge, ipcRenderer  } = require('electron')
-console.log('preload.js');
 
 contextBridge.exposeInMainWorld('dal', {
-  getPazienti: (searchCriteria) => ipcRenderer.invoke('paziente-search', searchCriteria),
+  getPazienti: (searchCriteria, pageSize, pageNumber) => ipcRenderer.invoke('paziente-search', searchCriteria, pageSize, pageNumber),
   addPaziente: (paziente) => ipcRenderer.invoke('paziente-add', paziente),
   getPaziente: (pazienteId) => ipcRenderer.invoke('paziente-get', pazienteId),
   updatePaziente: (paziente) => ipcRenderer.invoke('paziente-update', paziente),

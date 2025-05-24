@@ -14,16 +14,20 @@
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
-    "build:mac": "npm run build && electron-builder --mac",
+    "build:mac": "npm run rebuild-sqlite3 && npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
-    "rebuild-sqlite3": "electron-rebuild -f -w better-sqlite3"
+    "rebuild-sqlite3": "electron-rebuild -f -w better-sqlite3",
+    "build:mac-x64": "npm run rebuild-sqlite3-x64 && npm run build && electron-builder --mac --x64",
+    "build:mac-universal": "npm run build && electron-builder --mac --universal",
+    "rebuild-sqlite3-x64": "electron-rebuild -f -w --arch=x64 better-sqlite3"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "better-sqlite3": "^11.10.0",
-    "electron-log": "^5.4.0"
+    "electron-log": "^5.4.0",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.0.0",

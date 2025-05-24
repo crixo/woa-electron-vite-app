@@ -8,3 +8,5 @@ logs
 
 # db
 *.db*
+
+config.yaml

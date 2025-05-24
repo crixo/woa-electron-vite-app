@@ -17,11 +17,13 @@ export function setupPazienteDAL(db){
     }
   });
 
-  ipcMain.handle('paziente-search', async (_, searchCriteria) => {
+  ipcMain.handle('paziente-search', async (_, searchCriteria, pageSize, pageNumber) => {
     try {
-      console.log('paziente-search:'+searchCriteria);
-      const sql = "SELECT * FROM paziente WHERE cognome LIKE ?"
-      const res =  db.prepare(sql).all(`%${searchCriteria}%`);
+      console.log(`paziente-search:${searchCriteria} pageSize:${pageSize} pageNumber:${pageNumber}`);
+      const sql = "SELECT * FROM paziente WHERE cognome LIKE ? LIMIT ? OFFSET ?"
+      const res =  db.prepare(sql).all(`%${searchCriteria}%`, pageSize, (pageSize-1) * pageNumber);
+      // const sql = "SELECT * FROM paziente WHERE cognome LIKE ?"
+      // const res =  db.prepare(sql).all(`%${searchCriteria}%`);
       console.log(res);
   
       const stringify = JSON.stringify(res);

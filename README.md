@@ -33,13 +33,29 @@ $ npm run build:mac
 $ npm run build:linux
 ```
 
-## Project Initial Setup
+### Scaffolding the project
+- App scaffolding with [Electron-vite](https://electron-vite.org/guide/)
+```
+npm create @quick-start/electron@latest
+```
 
-- [Create project scaffolding](https://electron-vite.org/guide/) 
+- Install [Tailwindcss](https://tailwindcss.com/docs/installation/using-vite)
+```
+npm install tailwindcss @tailwindcss/vite
+```
+add tailwindcss plugin into electron.vite.config.mjs
+```
+...
+import tailwindcss from '@tailwindcss/vite'
+.....
+    plugins: [
+      react(),
+      tailwindcss(),
+    ]
+...
+```
 
-- Install better-sqlite3
-
-- [Rebuild better-sqlite3 agianst current Node](https://dev.to/arindam1997007/a-step-by-step-guide-to-integrating-better-sqlite3-with-electron-js-app-using-create-react-app-3k16)
+- Install better-sqlite3 and [Rebuild better-sqlite3 agianst current Node](https://dev.to/arindam1997007/a-step-by-step-guide-to-integrating-better-sqlite3-with-electron-js-app-using-create-react-app-3k16)
 ```
 npm install better-sqlite3
 npm install --save-dev electron-rebuild
@@ -79,6 +95,41 @@ npm install
 npm run rebuild-sqlite3
 npm run dev
 ```
+
+## Rebuild project for apecific
+
+- Dowload repo into a specific folder for the target platform e. mac amd 
+```
+git clone https://github.com/crixo/woa-electron-vite-app.git woa-electron-vite-app-{platform}
+```
+-- Install dependedencies
+```
+npm install
+```
+
+-- Rebuild dependencies for the specific paltform (not needed - only for native module as next step)
+```
+npm rebuild --arch=x64 --platform=darwin
+```
+
+-- Rebuilds native modules for Electron.
+```
+npm run rebuild-sqlite3
+```
+
+-- Build the Electron App for x64 (AMD/Intel)
+```
+npm run build:mac-universal
+```
+
+- Once built, you can check whether the binary is universal by running:
+```
+lipo -info dist/mac-universal/woa-electron-vite-app.app/Contents/MacOS/woa-electron-vite-app
+
+```
+
+---
+
 
 ## Note
 
