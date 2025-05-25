@@ -27,7 +27,7 @@ log.transports.console.level = 'info'; // Set log level for console
 log.transports.file.level = 'info'; // Logs only warnings, errors, and higher severity messages
 log.transports.console.level = 'info'; // Console logs at 'info' level and above
 
-console.log = log.log;
+//console.log = log.log;
 
 // Sample usage
 log.info('Application started');

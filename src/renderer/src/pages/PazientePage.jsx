@@ -9,13 +9,14 @@ import { DataTable } from '../components/DataTable'
 const PazientePage = () => {
   const { id } = useParams() // Extracts the ID from URL
 
-  const { paziente, fetchPaziente, resetPaziente } = useContext(PazienteContext)
+  const { paziente, fetchPaziente, getTipoAnamnesiRemote, tipoAnamnesi } = useContext(PazienteContext)
   const [pazienteId, setPazienteId] = useState(id)
 
   useEffect(() => {
     //resetPaziente();
     console.log('calling fetchPaziente')
     fetchPaziente(pazienteId)
+    getTipoAnamnesiRemote()
   }, [])
 
   const deleteAnamnesiRemota = (entity) => {
@@ -24,6 +25,11 @@ const PazientePage = () => {
 
   const deleteConsulto = (entity) => {
     console.log(entity)
+  }
+
+  const convertLookupAnamnesi = (lkpId) => {
+    const itm = tipoAnamnesi.find((e) => e.ID== lkpId)
+    return itm!==null? itm.descrizione : '-'
   }
 
   return (
@@ -46,7 +52,8 @@ const PazientePage = () => {
             <DataTable 
               data={paziente.anamnesiRemote} 
               idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              deleteHandler={deleteAnamnesiRemota} />
+              deleteHandler={deleteAnamnesiRemota}
+              convertLookup={convertLookupAnamnesi} />
           </div>
 
           <div className="flex items-center space-x-2">
@@ -62,7 +69,7 @@ const PazientePage = () => {
             <DataTable 
               data={paziente.consulti} 
               idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}
-              deleteHandler={deleteConsulto}  />
+              deleteHandler={deleteConsulto} />
           </div>
         </>
       ) : (

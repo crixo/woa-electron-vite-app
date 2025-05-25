@@ -12,6 +12,14 @@ export const PazienteProvider = ({ children }) => {
   //   localStorage.setItem('paziente', JSON.stringify(paziente))
   // }, [paziente]) 
 
+  const [tipoAnamnesi, setTipoAnamnesi] = useState(null)
+
+  const getTipoAnamnesiRemote = async () => {
+      const entitiesSerialized = await dal.getTipologiaAnamnesiRemota();
+      const entities = JSON.parse(entitiesSerialized)
+      setTipoAnamnesi(entities);
+  };
+
   const fetchPaziente = async (pazienteId) => {
     // Before executing new fetch, I need to clear previous entity
     setPaziente(null)
@@ -48,7 +56,7 @@ export const PazienteProvider = ({ children }) => {
 
   return (
     <PazienteContext.Provider
-      value={{ paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente }}
+      value={{ paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente, getTipoAnamnesiRemote, tipoAnamnesi }}
     >
       {children}
     </PazienteContext.Provider>

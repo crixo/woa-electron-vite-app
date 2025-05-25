@@ -4,7 +4,7 @@ import { formatDate } from '../utils';
 
 
 
-export const DataTable = ({ idConfig, data, deleteHandler }) => {
+export const DataTable = ({ idConfig, data, deleteHandler, convertLookup }) => {
   if (!data || data.length === 0) {
     return <p>No data available</p>
   }
@@ -50,6 +50,8 @@ export const DataTable = ({ idConfig, data, deleteHandler }) => {
                 </Link>;
       case "data":
         return formatDate(item[header]);
+      case "tipo":
+        return convertLookup(item[header])
       default:
         return item[header];
     }

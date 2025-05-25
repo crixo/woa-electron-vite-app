@@ -40,20 +40,45 @@ export function setupPazienteDAL(db){
     }
   });    
 
+  ipcMain.handle('paziente-many-consulti', async (_, topLimit=20) => {
+    try {
+      const sql = `SELECT p.*, COUNT(c.ID) AS num_consulti 
+      FROM paziente p 
+      JOIN consulto c ON p.ID = c.ID_paziente 
+      GROUP BY p.ID
+      ORDER BY num_consulti DESC 
+      LIMIT ?`
+      const res =  db.prepare(sql).all(topLimit);
+      const stringify = JSON.stringify(res);
+      return stringify;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });    
+
+  ipcMain.handle('paziente-last-consulti', async (_, topLimit=20) => {
+    try {
+      const sql = `SELECT p.*, max(c.data) as last_consulto_at
+      FROM paziente p 
+      JOIN consulto c ON p.ID = c.ID_paziente 
+      GROUP BY p.ID
+      ORDER BY c.data DESC 
+      LIMIT ?`
+      const res =  db.prepare(sql).all(topLimit);
+      const stringify = JSON.stringify(res);
+      return stringify;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });   
+
   ipcMain.handle('paziente-get', async (_, pazienteId) => {
     try {
       console.log('paziente-get:'+pazienteId);
       const sql = "SELECT * FROM paziente WHERE ID = ?"
-      const p =  db.prepare(sql).get(pazienteId);
-      console.log('paziente:' + p);
-
-      // const sql2 = "SELECT * FROM anamnesi_remota WHERE ID_paziente = ?"
-      // const ars =  db.prepare(sql).all(pazienteId);
-      //p.anamnesiRemote = ars;    
-      
-      // const sql3 = "SELECT * FROM consulto WHERE ID_paziente = ?"
-      // const cs =  db.prepare(sql).all(pazienteId);
-      //p.anamnesiRemote = cs;    
+      const p =  db.prepare(sql).get(pazienteId); 
 
       return JSON.stringify(p);
     } catch (error) {
@@ -358,4 +383,28 @@ export function setupPazienteDAL(db){
       throw error; // Sends error back to renderer
     }
   });      
+
+  ipcMain.handle('tipo-esami', async (_) => {
+    try {
+      const sql = "SELECT * FROM lkp_esame"
+      const res =  db.prepare(sql).all();
+      const stringify = JSON.stringify(res);
+      return stringify;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });     
+
+  ipcMain.handle('tipo-anamnesi-remota', async (_) => {
+    try {
+      const sql = "SELECT * FROM lkp_anamnesi"
+      const res =  db.prepare(sql).all();
+      const stringify = JSON.stringify(res);
+      return stringify;
+    } catch (error) {
+      console.log('IPC Error:', error);
+      throw error; // Sends error back to renderer
+    }
+  });  
 }

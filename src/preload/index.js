@@ -23,6 +23,8 @@ const { contextBridge, ipcRenderer  } = require('electron')
 
 contextBridge.exposeInMainWorld('dal', {
   getPazienti: (searchCriteria, pageSize, pageNumber) => ipcRenderer.invoke('paziente-search', searchCriteria, pageSize, pageNumber),
+  getPazientiWithManyConsulti: (topLimit) => ipcRenderer.invoke('paziente-many-consulti', topLimit),
+  getPazientiLastConsulti: (topLimit) => ipcRenderer.invoke('paziente-last-consulti', topLimit),
   addPaziente: (paziente) => ipcRenderer.invoke('paziente-add', paziente),
   getPaziente: (pazienteId) => ipcRenderer.invoke('paziente-get', pazienteId),
   updatePaziente: (paziente) => ipcRenderer.invoke('paziente-update', paziente),
@@ -52,4 +54,7 @@ contextBridge.exposeInMainWorld('dal', {
   getValutazioniByConsulto: (idConsulto) => ipcRenderer.invoke('valutazione-all', idConsulto),
   addValutazione: (entity) => ipcRenderer.invoke('valutazione-add', entity),  
   updateValutazione: (entity) => ipcRenderer.invoke('valutazione-update', entity),  
+
+  getTipologiaEsame: () => ipcRenderer.invoke('tipo-esami'),
+  getTipologiaAnamnesiRemota: () => ipcRenderer.invoke('tipo-anamnesi-remota'),
 })

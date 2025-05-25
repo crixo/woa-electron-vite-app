@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { PazienteContext } from '../data/PazienteContext'
 import { ConsultoContext } from '../data/ConsultoContext'
 import ConsultoForm from '../components/ConsultoForm'
+import { PazienteCard } from '../components/PazienteCard'
 //import { VITE_BACKEND_URL } from "../App";
 
 const CreaConsultoPage = () => {
@@ -47,10 +48,13 @@ const CreaConsultoPage = () => {
   }
 
   return (
+  <>
+    <PazienteCard paziente={paziente} />
     <div className="max-w-lg bg-white shadow-lg mx-auto p-7 rounded mt-6">
       <h2 className="font-semibold text-2xl mb-4 block text-center">Create un nuovo Consulto</h2>
-      <ConsultoForm consulto={{ID_paziente:paziente.ID, data:'', problema_iniziale:''}} onSubmit={saveConsulto} />
+      <ConsultoForm entity={{ID_paziente:paziente.ID, data:'', problema_iniziale:''}} onSubmit={saveConsulto} />
     </div>
+  </>
   )
 }
 

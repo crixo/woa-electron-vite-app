@@ -1,18 +1,11 @@
 import { useState } from 'react'
+import { formatDate } from '../utils'
 
-const ConsultoForm = ({ consulto, onSubmit }) => {
-  const [formData, setFormData] = useState(consulto)
+const ConsultoForm = ({ entity, onSubmit }) => {
+  const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  console.log(formData)
-
-  const formatDate = (dateString) => {
-    if (dateString === undefined || dateString=="") return ''
-    const date = new Date(dateString)
-    return date.toISOString().split('T')[0] // Extracts yyyy-MM-dd
   }
 
   return (

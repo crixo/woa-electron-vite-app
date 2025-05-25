@@ -8,7 +8,7 @@ import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
 
 const CreaAnamnesiRemotaPage = () => {
   const { add } = useContext(AnamnesiRemotaContext)
-  const { paziente } = useContext(PazienteContext)
+  const { paziente, tipoAnamnesi } = useContext(PazienteContext)
   const navigate = useNavigate()
 
   const saveEntity = async (formData) => {
@@ -40,7 +40,7 @@ const CreaAnamnesiRemotaPage = () => {
   return (
     <>
     <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuova Anamnesi Remota</h2>
-    <AnamnesiRemotaForm entity={{ID_paziente:paziente.ID }} onSubmit={saveEntity} />
+    <AnamnesiRemotaForm entity={{ID_paziente:paziente.ID }} onSubmit={saveEntity} tipi={tipoAnamnesi} />
     </>
   )
 }

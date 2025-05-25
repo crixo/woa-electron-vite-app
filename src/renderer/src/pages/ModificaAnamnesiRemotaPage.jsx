@@ -12,7 +12,7 @@ const ModificaAnamnesiRemotaPage = () => {
   const [isLoading, setIsLoading] = useState('')
   const navigate = useNavigate()
   const { update } = useContext(AnamnesiRemotaContext)
-  const { paziente } = useContext(PazienteContext)
+  const { paziente, tipoAnamnesi } = useContext(PazienteContext)
 
   const { id } = useParams() // Extracts the ID from URL
   console.log(id)
@@ -24,7 +24,7 @@ const ModificaAnamnesiRemotaPage = () => {
 
 
   const saveEntity = async (formData) => {
-    if (formData.data === '' || formData.tipo === '' || formData.descrizione === '') {
+    if (formData.data === '' || formData.tipo === '') {// || formData.descrizione === ''
       toast.warn('please fill all input completely', {
         position: 'top-right'
       })
@@ -52,7 +52,7 @@ const ModificaAnamnesiRemotaPage = () => {
     <>
     <PazienteCard paziente={paziente} />
     <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica Anamnesi Remota</h2>
-    <AnamnesiRemotaForm entity={entity} onSubmit={saveEntity} />
+    <AnamnesiRemotaForm entity={entity} onSubmit={saveEntity} tipi={tipoAnamnesi} />
     </>
   )
 }

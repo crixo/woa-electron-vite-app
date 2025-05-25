@@ -20,6 +20,11 @@ const ConsultoPage = () => {
     fetchConsulto(id)
   }, [])
 
+  const convertLookupEsami = (lkpId) => {
+    const itm = null//tipoEsami.find((e) => e.ID== lkpId)
+    return itm!==null? itm.descrizione : '-'
+  }
+
   return (
     <div>
       {consulto ? (
@@ -57,7 +62,8 @@ const ConsultoPage = () => {
           <div>
             <DataTable 
               data={consulto.esami}
-              idConfig={{entityUrlSegment:'/esame/:id/edit', iconCss:'fas fa-pencil-alt'}}  />
+              idConfig={{entityUrlSegment:'/esame/:id/edit', iconCss:'fas fa-pencil-alt'}}
+              convertLookup={convertLookupEsami}  />
           </div>
 
           <div className="flex items-center space-x-2">

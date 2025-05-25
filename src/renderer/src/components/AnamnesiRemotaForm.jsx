@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { formatDate } from '../utils'
 
-const AnamnesiRemotaForm = ({ entity, onSubmit }) => {
+const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
   const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => {
@@ -21,7 +22,7 @@ const AnamnesiRemotaForm = ({ entity, onSubmit }) => {
           <input
             type="date"
             name="data"
-            value={formData.data}
+            value={formatDate(formData.data)}
             onChange={handleChange}
             className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
             placeholder="enter Data"
@@ -30,14 +31,19 @@ const AnamnesiRemotaForm = ({ entity, onSubmit }) => {
 
         <div className="space-y-2">
           <label>Tipo</label>
-          <input
-            type="text"
+          <select
             name="tipo"
             value={formData.tipo}
             onChange={handleChange}
             className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
-            placeholder="enter Tipo"
-          />
+          >
+            <option value="">-- Scegli --</option>
+            {tipi.map((tipo) => (
+              <option key={tipo.ID} value={tipo.ID}>
+                {tipo.descrizione}
+              </option>
+            ))}            
+          </select>
         </div>
         <div className="space-y-2">
           <label>Descrizione</label>

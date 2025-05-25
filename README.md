@@ -139,3 +139,17 @@ lipo -info dist/mac-universal/woa-electron-vite-app.app/Contents/MacOS/woa-elect
 
 - Use BrowserRouter works w/ Electron final package (win, mac, ..) BrowserRouter does not. BrowserRoute works only in dev mode.
 
+- use 
+```
+security find-identity -v -p codesigning
+```
+to find the name of signing certificate and electron-build log for identity value
+
+- Sign app manually after bundle
+```
+codesign --deep --force --verbose --sign - ./dist/mac-arm64/woa-electron-vite-app.app 
+or a self-signed cert generated via keychain
+codesign --deep --force --verbose --sign "CrixoDev" ./dist/mac-arm64/woa-electron-vite-app.app 
+```
+
+- verify the date format used by local app when a date is selected with html datepicker
