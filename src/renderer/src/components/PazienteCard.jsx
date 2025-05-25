@@ -32,7 +32,7 @@ export const PazienteCard = ({paziente}) => {
 
             <input type="checkbox" id="toggleDetails" className="hidden peer" />
 
-            <div className="p-6 space-y-2 text-gray-700 hidden peer-checked:block">
+            <div className="p-2 space-y-2 text-gray-700 hidden peer-checked:block">
               <p>
                 <strong>Indirizzo:</strong> {paziente.indirizzo}
               </p>

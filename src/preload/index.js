@@ -58,3 +58,7 @@ contextBridge.exposeInMainWorld('dal', {
   getTipologiaEsame: () => ipcRenderer.invoke('tipo-esami'),
   getTipologiaAnamnesiRemota: () => ipcRenderer.invoke('tipo-anamnesi-remota'),
 })
+
+contextBridge.exposeInMainWorld('appSettings', {
+  getSettings: () => ipcRenderer.invoke('settings'),
+})

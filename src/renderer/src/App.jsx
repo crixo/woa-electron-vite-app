@@ -22,11 +22,13 @@ import ModificaAnamnesiProssimaPage from './pages/ModificaAnamnesiProssimaPage'
 import CreaValutazionePage from './pages/CreaValutazionePage'
 import ModificaValutazionePage from './pages/ModificaValutazionePage'
 import ErrorBoundary from './components/ErrorBoundary';
+import { SettingsProvider } from "./data/SettingsContext";
 
 
 export default function App() {
   return (
      <ErrorBoundary>
+      <SettingsProvider>
     <PazienteProvider>
       <ConsultoProvider>
       <div>
@@ -81,6 +83,7 @@ export default function App() {
       </div>
       </ConsultoProvider> 
     </PazienteProvider>
+    </SettingsProvider>
     </ErrorBoundary>
   )
 }

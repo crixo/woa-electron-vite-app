@@ -7,7 +7,7 @@ import icon from '../../resources/icon.png?asset';
 import log from 'electron-log';
 import Database from "better-sqlite3";
 import os from 'os';
-import { setupPazienteDAL } from './pazienteDAL';
+import { setupPazienteDAL, shareSettings } from './pazienteDAL';
 import fs from 'fs';
 import yaml from 'js-yaml';
 
@@ -44,6 +44,7 @@ console.log("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.
 const defaultConfig = {
   dbPath: path.join(homeDir, "/woa/", "./woa.db"),
   logPath: path.join(homeDir, "/woa/", "./woa.log"),
+  formatDate: 'yyyy-MM-dd'
 };
 
 function loadConfig() {
@@ -85,6 +86,8 @@ function initDatabase() {
 }
 const db = initDatabase();
 setupPazienteDAL(db);
+
+shareSettings(config);
 
 
 function createWindow() {

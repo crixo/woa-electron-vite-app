@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatDate } from '../utils'
 
 const EsameForm = ({ esame, onSubmit }) => {
   const [formData, setFormData] = useState(esame)
@@ -9,11 +10,7 @@ const EsameForm = ({ esame, onSubmit }) => {
 
   console.log(formData)
 
-  const formatDate = (dateString) => {
-    if (dateString === undefined || dateString=="") return ''
-    const date = new Date(dateString)
-    return date.toISOString().split('T')[0] // Extracts yyyy-MM-dd
-  }
+
 
   return (
     <form

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatDate } from '../utils'
 
 const PazienteForm = ({ paziente, onSubmit }) => {
@@ -7,6 +7,12 @@ const PazienteForm = ({ paziente, onSubmit }) => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
+
+
+  useEffect(() => {
+      console.log(formData.data_nascita)
+    }, [formData]
+  )
 
   // const formatDate = (dateString) => {
   //   if (dateString === undefined || dateString=="") return null
@@ -43,6 +49,17 @@ const PazienteForm = ({ paziente, onSubmit }) => {
           placeholder="enter Cognome"
         />
       </div>
+      <div className="space-y-2">
+        <label>Professione</label>
+        <input
+          type="text"
+          name="professione"
+          value={formData.professione}
+          onChange={handleChange}
+          className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+          placeholder="enter Professione"
+        />
+      </div>      
       <div className="space-y-2">
         <label>Indirizzo</label>
         <input
@@ -125,7 +142,7 @@ const PazienteForm = ({ paziente, onSubmit }) => {
         <input
           type="date"
           name="data_nascita"
-          value={formatDate(formData.data_nascita)}
+          value={formData.data_nascita}
           onChange={handleChange}
           className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
           placeholder="enter Data di Nascita"

@@ -16,6 +16,13 @@ export const ConsultoCard = ({consulto}) => {
             Mostra dettagli ▼
           </label>
           <Link
+            to={`/consulto/${consulto.ID}`}
+            className="text-blue-500 hover:text-blue-700"
+          >
+            <i className="fa fa-notes-medical"></i>
+          </Link>
+
+          <Link
             to={`/consulto/${consulto.ID}/edit`}
             className="text-blue-500 hover:text-blue-700"
           >
@@ -25,7 +32,7 @@ export const ConsultoCard = ({consulto}) => {
 
 
         <input type="checkbox" id="toggleDetailsC" className="hidden peer" />
-        <div className="p-6 space-y-2 text-gray-700 hidden peer-checked:block">
+        <div className="p-2 space-y-2 text-gray-700 hidden peer-checked:block">
           <p>
             <strong>Data:</strong> <span>{consulto.data}</span>
           </p>

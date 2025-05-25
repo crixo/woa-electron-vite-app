@@ -1,9 +1,12 @@
 // utils.js
 import { DateTime } from 'luxon'
+import { useSettings } from './data/SettingsContext';
 
 export function calculateAge(dobStr) {
     if (!dobStr) return "-"; // Handle undefined or empty DOB
-    const dob = DateTime.fromFormat(dobStr, 'yyyy-MM-dd HH:mm:ss', { zone: 'Europe/Rome' })
+    const dateAndHour = dobStr.split(' ');
+    const format = dateAndHour.length==2? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
+    const dob = DateTime.fromFormat(dobStr, format, { zone: 'Europe/Rome' })
     // Get the current date in the same timezone
     const now = DateTime.now().setZone('Europe/Rome');
     // Compute the age difference
@@ -17,7 +20,9 @@ export function formatDate (dateString) {
     const dateAndHour = dateString.split(' ');
     const format = dateAndHour.length==2? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
     const localDate = DateTime.fromFormat(dateString, format, { zone: 'Europe/Rome' })
-    return localDate.toFormat('yyyy-MM-dd')
+    const settings = useSettings()
+    console.log(settings)
+    return localDate.toFormat(settings.formatDate)
   }
 
 //   const formatDate = (dateString) => {

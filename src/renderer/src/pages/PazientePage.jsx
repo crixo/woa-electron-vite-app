@@ -29,7 +29,8 @@ const PazientePage = () => {
 
   const convertLookupAnamnesi = (lkpId) => {
     const itm = tipoAnamnesi.find((e) => e.ID== lkpId)
-    return itm!==null? itm.descrizione : '-'
+    console.log(itm)
+    return itm !== undefined? itm.descrizione : '-'
   }
 
   return (

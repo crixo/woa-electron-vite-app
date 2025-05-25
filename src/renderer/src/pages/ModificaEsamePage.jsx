@@ -2,11 +2,14 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ConsultoContext } from '../data/ConsultoContext'
+import PazienteConsultoCards from '../components/PazienteConsultoCards'
 import EsameForm from '../components/EsameForm'
+import { PazienteContext } from '../data/PazienteContext'
 import { useParams } from 'react-router-dom'
 
 const ModificaEsamePage = () => {
     const { consulto, updateEsame } = useContext(ConsultoContext)
+    const {paziente} = useContext(PazienteContext)
     const navigate = useNavigate()
     console.log(consulto)
 
@@ -41,6 +44,7 @@ const ModificaEsamePage = () => {
   
     return (
       <>
+      <PazienteConsultoCards paziente={paziente} consulto={consulto} />
       <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica esame</h2>
       <EsameForm esame={entity} onSubmit={saveEsame} />
       </>

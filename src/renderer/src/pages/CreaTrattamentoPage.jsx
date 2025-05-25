@@ -2,10 +2,13 @@ import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ConsultoContext } from '../data/ConsultoContext'
+import PazienteConsultoCards from '../components/PazienteConsultoCards'
+import { PazienteContext } from '../data/PazienteContext'
 import TrattamentoForm from '../components/TrattamentoForm'
 
 const CreaTrattamentoPage = () => {
     const { consulto, addTrattamento } = useContext(ConsultoContext)
+    const{ paziente } = useContext(PazienteContext)
     const navigate = useNavigate()
     console.log(consulto)
   
@@ -37,6 +40,7 @@ const CreaTrattamentoPage = () => {
   
     return (
       <>
+      <PazienteConsultoCards paziente={paziente} consulto={consulto} />
       <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuovo Trattamento</h2>
       <TrattamentoForm entity={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID, data:'', descrizione:'' }} onSubmit={saveEsame} />
       </>
