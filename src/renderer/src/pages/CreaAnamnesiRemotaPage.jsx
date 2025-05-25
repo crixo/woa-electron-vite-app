@@ -39,7 +39,7 @@ const CreaAnamnesiRemotaPage = () => {
 
   return (
     <>
-    <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuova Anamnesi Remota</h2>
+    <h3 className="h3-primary">Crea nuova Anamnesi Remota</h3>
     <AnamnesiRemotaForm entity={{ID_paziente:paziente.ID }} onSubmit={saveEntity} tipi={tipoAnamnesi} />
     </>
   )

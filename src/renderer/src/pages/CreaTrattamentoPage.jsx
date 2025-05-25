@@ -41,7 +41,7 @@ const CreaTrattamentoPage = () => {
     return (
       <>
       <PazienteConsultoCards paziente={paziente} consulto={consulto} />
-      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuovo Trattamento</h2>
+      <h3 className="h3-primary">Crea nuovo Trattamento</h3>
       <TrattamentoForm entity={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID, data:'', descrizione:'' }} onSubmit={saveEsame} />
       </>
     )

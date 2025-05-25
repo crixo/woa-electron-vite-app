@@ -41,7 +41,7 @@ const CreaAnamnesiProssimaPage = () => {
     return (
       <>
       <PazienteConsultoCards paziente={paziente} consulto={consulto} />
-      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuova Anamnesi Prossima</h2>
+      <h3 className="h3-primary">Crea nuova Anamnesi Prossima</h3>
       <AnamnesiProssimaForm entity={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID}} onSubmit={saveEntity} />
       </>
     )

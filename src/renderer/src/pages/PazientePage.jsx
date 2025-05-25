@@ -40,7 +40,7 @@ const PazientePage = () => {
           <PazienteCard paziente={paziente} />
 
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Anamnesi Remote</h3>
+            <h3 className="h3-primary">Anamnesi Remote</h3>
             <Link
               to={`/paziente/${paziente.ID}/anamnesi-remote/create`}
               className="text-blue-600 hover:underline"
@@ -58,7 +58,7 @@ const PazientePage = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Consulti</h3>
+            <h3 className="h3-primary">Consulti</h3>
             <Link
               to={`/paziente/${paziente.ID}/consulti/create`}
               className="text-blue-600 hover:underline"

@@ -37,7 +37,7 @@ const CreaPazientePage = () => {
 
   return (
     <>
-    <h2 class="ext-xl font-semibold text-blue-700 mb-2">Crea nuovo paziente</h2>
+    <h3 class="h3-primary">Crea nuovo paziente</h3>
     <PazienteForm paziente={{ data_nascita:''}} onSubmit={savePaziente} />
     </>
   )

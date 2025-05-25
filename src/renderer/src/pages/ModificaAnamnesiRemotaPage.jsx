@@ -51,7 +51,7 @@ const ModificaAnamnesiRemotaPage = () => {
   return (
     <>
     <PazienteCard paziente={paziente} />
-    <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica Anamnesi Remota</h2>
+    <h3 className="h3-primary">Modifica Anamnesi Remota</h3>
     <AnamnesiRemotaForm entity={entity} onSubmit={saveEntity} tipi={tipoAnamnesi} />
     </>
   )

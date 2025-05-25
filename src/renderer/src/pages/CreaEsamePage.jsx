@@ -41,7 +41,7 @@ const CreaEsamePage = () => {
     return (
       <>
       <PazienteConsultoCards paziente={paziente} consulto={consulto} />
-      <h2 className="ext-xl font-semibold text-blue-700 mb-2">Crea nuovo esame</h2>
+      <h3 className="h3-primary">Crea nuovo esame</h3>
       <EsameForm esame={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID }} onSubmit={saveEsame} />
       </>
     )

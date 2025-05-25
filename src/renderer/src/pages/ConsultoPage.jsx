@@ -35,7 +35,7 @@ const ConsultoPage = () => {
           <ConsultoCard consulto={consulto} />
         </div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Anamnesi Prossime</h3>
+            <h3 className="h3-primary">Anamnesi Prossime</h3>
             <Link
               to={`/consulto/${consulto.ID}/anamnesi-prossime/create`}
               className="text-blue-600 hover:underline"
@@ -51,7 +51,7 @@ const ConsultoPage = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Esami</h3>
+            <h3 className="h3-primary">Esami</h3>
             <Link
               to={`/consulto/${consulto.ID}/esami/create`}
               className="text-blue-600 hover:underline"
@@ -67,7 +67,7 @@ const ConsultoPage = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Trattamenti</h3>
+            <h3 className="h3-primary">Trattamenti</h3>
             <Link
               to={`/consulto/${consulto.ID}/trattamenti/create`}
               className="text-blue-600 hover:underline"
@@ -82,7 +82,7 @@ const ConsultoPage = () => {
           </div>
          
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold">Valutazioni</h3>
+            <h3 className="h3-primary">Valutazioni</h3>
             <Link
               to={`/consulto/${consulto.ID}/valutazioni/create`}
               className="text-blue-600 hover:underline"

@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
+.h3-primary{
+    @apply text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white py-1 px-1 rounded-lg shadow-md text-center  my-2
+}
+
 /* .h2-primary{
     ext-xl font-semibold text-blue-700 mb-2;
 } 

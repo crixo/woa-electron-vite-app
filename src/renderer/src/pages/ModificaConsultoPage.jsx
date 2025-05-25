@@ -53,7 +53,7 @@ const ModificaConsultoPage = () => {
   return (
     <>
     <PazienteCard paziente={paziente} />
-    <h2 className="ext-xl font-semibold text-blue-700 mb-2">Modifica Consulto</h2>
+    <h3 className="h3-primary">Modifica Consulto</h3>
     <ConsultoForm entity={entity} onSubmit={saveEntity} />
     </>
   )  
