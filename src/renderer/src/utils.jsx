@@ -21,7 +21,6 @@ export function formatDate (dateString) {
     const format = dateAndHour.length==2? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
     const localDate = DateTime.fromFormat(dateString, format, { zone: 'Europe/Rome' })
     const settings = useSettings()
-    console.log(settings)
     return localDate.toFormat(settings.formatDate)
   }
 

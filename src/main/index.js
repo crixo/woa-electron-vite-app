@@ -4,92 +4,35 @@ import path from 'node:path';
 import { fileURLToPath } from 'url';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset';
-import log from 'electron-log';
-import Database from "better-sqlite3";
+import { configureLogging } from './log';
 import os from 'os';
-import { setupPazienteDAL, shareSettings } from './pazienteDAL';
-import fs from 'fs';
-import yaml from 'js-yaml';
+import { setupPazienteDAL } from './pazienteDAL';
+import { loadConfig, shareSettings } from './config';
+import log from 'electron-log';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const homeDir = os.homedir();
-
-// Configure electron-log https://www.npmjs.com/package/electron-log
-//~/Library/Logs/{app name}/main.log
-// log.transports.file.resolvePathFn = () => {
-//     const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD format
-//     return path.join(app.getAppPath(), 'logs', `${today}.log`);
-//     //return path.join("~", 'logs', `${today}.log`);
-// };
-log.transports.file.maxSize = 1024 * 1024; // Limit file size if needed (1MB)
-log.transports.console.level = 'info'; // Set log level for console
-log.transports.file.level = 'info'; // Logs only warnings, errors, and higher severity messages
-log.transports.console.level = 'info'; // Console logs at 'info' level and above
-
-//console.log = log.log;
-
-// Sample usage
-log.info('Application started');
-
 //This will print the absolute path to the application's root directory where your package.json file is located. 
-//If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.
-console.log(`__dirname:${__dirname}`);
-console.log(`app.getAppPath():${app.getAppPath()}`);
-console.log(`process.cwd(():${process.cwd()}`);
-console.log("App Path:", path.join(__dirname, "../dist/index.html"));
-console.log("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
-console.log("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
+//If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
+log.silly(`process.cwd(():${process.cwd()}`);
+log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
+log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
+log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
 
-const defaultConfig = {
-  dbPath: path.join(homeDir, "/woa/", "./woa.db"),
-  logPath: path.join(homeDir, "/woa/", "./woa.log"),
-  formatDate: 'yyyy-MM-dd'
-};
+// Configuration
+const config = loadConfig(homeDir)
+shareSettings(config)
 
-function loadConfig() {
-  try {
-    const configPath = path.join(homeDir, "/woa/", "./config.yaml")
+// Logging
+configureLogging(config)
 
-    if (!fs.existsSync(configPath)) {
-      console.warn("Config file not found, using default configuration.")
-      return defaultConfig;
-    }
-
-    const fileContents = fs.readFileSync(configPath, "utf8");
-    const config = yaml.load(fileContents) || {}
-
-    return { ...defaultConfig, ...config }; // Merge defaults with existing config
-  } catch (e) {
-    console.error("Error loading config:", e)
-    return defaultConfig;
-  }
-}
-
-const config = loadConfig()
-
-log.transports.file.resolvePathFn = () => {
-    return config.logPath;
-};
-
-// Initialize the database
-function initDatabase() {
-  const dbPath = config.dbPath;
-  log.info('dbPAth:'+dbPath)
-  let db = new Database(dbPath);
-  db.pragma("journal_mode = WAL");
-
-  // const query = `SELECT count(*) AS count FROM paziente`
-  // const stmt = db.prepare(query)
-  // console.log("count paziente:" + stmt.get());
-  return db;
-}
-const db = initDatabase();
-setupPazienteDAL(db);
-
-shareSettings(config);
+// Database
+setupPazienteDAL(config);
 
 
+///////////////////////////////////////////////////
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({

@@ -25,6 +25,7 @@ const CreaPazientePage = () => {
       })
 
       //setIsLoading(false);
+      console.log('created paziente with ID='+pazienteCreated.ID)
       navigate('/paziente/' + pazienteCreated.ID)
     } catch (error) {
       toast.error(error.message, {

@@ -14,7 +14,7 @@ const PazientePage = () => {
 
   useEffect(() => {
     //resetPaziente();
-    console.log('calling fetchPaziente')
+    console.log('calling fetchPaziente:' + pazienteId)
     fetchPaziente(pazienteId)
     getTipoAnamnesiRemote()
   }, [])
