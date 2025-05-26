@@ -272,7 +272,7 @@ ipcMain.handle('esame-add', async (_, entity) => {
   try {
     console.log('esame-add'+entity);
     if(entity.ID_paziente===null || entity.ID_consulto===null) throw new Error('ID_paziente and ID_consulto are mandatory to save Esame');
-    const sql = "UPDATE esame (ID_paziente,ID_consulto,data,tipo,descrizione) VALUES (?,?,?,?,?)";
+    const sql = "INSERT INTO esame (ID_paziente,ID_consulto,data,tipo,descrizione) VALUES (?,?,?,?,?)";
     const stmt = db.prepare(sql);
     const info = stmt.run(entity.ID_paziente, entity.ID_consulto, entity.data, entity.tipo, entity.descrizione);
     const id = info.lastInsertRowid;

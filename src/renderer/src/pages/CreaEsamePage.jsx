@@ -7,7 +7,7 @@ import { PazienteContext } from '../data/PazienteContext'
 import EsameForm from '../components/EsameForm'
 
 const CreaEsamePage = () => {
-    const { consulto, addEsame } = useContext(ConsultoContext)
+    const { consulto, addEsame, tipoEsami } = useContext(ConsultoContext)
     const{ paziente } = useContext(PazienteContext)
     const navigate = useNavigate()
     console.log(consulto)
@@ -42,7 +42,7 @@ const CreaEsamePage = () => {
       <>
       <PazienteConsultoCards paziente={paziente} consulto={consulto} />
       <h3 className="h3-primary">Crea nuovo esame</h3>
-      <EsameForm esame={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID }} onSubmit={saveEsame} />
+      <EsameForm esame={{ID_paziente:consulto.ID_paziente, ID_consulto:consulto.ID }} onSubmit={saveEsame} tipi={tipoEsami} />
       </>
     )
   }

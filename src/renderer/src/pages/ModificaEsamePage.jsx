@@ -8,7 +8,7 @@ import { PazienteContext } from '../data/PazienteContext'
 import { useParams } from 'react-router-dom'
 
 const ModificaEsamePage = () => {
-    const { consulto, updateEsame } = useContext(ConsultoContext)
+    const { consulto, updateEsame, tipoEsami } = useContext(ConsultoContext)
     const {paziente} = useContext(PazienteContext)
     const navigate = useNavigate()
     console.log(consulto)
@@ -46,7 +46,7 @@ const ModificaEsamePage = () => {
       <>
       <PazienteConsultoCards paziente={paziente} consulto={consulto} />
       <h3 className="h3-primary">Modifica esame</h3>
-      <EsameForm esame={entity} onSubmit={saveEsame} />
+      <EsameForm esame={entity} onSubmit={saveEsame} tipi={tipoEsami} />
       </>
     )
   }

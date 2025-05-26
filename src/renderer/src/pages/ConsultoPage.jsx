@@ -11,17 +11,18 @@ import { DataTable } from '../components/DataTable'
 const ConsultoPage = () => {
   const { id } = useParams() // Extracts the ID from URL
   const { paziente, fetchPaziente, resetPaziente } = useContext(PazienteContext)
-  const { consulto, fetchConsulto} = useContext(ConsultoContext)
+  const { consulto, fetchConsulto, getTipoEsami, tipoEsami} = useContext(ConsultoContext)
   //const [pazienteId, setPazienteId] = useState(id)
 
   useEffect(() => {
     //resetPaziente();
     console.log('calling fetchPaziente from ConsultoPage:'+id)
     fetchConsulto(id)
+    getTipoEsami()
   }, [])
 
   const convertLookupEsami = (lkpId) => {
-    const itm = null//tipoEsami.find((e) => e.ID== lkpId)
+    const itm = tipoEsami.find((e) => e.ID== lkpId)
     return itm!==null? itm.descrizione : '-'
   }
 

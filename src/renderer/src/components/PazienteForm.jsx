@@ -131,7 +131,7 @@ const PazienteForm = ({ paziente, onSubmit }) => {
         <input
           type="text"
           name="email"
-          value={formData.eamil}
+          value={formData.email}
           onChange={handleChange}
           className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
           placeholder="enter Email"

@@ -4,6 +4,7 @@ export const ConsultoContext = createContext()
 
 export const ConsultoProvider = ({ children }) => {
   const [consulto, setConsulto] = useState(null)
+  const [tipoEsami, setTipoEsami] = useState(null)
 
   const fetchConsulto = async (idConsulto) => {
       console.log('fetching consulto for ID: '+idConsulto)
@@ -84,6 +85,14 @@ export const ConsultoProvider = ({ children }) => {
       //setConsulto(esame);
   }  
 
+  
+
+  const getTipoEsami = async () => {
+      const entitiesSerialized = await dal.getTipologiaEsame();
+      const entities = JSON.parse(entitiesSerialized)
+      setTipoEsami(entities);
+  };  
+
   const addTrattamento = async (entityData) => {
     // console.log(consulto.ID)
     // console.log(esameData)
@@ -112,7 +121,7 @@ export const ConsultoProvider = ({ children }) => {
   }  
 
   return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, 
-      addEsame, updateEsame, 
+      addEsame, updateEsame, getTipoEsami, tipoEsami,
       addTrattamento, updateTrattamento, 
       addAnamnesiProssima, updateAnamnesiProssima,
       addValutazione, updateValutazione
