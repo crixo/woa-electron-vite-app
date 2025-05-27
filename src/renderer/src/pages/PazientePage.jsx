@@ -13,6 +13,29 @@ const PazientePage = () => {
   const { paziente, fetchPaziente, getTipoAnamnesiRemote, tipoAnamnesi } = useContext(PazienteContext)
   const [pazienteId, setPazienteId] = useState(id)
 
+  //Modal delete
+  const [modalOpen, setModalOpen] = useState(false); //modal cancel button
+  const [deletingEntity, setDeletingEntity] = useState(null);
+  const [confirmationInput, setConfirmationInput] = useState("");//modal input
+  const DELETE_CONFIRM_TYPING = "delete-me"
+
+  const handleDeleteClick = (entity, deleteEntity) => { // DataTable onDelete handler
+    setDeletingEntity({entity,deleteEntity});
+    setModalOpen(true);
+    setConfirmationInput("");
+  };
+
+  const handleConfirmDelete = () => { // modal confirm button
+    if (deletingEntity && confirmationInput === DELETE_CONFIRM_TYPING) {
+      //setData(data.filter((item) => item.id !== deleteId));
+      deletingEntity.deleteEntity(deletingEntity.entity)
+
+      setModalOpen(false);
+      setConfirmationInput("");
+    }
+  };  
+  // Modal delete
+
   useEffect(() => {
     //resetPaziente();
     console.log('calling fetchPaziente:' + pazienteId)
@@ -63,6 +86,7 @@ const PazientePage = () => {
             <DataTable 
               data={paziente.anamnesiRemote} 
               idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
+              onDeleting={handleDeleteClick}
               deleteHandler={deleteAnamnesiRemota}
               convertLookup={convertLookupAnamnesi} />
           </div>
@@ -80,8 +104,42 @@ const PazientePage = () => {
             <DataTable 
               data={paziente.consulti} 
               idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}
+              onDeleting={handleDeleteClick}
               deleteHandler={deleteConsulto} />
           </div>
+
+
+{modalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+    <div className="bg-white p-6 rounded shadow-md">
+      <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+      <p>Type the entity name to confirm deletion:</p>
+      <input
+        autoFocus
+        type="text"
+        value={confirmationInput}
+        onChange={(e) => setConfirmationInput(e.target.value)}
+        className="border rounded px-2 py-1 w-full mt-2"
+      />
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => setModalOpen(false)}
+          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-700 mr-2"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleConfirmDelete}
+          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
         </>
       ) : (
         <p>No paziente found with id={pazienteId}</p>
