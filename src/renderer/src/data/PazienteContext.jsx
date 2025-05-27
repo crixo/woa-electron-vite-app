@@ -54,6 +54,20 @@ export const PazienteProvider = ({ children }) => {
     setPaziente(null)
   }
 
+  // const addAnamnesiRemota = async (arData) => {
+  //   console.log(arData)
+  //   const ar = await dal.addAnamnesiRemota(arData)
+  //   console.log(ar)
+  //   //setEntity(ar)
+  //   return ar
+  // }
+
+  // const updateAnamnesiRemota = async (arData) => {
+  //     console.log(arData);
+  //     await dal.updateAnamnesiRemota(arData)
+  //     //setEntity(arData);
+  // }
+
   return (
     <PazienteContext.Provider
       value={{ paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente, getTipoAnamnesiRemote, tipoAnamnesi }}

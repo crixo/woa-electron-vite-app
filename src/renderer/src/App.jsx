@@ -6,7 +6,6 @@ import PazientePage from './pages/PazientePage'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { PazienteProvider } from './data/PazienteContext'
-import { AnamnesiRemotaProvider } from './data/AnamnesiRemotaContext'
 import CreaAnamnesiRemotaPage from './pages/CreaAnamnesiRemotaPage'
 import ModificaAnamnesiRemotaPage from './pages/ModificaAnamnesiRemotaPage'
 import { ConsultoProvider } from './data/ConsultoContext'
@@ -46,22 +45,8 @@ export default function App() {
             <Route path="/create" element={<CreaPazientePage />}></Route>
             <Route path="/paziente/:id" element={<PazientePage />}></Route>
             <Route path="/paziente/:id/edit" element={<ModificaPazientePage />}></Route>
-            <Route
-              path="/paziente/:id/anamnesi-remote/create"
-              element={
-                <AnamnesiRemotaProvider>
-                  <CreaAnamnesiRemotaPage />
-                </AnamnesiRemotaProvider>
-              }
-            />
-            <Route
-              path="/anamnesi-remota/:id/edit"
-              element={
-                <AnamnesiRemotaProvider>
-                  <ModificaAnamnesiRemotaPage />
-                </AnamnesiRemotaProvider>
-              }
-            />         
+            <Route path="/paziente/:id/anamnesi-remote/create" element={<CreaAnamnesiRemotaPage />} />
+            <Route path="/anamnesi-remota/:id/edit" element={ <ModificaAnamnesiRemotaPage /> } />         
             <Route path="/paziente/:id/consulti/create" element={<CreaConsultoPage />} />
             <Route path="/consulto/:id/edit" element={<ModificaConsultoPage />}  />    
             <Route path="/consulto/:id" element={<ConsultoPage />} />    

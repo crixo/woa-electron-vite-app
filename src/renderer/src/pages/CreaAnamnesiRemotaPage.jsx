@@ -2,12 +2,10 @@ import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { PazienteContext } from '../data/PazienteContext'
-import { AnamnesiRemotaContext } from '../data/AnamnesiRemotaContext'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
 //import { VITE_BACKEND_URL } from "../App";
 
 const CreaAnamnesiRemotaPage = () => {
-  const { add } = useContext(AnamnesiRemotaContext)
   const { paziente, tipoAnamnesi } = useContext(PazienteContext)
   const navigate = useNavigate()
 
@@ -20,8 +18,9 @@ const CreaAnamnesiRemotaPage = () => {
     }
     try {
       //setIsLoading(true);
-      const enityCreated = await add(formData)
+      const enityCreated = await dal.addAnamnesiRemota(formData)
       console.log(enityCreated)
+      
       toast.success(`Anamnesi Remota del ${enityCreated.data} saved successuflly`, {
         position: 'top-center'
       })

@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { PazienteContext } from '../data/PazienteContext'
-import { AnamnesiRemotaContext } from '../data/AnamnesiRemotaContext'
 import { useParams } from 'react-router-dom'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
 import { PazienteCard } from '../components/PazienteCard'
@@ -11,7 +10,6 @@ import { PazienteCard } from '../components/PazienteCard'
 const ModificaAnamnesiRemotaPage = () => {
   const [isLoading, setIsLoading] = useState('')
   const navigate = useNavigate()
-  const { update } = useContext(AnamnesiRemotaContext)
   const { paziente, tipoAnamnesi } = useContext(PazienteContext)
 
   const { id } = useParams() // Extracts the ID from URL
@@ -32,7 +30,9 @@ const ModificaAnamnesiRemotaPage = () => {
     }
     try {
       setIsLoading(true)
-      await update(formData)
+
+      await dal.updateAnamnesiRemota(formData)
+
       toast.success(`Anamnesi Remota del ${formData.data} added successuflly`, {
         position: 'top-center'
       })

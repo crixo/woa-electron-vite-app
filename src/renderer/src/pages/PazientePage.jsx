@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { PazienteCard } from '../components/PazienteCard'
 import { DataTable } from '../components/DataTable'
+import { toast } from 'react-toastify'
 //
 
 const PazientePage = () => {
@@ -19,17 +20,26 @@ const PazientePage = () => {
     getTipoAnamnesiRemote()
   }, [])
 
-  const deleteAnamnesiRemota = (entity) => {
-    console.log(entity)
+  const deleteAnamnesiRemota = async (entity) => {
+    try {
+      await dal.deleteLeaf("anamnesi_remota", entity.ID)
+      await fetchPaziente(pazienteId)
+      toast.success(`Anamnesi remota deleted successuflly`, {
+        position: 'top-center'
+      })
+    } catch (error) {
+      toast.error(error.message, {
+        position: 'top-center'
+      })    
+    }
   }
 
-  const deleteConsulto = (entity) => {
+  const deleteConsulto = async (entity) => {
     console.log(entity)
   }
 
   const convertLookupAnamnesi = (lkpId) => {
     const itm = tipoAnamnesi.find((e) => e.ID== lkpId)
-    console.log(itm)
     return itm !== undefined? itm.descrizione : '-'
   }
 

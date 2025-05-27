@@ -4,7 +4,7 @@ import log from 'electron-log';
 
 let db
 
-export function setupPazienteDAL(config){
+export function    setupPazienteDAL(config){
   db = initDatabase(config);
 }
 
@@ -72,6 +72,9 @@ ipcMain.handle('paziente-many-consulti', async (_, topLimit=20) => {
   }
 });    
 
+// NOTE
+// the underscore (_) is used as a placeholder for the first parameter, 
+// which is typically the event object in Electron's IPC (Inter-Process Communication) system.
 ipcMain.handle('paziente-last-consulti', async (_, topLimit=20) => {
   try {
     const sql = `SELECT p.*, max(c.data) as last_consulto_at
@@ -220,6 +223,35 @@ ipcMain.handle('consulto-update', async (_, entity) => {
   }
 });   
 
+ipcMain.handle('consulto-delete', async (_, ID_paziente, ID_consulto) => {
+  try {
+    console.log(`delete consulto+childreen with ID_paziente=${ID_paziente} ID_Consulto=${ID_consulto}`);
+
+    const statements = [
+      'DELETE FROM valutazione WHERE ID_consulto = @ID_consulto',
+      'DELETE FROM trattamento WHERE ID_consulto = @ID_consulto',
+      'DELETE FROM esame WHERE ID_consulto = @ID_consulto',
+      'DELETE FROM trattamento WHERE ID_consulto = @ID_consulto',
+      'DELETE FROM anamnesi_prossima WHERE ID_paziente=@ID_paziente AND ID_consulto=@ID_consulto',
+      'DELETE FROM consulto WHERE ID = @ID_consulto',
+    ].map(sql => db.prepare(sql));
+
+const myTransaction = db.transaction((values) => {
+  for (const stmt of statements) {
+    stmt.run(values);
+  }
+});
+
+// Execute transaction
+myTransaction([1, 2, 3, 1]); // Provide values as an array
+
+    return true;
+  } catch (error) {
+    console.log('IPC Error:', error);
+    throw error; // Sends error back to renderer
+  }
+});   
+
 ipcMain.handle('anamnesi-prossima-add', async (_, entity) => {
   try {
     console.log('anamnesi-prossima-add'+entity);
@@ -267,6 +299,20 @@ ipcMain.handle('anamnesi-prossima-update', async (_, entity) => {
     throw error; // Sends error back to renderer
   }
 });   
+
+ipcMain.handle('anamnesi-prossima-delete', async (_, ID_paziente, ID_consulto) => {
+  try {
+    console.log(`delete anamnesi_prossima with ID_paziente=${ID_paziente} ID_Consulto=${ID_consulto}`);
+    const sql = "DELETE FROM anamnesi_prossima WHERE ID_paziente=? AND ID_consulto=?";
+    const stmt = db.prepare(sql);
+    const info = stmt.run(ID_paziente, ID_consulto);
+    return true;
+  } catch (error) {
+    console.log('IPC Error:', error);
+    throw error; // Sends error back to renderer
+  }
+});     
+
 
 ipcMain.handle('esame-add', async (_, entity) => {
   try {
@@ -392,6 +438,19 @@ ipcMain.handle('valutazione-update', async (_, entity) => {
     const sql = "UPDATE valutazione SET strutturale=?,cranio_sacrale=?,ak_ortodontica=? WHERE ID=?";
     const stmt = db.prepare(sql);
     const info = stmt.run(entity.strutturale, entity.cranio_sacrale, entity.ak_ortodontica, entity.ID);
+    return true;
+  } catch (error) {
+    console.log('IPC Error:', error);
+    throw error; // Sends error back to renderer
+  }
+});      
+
+ipcMain.handle('delete-leaf', async (_, tableName, ID) => {
+  try {
+    console.log(`delete ${tableName} with ID=${ID}`);
+    const sql = "DELETE FROM "+tableName+" WHERE ID=?";
+    const stmt = db.prepare(sql);
+    const info = stmt.run(ID);
     return true;
   } catch (error) {
     console.log('IPC Error:', error);

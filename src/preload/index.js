@@ -29,7 +29,7 @@ contextBridge.exposeInMainWorld('dal', {
   getPaziente: (pazienteId) => ipcRenderer.invoke('paziente-get', pazienteId),
   updatePaziente: (paziente) => ipcRenderer.invoke('paziente-update', paziente),
 
-  updateAnamnesiRemote: (entity) => ipcRenderer.invoke('anamnesiremota-update', entity),
+  updateAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-update', entity),
   addAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-add', entity),
   updateAnamnesiRemota: (entity) => ipcRenderer.invoke('anamnesiremota-update', entity),
   getAnamnesiRemoteByPaziente: (pazienteId) => ipcRenderer.invoke('anamnesiremota-all', pazienteId),
@@ -38,10 +38,12 @@ contextBridge.exposeInMainWorld('dal', {
   getConsulto: (consultoId) => ipcRenderer.invoke('consulto-get', consultoId),
   updateConsulto: (entity) => ipcRenderer.invoke('consulto-update', entity),
   addConsulto: (entity) => ipcRenderer.invoke('consulto-add', entity),  
+  deleteConsulto: (ID_paziente, ID_consulto) => ipcRenderer.invoke('consulto-delete', ID_paziente, ID_consulto),  
 
   getAnamnesiProssimeByConsulto: (idConsulto) => ipcRenderer.invoke('anamnesi-prossima-all', idConsulto),
   addAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-add', entity),  
   updateAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-update', entity),  
+  deleteAnamnesiProssima: (ID_paziente, ID_consulto) => ipcRenderer.invoke('anamnesi-prossima-delete', ID_paziente, ID_consulto),  
 
   getEsamiByConsulto: (idConsulto) => ipcRenderer.invoke('esame-all', idConsulto),
   addEsame: (entity) => ipcRenderer.invoke('esame-add', entity),  
@@ -54,6 +56,8 @@ contextBridge.exposeInMainWorld('dal', {
   getValutazioniByConsulto: (idConsulto) => ipcRenderer.invoke('valutazione-all', idConsulto),
   addValutazione: (entity) => ipcRenderer.invoke('valutazione-add', entity),  
   updateValutazione: (entity) => ipcRenderer.invoke('valutazione-update', entity),  
+
+  deleteLeaf: (tableName, ID) => ipcRenderer.invoke('delete-leaf', tableName, ID),  
 
   getTipologiaEsame: () => ipcRenderer.invoke('tipo-esami'),
   getTipologiaAnamnesiRemota: () => ipcRenderer.invoke('tipo-anamnesi-remota'),
