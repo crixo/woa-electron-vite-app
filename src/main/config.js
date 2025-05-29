@@ -12,15 +12,18 @@ export function shareSettings(config){
   })
 }
 
+let configPath
+
 export function loadConfig(homeDir) {
     const defaultConfig = {
-    dbPath: path.join(homeDir, "/woa/", "./woa.db"),
+    dbPath: path.join(homeDir, "/woa/", "./woaX.db"),
     logPath: path.join(homeDir, "/woa/", "./woa.log"),
     formatDate: 'yyyy-MM-dd'
     };
 
     try {
-        const configPath = path.join(homeDir, "/woa/", "./config.yaml")
+ 
+        configPath = path.join(homeDir, "/woa/", "./config.yaml")
 
         if (!fs.existsSync(configPath)) {
         console.warn("Config file not found, using default configuration.")
@@ -35,4 +38,11 @@ export function loadConfig(homeDir) {
         console.error("Error loading config:", e)
         return defaultConfig;
     }
+}
+
+export function dumpConfig(config) {
+  const yamlStr = yaml.dump(config);
+
+  // Save to a file
+  fs.writeFileSync(configPath, yamlStr, 'utf8');
 }

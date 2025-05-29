@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Database</title>
+    <style>
+        /* Navbar Styles */
+        .navbar {
+            background-color: #1f2937; /* Dark gray background */
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px;
+            position: fixed;  /* Fixes it at the top */
+            top: 0;
+            left: 0;
+            width: 100%;  /* Full window width */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Ensures it stays above other elements */
+        }
+
+        /* Page Layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            margin-top: 80px; /* Adjusted for fixed navbar */
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #dbPathDisplay {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+    <script defer>
+        async function selectDatabase() {
+            const dbPath = await window.electron.openFileDialog();
+            if (dbPath) {
+                document.getElementById("dbPathDisplay").innerText = `Selected: ${dbPath}`;
+                window.electron.selectDatabase(dbPath);
+            } else {
+                alert("Please select a valid database file.");
+            }
+        }
+
+        window.electron.onDatabaseError((errorMessage) => {
+            alert(errorMessage);
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">WOA</nav>
+    <div class="container">
+        <h2>Locate Your Database</h2>
+        <button onclick="selectDatabase()">Select Database File</button>
+        <p id="dbPathDisplay">No file selected.</p>
+    </div>
+</body>
+</html>

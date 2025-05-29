@@ -7,10 +7,11 @@ import icon from '../../resources/icon.png?asset';
 import { configureLogging } from './log';
 import os from 'os';
 import { setupPazienteDAL } from './pazienteDAL';
-import { loadConfig, shareSettings } from './config';
+import { loadConfig, dumpConfig, shareSettings } from './config';
 import log from 'electron-log';
+import './locate-db-handler.js'
 
-
+let config
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const homeDir = os.homedir();
@@ -21,21 +22,22 @@ log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
 log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
 log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
 
-// Configuration
-const config = loadConfig(homeDir)
-shareSettings(config)
+// // Configuration
+// const config = loadConfig(homeDir)
+// shareSettings(config)
 
-// Logging
-configureLogging(config)
+// // Logging
+// configureLogging(config)
 
-// Database
-setupPazienteDAL(config);
+// // Database
+// setupPazienteDAL(config);
 
-
+let locateDBWindow;
+let mainWindow;
 ///////////////////////////////////////////////////
-function createWindow() {
+function createMainWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -46,7 +48,7 @@ function createWindow() {
       sandbox: false
     }
   })
-
+  
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -55,6 +57,12 @@ function createWindow() {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
+
+  mainWindow.on('close', (event) => {
+    console.log('Main Window is closing');
+    // You can prevent the window from closing if needed
+    // event.preventDefault();
+  });
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -67,6 +75,49 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+function createLocateDBWindow() {
+  locateDBWindow = new BrowserWindow({
+      width: 500,
+      height: 350,
+      webPreferences: {
+          preload: join(__dirname, "../preload/locate-db.js"),
+          sandbox: false,
+      },
+  });
+
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    locateDBWindow.loadURL(process.env['ELECTRON_RENDERER_URL']+'/locate-db.html')
+
+    // Default open or close DevTools by F12 in development
+    // mainWindow.webContents.openDevTools();
+  } else {
+    locateDBWindow.loadFile(join(__dirname, '../renderer/locate-db.html'))
+  }
+
+  ipcMain.on("db-selected", (event, dbPath) => {
+    console.log('new dbPath:'+dbPath)
+    config.dbPath = dbPath;
+    //saveConfig(config);//TODO implement config persistency
+
+    // Re-execute DB setup
+    const dbStatus = setupPazienteDAL(config);
+    
+    if (!dbStatus.success) {
+      console.error("Database initialization failed:", dbStatus.error);
+
+      // Send error message to secondary window
+      event.reply("db-error", "Database initialization failed. Please select a valid database.");
+      return;
+    }
+
+    dumpConfig(config);
+
+    locateDBWindow.close();
+    createMainWindow();
+  });
+}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -85,12 +136,28 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  createWindow()
+  //createWindow()
+  // Configuration
+  config = loadConfig(homeDir)
+  shareSettings(config)
+  configureLogging(config)
+  const dbStatus = setupPazienteDAL(config);
 
+  console.log(dbStatus)
+ 
+  if (!dbStatus.success) {
+      createLocateDBWindow(); // Forces user to select a DB
+  } else {
+      createMainWindow(); // Launch the main window
+  }
+  
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      console.log('activate')
+      createMainWindow()
+    }
   })
 })
 
@@ -98,6 +165,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  console.log('window-all-closed - ' + process.platform )
   if (process.platform !== 'darwin') {
     app.quit()
   }

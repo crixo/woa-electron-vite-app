@@ -1,11 +1,22 @@
 import { ipcMain } from 'electron';
 import Database from "better-sqlite3";
 import log from 'electron-log';
+import * as fs from 'fs';
 
 let db
 
-export function    setupPazienteDAL(config){
-  db = initDatabase(config);
+export function setupPazienteDAL(config){
+  try {
+    if (!fs.existsSync(config.dbPath)) {
+        throw new Error("Database not found");
+    }
+      // Initialize the DB
+      db = initDatabase(config);
+  } catch (error) {
+      return { success: false, error: error.message };
+  }
+  return { success: true };
+
 }
 
 function initDatabase(config) {
