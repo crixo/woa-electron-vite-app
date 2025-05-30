@@ -1,10 +1,17 @@
 //import path from 'node:path';
 //import { path } from 'path';
 //import { dirname, join } from 'path';
+//import { dirname, join } from 'path';
 import path from 'node:path';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { ipcMain } from 'electron';
+import log from 'electron-log';
+
+
+//This will print the absolute path to the application's root directory where your package.json file is located. 
+//If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
+
 
 export function shareSettings(config){
   ipcMain.handle('settings', async () => {
@@ -14,7 +21,12 @@ export function shareSettings(config){
 
 let configPath
 
-export function loadConfig(homeDir) {
+export function loadConfig(homeDir, __dirname) {
+    log.silly(`process.cwd(():${process.cwd()}`);
+    log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
+    log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
+    log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
+
     const defaultConfig = {
     dbPath: path.join(homeDir, "/woa/", "./woaX.db"),
     logPath: path.join(homeDir, "/woa/", "./woa.log"),

@@ -11,27 +11,16 @@ import { loadConfig, dumpConfig, shareSettings } from './config';
 import log from 'electron-log';
 import './locate-db-handler.js'
 
-let config
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const homeDir = os.homedir();
 //This will print the absolute path to the application's root directory where your package.json file is located. 
 //If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
-log.silly(`process.cwd(():${process.cwd()}`);
-log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
-log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
-log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
 
-// // Configuration
-// const config = loadConfig(homeDir)
-// shareSettings(config)
 
-// // Logging
-// configureLogging(config)
-
-// // Database
-// setupPazienteDAL(config);
-
+let config
+let isDBConfigured = false;
 let locateDBWindow;
 let mainWindow;
 ///////////////////////////////////////////////////
@@ -96,7 +85,7 @@ function createLocateDBWindow() {
   }
 
   ipcMain.on("db-selected", (event, dbPath) => {
-    console.log('new dbPath:'+dbPath)
+    console.log('on-db-selected -- new dbPath:'+dbPath)
     config.dbPath = dbPath;
     //saveConfig(config);//TODO implement config persistency
 
@@ -112,8 +101,9 @@ function createLocateDBWindow() {
     }
 
     dumpConfig(config);
-
+    isDBConfigured = true; // Set state after successful DB setup
     locateDBWindow.close();
+    //locateDBWindow.close();
     createMainWindow();
   });
 }
@@ -138,25 +128,34 @@ app.whenReady().then(() => {
 
   //createWindow()
   // Configuration
-  config = loadConfig(homeDir)
+  config = loadConfig(homeDir, __dirname)
   shareSettings(config)
   configureLogging(config)
   const dbStatus = setupPazienteDAL(config);
-
-  console.log(dbStatus)
  
   if (!dbStatus.success) {
       createLocateDBWindow(); // Forces user to select a DB
   } else {
+      isDBConfigured = true
       createMainWindow(); // Launch the main window
   }
   
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
+    // if (BrowserWindow.getAllWindows().length === 0) {
+    console.log(`on-activate - isDBConfigured:${isDBConfigured} -- wins:${BrowserWindow.getAllWindows().length}`)
     if (BrowserWindow.getAllWindows().length === 0) {
-      console.log('activate')
-      createMainWindow()
+        if (isDBConfigured){
+          createMainWindow();
+        }else{
+          createLocateDBWindow();
+        }
+    }else{
+        // BrowserWindow.getAllWindows().forEach(win => {
+        //     console.log( win.isDestroyed()? 'distroyed:'+win.id : win.getTitle()+'-'+win.width);
+        // });
+        BrowserWindow.getAllWindows()[0].show()
     }
   })
 })
