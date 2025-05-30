@@ -1,17 +1,9 @@
-//import path from 'node:path';
-//import { path } from 'path';
-//import { dirname, join } from 'path';
-//import { dirname, join } from 'path';
+
+const { ipcMain, dialog } = require("electron");
 import path from 'node:path';
 import fs from 'fs';
 import yaml from 'js-yaml';
-import { ipcMain } from 'electron';
 import log from 'electron-log';
-
-
-//This will print the absolute path to the application's root directory where your package.json file is located. 
-//If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
-
 
 export function shareSettings(config){
   ipcMain.handle('settings', async () => {
@@ -22,6 +14,8 @@ export function shareSettings(config){
 let configPath
 
 export function loadConfig(homeDir, __dirname) {
+    //This will print the absolute path to the application's root directory where your package.json file is located. 
+    //If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
     log.silly(`process.cwd(():${process.cwd()}`);
     log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
     log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
@@ -30,7 +24,7 @@ export function loadConfig(homeDir, __dirname) {
     const defaultConfig = {
     dbPath: path.join(homeDir, "/woa/", "./woaX.db"),
     logPath: path.join(homeDir, "/woa/", "./woa.log"),
-    formatDate: 'yyyy-MM-dd'
+    formatDate: 'dd/MM/yyyy'
     };
 
     try {
@@ -58,3 +52,14 @@ export function dumpConfig(config) {
   // Save to a file
   fs.writeFileSync(configPath, yamlStr, 'utf8');
 }
+
+ipcMain.handle("open-file-dialog", async () => {
+    const result = await dialog.showOpenDialog({
+        properties: ["openFile"],
+        filters: [{ name: "SQLite Database", extensions: ["db"] }]
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0]; // Return full file path
+    }
+});

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { PazienteContext } from '../data/PazienteContext'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
+import { PazienteCard } from '../components/PazienteCard'
 //import { VITE_BACKEND_URL } from "../App";
 
 const CreaAnamnesiRemotaPage = () => {
@@ -38,6 +39,7 @@ const CreaAnamnesiRemotaPage = () => {
 
   return (
     <>
+    <PazienteCard paziente={paziente} />
     <h3 className="h3-primary">Crea nuova Anamnesi Remota</h3>
     <AnamnesiRemotaForm entity={{ID_paziente:paziente.ID }} onSubmit={saveEntity} tipi={tipoAnamnesi} />
     </>

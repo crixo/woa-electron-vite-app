@@ -9,7 +9,6 @@ import os from 'os';
 import { setupPazienteDAL } from './pazienteDAL';
 import { loadConfig, dumpConfig, shareSettings } from './config';
 import log from 'electron-log';
-import './locate-db-handler.js'
 
 
 const __filename = fileURLToPath(import.meta.url);

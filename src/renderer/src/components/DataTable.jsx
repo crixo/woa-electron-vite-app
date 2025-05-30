@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState } from "react";
-import { formatDate } from '../utils';
+import { formatDate, formatDateAsSettings } from '../utils';
 
 export const DataTable = ({ idConfig, data, onDeleting, deleteHandler, convertLookup }) => {
   if (!data || data.length === 0) {
@@ -47,7 +47,7 @@ export const DataTable = ({ idConfig, data, onDeleting, deleteHandler, convertLo
                   <i className={idConfig.iconCss}></i>
                 </Link>;
       case "data":
-        return formatDate(item[header]);
+        return formatDateAsSettings(item[header]);
       case "tipo":
         return convertLookup(item[header])
       default:

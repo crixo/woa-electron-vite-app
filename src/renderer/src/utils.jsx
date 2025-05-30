@@ -20,6 +20,15 @@ export function formatDate (dateString) {
     const dateAndHour = dateString.split(' ');
     const format = dateAndHour.length==2? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
     const localDate = DateTime.fromFormat(dateString, format, { zone: 'Europe/Rome' })
+    return localDate.toFormat('yyyy-MM-dd')
+  }
+
+export function formatDateAsSettings (dateString) {
+    //console.log(dateString)
+    if (dateString === undefined || dateString=="") return ''
+    const dateAndHour = dateString.split(' ');
+    const format = dateAndHour.length==2? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
+    const localDate = DateTime.fromFormat(dateString, format, { zone: 'Europe/Rome' })
     const settings = useSettings()
     return localDate.toFormat(settings.formatDate)
   }
