@@ -54,6 +54,10 @@ export const PazienteProvider = ({ children }) => {
     setPaziente(null)
   }
 
+  const deleteAnamnesiRemota = async (entity) => {
+    await dal.deleteLeaf('anamnesi_remota', entity.ID)
+  }
+
   // const addAnamnesiRemota = async (arData) => {
   //   console.log(arData)
   //   const ar = await dal.addAnamnesiRemota(arData)
@@ -70,7 +74,9 @@ export const PazienteProvider = ({ children }) => {
 
   return (
     <PazienteContext.Provider
-      value={{ paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente, getTipoAnamnesiRemote, tipoAnamnesi }}
+      value={{ 
+        paziente, addPaziente, fetchPaziente, resetPaziente, updatePaziente, 
+        getTipoAnamnesiRemote, tipoAnamnesi, deleteAnamnesiRemota }}
     >
       {children}
     </PazienteContext.Provider>

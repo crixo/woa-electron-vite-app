@@ -247,14 +247,14 @@ ipcMain.handle('consulto-delete', async (_, ID_paziente, ID_consulto) => {
       'DELETE FROM consulto WHERE ID = @ID_consulto',
     ].map(sql => db.prepare(sql));
 
-const myTransaction = db.transaction((values) => {
-  for (const stmt of statements) {
-    stmt.run(values);
-  }
-});
+    const myTransaction = db.transaction((values) => {
+      for (const stmt of statements) {
+        stmt.run(values);
+      }
+    });
 
-// Execute transaction
-myTransaction([1, 2, 3, 1]); // Provide values as an array
+    // Execute transaction
+    myTransaction({ID_paziente: ID_paziente, ID_consulto: ID_consulto}); // Provide values as an array
 
     return true;
   } catch (error) {

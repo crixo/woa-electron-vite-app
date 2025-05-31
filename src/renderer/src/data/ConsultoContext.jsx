@@ -9,11 +9,9 @@ export const ConsultoProvider = ({ children }) => {
   const fetchConsulto = async (idConsulto) => {
       console.log('fetching consulto for ID: '+idConsulto)
       const cRawResponse = await dal.getConsulto(idConsulto);
-      console.log(cRawResponse);
       const c = JSON.parse(cRawResponse);
 
       const apsRawResponse = await dal.getAnamnesiProssimeByConsulto(idConsulto);
-      console.log(apsRawResponse);
       const aps = JSON.parse(apsRawResponse);
       const apsWithId = aps.map(obj => ({
         ID: `${obj.ID_paziente}-${obj.ID_consulto}`,
@@ -22,20 +20,18 @@ export const ConsultoProvider = ({ children }) => {
       c.anamnesiProssime = apsWithId;
 
       const eRawResponse = await dal.getEsamiByConsulto(idConsulto);
-      console.log(eRawResponse);
       const es = JSON.parse(eRawResponse);
       c.esami = es;
 
       const tRawResponse = await dal.getTrattamentiByConsulto(idConsulto);
-      console.log(tRawResponse);
       const ts = JSON.parse(tRawResponse);
       c.trattamenti = ts;      
 
       const vRawResponse = await dal.getValutazioniByConsulto(idConsulto);
-      console.log(vRawResponse);
       const vs = JSON.parse(vRawResponse);
       c.valutazioni = vs
 
+      console.log(c)
       setConsulto(c);
   };
 
@@ -51,6 +47,12 @@ export const ConsultoProvider = ({ children }) => {
       // if(!res) throw new Error("updateConsulto failed");
       
       setConsulto(consulto);
+  }
+
+  const deleteConsulto = async (consulto) => {
+    console.log(consulto)
+    await dal.deleteConsulto(consulto.ID_paziente, consulto.ID)
+    setConsulto(null);
   }
 
   const addAnamnesiProssima = async (entityData) => {
@@ -69,6 +71,10 @@ export const ConsultoProvider = ({ children }) => {
       //setConsulto(esame);
   }  
 
+  const deleteAnamnesiProssima = async (entity) => {
+    await dal.deleteAnamnesiProssima(entity.ID_paziente, entity.ID_consulto)
+  }
+
   const addEsame = async (esameData) => {
     // console.log(consulto.ID)
     // console.log(esameData)
@@ -79,10 +85,10 @@ export const ConsultoProvider = ({ children }) => {
 
   const updateEsame = async (esame) => {
       const res = await dal.updateEsame(esame);
-      // console.log('dal.updateConsulto -> ' + res)
-      // if(!res) throw new Error("updateConsulto failed");
-      
-      //setConsulto(esame);
+  }  
+
+  const deleteEsame = async (entity) => {
+    await dal.deleteLeaf('esame', entity.ID);
   }  
 
   
@@ -108,6 +114,11 @@ export const ConsultoProvider = ({ children }) => {
       
       //setConsulto(esame);
   }  
+
+  const deleteTrattamento = async (entity) => {
+    await dal.deleteLeaf('trattamento', entity.ID);
+  }
+
   const addValutazione = async (entityData) => {
     // console.log(consulto.ID)
     // console.log(esameData)
@@ -120,10 +131,14 @@ export const ConsultoProvider = ({ children }) => {
       const res = await dal.updateValutazione(entity);
   }  
 
-  return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, 
-      addEsame, updateEsame, getTipoEsami, tipoEsami,
-      addTrattamento, updateTrattamento, 
-      addAnamnesiProssima, updateAnamnesiProssima,
-      addValutazione, updateValutazione
+  const deleteValutazione = async (entity) => {
+      await dal.deleteLeaf('valutazione', entity.ID)
+  }
+
+  return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, deleteConsulto,
+      addEsame, updateEsame, getTipoEsami, tipoEsami, deleteEsame,
+      addTrattamento, updateTrattamento, deleteTrattamento,
+      addAnamnesiProssima, updateAnamnesiProssima, deleteAnamnesiProssima,
+      addValutazione, updateValutazione, deleteValutazione
     }}>{children}</ConsultoContext.Provider>
 }

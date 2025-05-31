@@ -76,9 +76,6 @@ function createLocateDBWindow() {
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     locateDBWindow.loadURL(process.env['ELECTRON_RENDERER_URL']+'/locate-db.html')
-
-    // Default open or close DevTools by F12 in development
-    // mainWindow.webContents.openDevTools();
   } else {
     locateDBWindow.loadFile(join(__dirname, '../renderer/locate-db.html'))
   }
@@ -121,9 +118,6 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
 
   //createWindow()
   // Configuration

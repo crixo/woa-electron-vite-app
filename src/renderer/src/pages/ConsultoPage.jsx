@@ -6,12 +6,14 @@ import { Link } from 'react-router-dom'
 import { ConsultoCard } from '../components/ConsultoCard'
 import { PazienteCard } from '../components/PazienteCard'
 import { DataTable } from '../components/DataTable'
+import { DeleteModal } from '../components/DeleteModal'
+import { toast } from 'react-toastify'
 //
 
 const ConsultoPage = () => {
   const { id } = useParams() // Extracts the ID from URL
   const { paziente, fetchPaziente, resetPaziente } = useContext(PazienteContext)
-  const { consulto, fetchConsulto, getTipoEsami, tipoEsami} = useContext(ConsultoContext)
+  const { consulto, fetchConsulto, getTipoEsami, tipoEsami, deleteAnamnesiProssima, deleteEsame, deleteTrattamento, deleteValutazione} = useContext(ConsultoContext)
   //const [pazienteId, setPazienteId] = useState(id)
 
   useEffect(() => {
@@ -23,8 +25,60 @@ const ConsultoPage = () => {
 
   const convertLookupEsami = (lkpId) => {
     const itm = tipoEsami.find((e) => e.ID== lkpId)
-    return itm!==null? itm.descrizione : '-'
+    return itm!==undefined? itm.descrizione : '-'
   }
+
+  //Modal delete
+  const [modalOpen, setModalOpen] = useState(false); //modal cancel button
+  const [deletingEntity, setDeletingEntity] = useState(null);
+  const [confirmationInput, setConfirmationInput] = useState("");//modal input
+
+  const handleDeleteClick = (entityType, entity, deleteEntity) => { // DataTable onDelete handler
+    setDeletingEntity({entityType, entity,deleteEntity});
+    setModalOpen(true);
+    setConfirmationInput("");
+  };
+
+  const handleConfirmDelete = () => { // modal confirm button
+    if (deletingEntity && confirmationInput.toLocaleLowerCase() === deletingEntity.entityType.toLocaleLowerCase()) {
+      //setData(data.filter((item) => item.id !== deleteId));
+      deletingEntity.deleteEntity(deletingEntity.entity)
+
+      setModalOpen(false);
+      setConfirmationInput("");
+    }else{
+      alert('tipo entita da cancellare non corretto')
+    }
+  };  
+  // Modal delete
+
+  const onDeleteAnamnesiProssima = async (entity) => {
+    deleteEntityTemplate('Anamnesi Prossima', entity, deleteAnamnesiProssima)
+  }
+
+  const onDeleteEsame= async (entity) => {
+    deleteEntityTemplate('Esame', entity, deleteEsame)
+  }
+  const onDeleteValutazione= async (entity) => {
+    deleteEntityTemplate('Valutazione', entity, deleteValutazione)
+  }
+  const onDeleteTrattamento= async (entity) => {
+    deleteEntityTemplate('Trattamento', entity, deleteTrattamento)
+  }
+
+  const deleteEntityTemplate = async (entityName, entity, deleteEntity) => {
+    try {
+      await deleteEntity(entity)
+      await fetchConsulto(entity.ID_consulto)
+      toast.success(`${entityName} deleted successuflly`, {
+        position: 'top-center'
+      })
+    } catch (error) {
+      toast.error(error.message, {
+        position: 'top-center'
+      })    
+    }
+  }  
 
   return (
     <div>
@@ -47,8 +101,11 @@ const ConsultoPage = () => {
 
           <div>
             <DataTable
+              entityType='Anamnesi Prossima'
               data={consulto.anamnesiProssime}
-              idConfig={{entityUrlSegment:'/anamnesi-prossima/:id/edit', iconCss:'fas fa-pencil-alt'}}  />
+              idConfig={{entityUrlSegment:'/anamnesi-prossima/:id/edit', iconCss:'fas fa-pencil-alt'}}
+              onDeleting={handleDeleteClick}
+              deleteHandler={onDeleteAnamnesiProssima} />
           </div>
 
           <div className="flex items-center space-x-2">
@@ -62,9 +119,12 @@ const ConsultoPage = () => {
           </div>
           <div>
             <DataTable 
+              entityType='Esame'
               data={consulto.esami}
               idConfig={{entityUrlSegment:'/esame/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              convertLookup={convertLookupEsami}  />
+              convertLookup={convertLookupEsami}
+              onDeleting={handleDeleteClick}
+              deleteHandler={onDeleteEsame} />
           </div>
 
           <div className="flex items-center space-x-2">
@@ -78,8 +138,11 @@ const ConsultoPage = () => {
           </div>
           <div>
             <DataTable 
+              entityType='Trattamento'
               data={consulto.trattamenti} 
-              idConfig={{entityUrlSegment:'/trattamento/:id/edit', iconCss:'fas fa-pencil-alt'}} />
+              idConfig={{entityUrlSegment:'/trattamento/:id/edit', iconCss:'fas fa-pencil-alt'}}
+              onDeleting={handleDeleteClick}
+              deleteHandler={onDeleteTrattamento} />
           </div>
          
           <div className="flex items-center space-x-2">
@@ -93,9 +156,20 @@ const ConsultoPage = () => {
           </div>
           <div>
             <DataTable 
+              entityType='Valutazione'
               data={consulto.valutazioni} 
-              idConfig={{entityUrlSegment:'/valutazione/:id/edit', iconCss:'fas fa-pencil-alt'}} />
+              idConfig={{entityUrlSegment:'/valutazione/:id/edit', iconCss:'fas fa-pencil-alt'}}
+              onDeleting={handleDeleteClick}
+              deleteHandler={onDeleteValutazione} />
           </div>
+
+{modalOpen && (
+  <DeleteModal 
+    confirmationInput={confirmationInput}
+    setConfirmationInput={setConfirmationInput} 
+    setModalOpen={setModalOpen} 
+    handleConfirmDelete={handleConfirmDelete} />)}
+
         </>
       ) : (
         <p>No consulto found with id={id}</p>

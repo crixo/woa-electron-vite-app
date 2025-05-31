@@ -1,32 +1,34 @@
 import { useContext, useEffect, useState } from 'react'
 import { PazienteContext } from '../data/PazienteContext'
+import { ConsultoContext } from '../data/ConsultoContext'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { PazienteCard } from '../components/PazienteCard'
 import { DataTable } from '../components/DataTable'
 import { toast } from 'react-toastify'
+import { DeleteModal } from '../components/DeleteModal'
 //
 
 const PazientePage = () => {
   const { id } = useParams() // Extracts the ID from URL
 
-  const { paziente, fetchPaziente, getTipoAnamnesiRemote, tipoAnamnesi } = useContext(PazienteContext)
+  const { paziente, fetchPaziente, getTipoAnamnesiRemote, tipoAnamnesi, deleteAnamnesiRemota } = useContext(PazienteContext)
+  const { deleteConsulto} = useContext(ConsultoContext)
   const [pazienteId, setPazienteId] = useState(id)
 
   //Modal delete
   const [modalOpen, setModalOpen] = useState(false); //modal cancel button
   const [deletingEntity, setDeletingEntity] = useState(null);
   const [confirmationInput, setConfirmationInput] = useState("");//modal input
-  const DELETE_CONFIRM_TYPING = "delete-me"
 
-  const handleDeleteClick = (entity, deleteEntity) => { // DataTable onDelete handler
-    setDeletingEntity({entity,deleteEntity});
+  const handleDeleteClick = (entityType, entity, deleteEntity) => { // DataTable onDelete handler
+    setDeletingEntity({entityType, entity,deleteEntity});
     setModalOpen(true);
     setConfirmationInput("");
   };
 
   const handleConfirmDelete = () => { // modal confirm button
-    if (deletingEntity && confirmationInput === DELETE_CONFIRM_TYPING) {
+    if (deletingEntity && confirmationInput.toLocaleLowerCase() === deletingEntity.entityType.toLocaleLowerCase()) {
       //setData(data.filter((item) => item.id !== deleteId));
       deletingEntity.deleteEntity(deletingEntity.entity)
 
@@ -43,11 +45,19 @@ const PazientePage = () => {
     getTipoAnamnesiRemote()
   }, [])
 
-  const deleteAnamnesiRemota = async (entity) => {
+  const onDeleteAnamnesiRemota = async (entity) => {
+    deleteEntityTemplate('Anamnesi Remota', entity, deleteAnamnesiRemota)
+  }
+
+  const onDeleteConsulto = async (entity) => {
+    deleteEntityTemplate('Consulto', entity, deleteConsulto)
+  }
+
+  const deleteEntityTemplate = async (entityName, entity, deleteEntity) => {
     try {
-      await dal.deleteLeaf("anamnesi_remota", entity.ID)
-      await fetchPaziente(pazienteId)
-      toast.success(`Anamnesi remota deleted successuflly`, {
+      await deleteEntity(entity)
+      await fetchPaziente(entity.ID_paziente)
+      toast.success(`${entityName} deleted successuflly`, {
         position: 'top-center'
       })
     } catch (error) {
@@ -55,11 +65,7 @@ const PazientePage = () => {
         position: 'top-center'
       })    
     }
-  }
-
-  const deleteConsulto = async (entity) => {
-    console.log(entity)
-  }
+  }    
 
   const convertLookupAnamnesi = (lkpId) => {
     const itm = tipoAnamnesi.find((e) => e.ID== lkpId)
@@ -84,10 +90,11 @@ const PazientePage = () => {
 
           <div>
             <DataTable 
+              entityType='Anamnesi Remota'
               data={paziente.anamnesiRemote} 
               idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
               onDeleting={handleDeleteClick}
-              deleteHandler={deleteAnamnesiRemota}
+              deleteHandler={onDeleteAnamnesiRemota}
               convertLookup={convertLookupAnamnesi} />
           </div>
 
@@ -102,42 +109,20 @@ const PazientePage = () => {
           </div>
           <div>
             <DataTable 
+              entityType='Consulto'
               data={paziente.consulti} 
               idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}
               onDeleting={handleDeleteClick}
-              deleteHandler={deleteConsulto} />
+              deleteHandler={onDeleteConsulto} />
           </div>
 
 
 {modalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-    <div className="bg-white p-6 rounded shadow-md">
-      <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
-      <p>Type the entity name to confirm deletion:</p>
-      <input
-        autoFocus
-        type="text"
-        value={confirmationInput}
-        onChange={(e) => setConfirmationInput(e.target.value)}
-        className="border rounded px-2 py-1 w-full mt-2"
-      />
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={() => setModalOpen(false)}
-          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-700 mr-2"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleConfirmDelete}
-          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
-        >
-          Confirm
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+  <DeleteModal 
+    confirmationInput={confirmationInput}
+    setConfirmationInput={setConfirmationInput} 
+    setModalOpen={setModalOpen} 
+    handleConfirmDelete={handleConfirmDelete} />)}
 
 
         </>

@@ -153,3 +153,6 @@ codesign --deep --force --verbose --sign "CrixoDev" ./dist/mac-arm64/woa-electro
 ```
 
 - verify the date format used by local app when a date is selected with html datepicker
+
+- dates from (old) DB are stored w/ time as 00:00:00. New app will save it w/o time. Time portion is handled in utils.formatDate while loading the date.
+

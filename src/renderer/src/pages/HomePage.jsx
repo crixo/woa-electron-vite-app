@@ -20,7 +20,7 @@ const HomePage = () => {
       //setIsLoading(true)
       setSearchNumber(searchNumber+1)
 
-      const pageSize = 5
+      const pageSize = 20
       let rawResponse = await dal.getPazienti(searchCriteria, pageSize+1, pageNumber-1)
       const pazientiFromDb = JSON.parse(rawResponse)
       const hasMorePazienti = pazientiFromDb.length > pageSize
@@ -69,46 +69,46 @@ const HomePage = () => {
       <div class="flex justify-end">
         <Link
           to="/create"
-          className="inline-block mt-4 shadow-md bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer">
+          className="inline-block mt-0 shadow-md bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer">
           Crea un nuovo paziente
         </Link>
       </div>
 
 
-<div className="flex">
-  {/* Search Box (Expands to fill remaining space) */}
-  <div className="flex-grow space-y-2 mr-6">
-    <label>Cognome del paziente da cercare</label>
-    <input
-      type="text"
-      value={searchCriteria}
-      onChange={(e) => setSearchCriteria(e.target.value)}
-      className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus:shadow-outline focus:border-blue-200 placeholder-gray-400"
-      placeholder="Enter paziente da cercare"
-    />
-    <div className="flex justify-center">
-      <button
-        onClick={() => getPazienti(1)}
-        className="inline-block mt-6 bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer"
-      >
-        Cerca Paziente
-      </button>
-    </div>
-  </div>
+      <div className="flex">
+        {/* Search Box (Expands to fill remaining space) */}
+        <div className="flex-grow space-y-2 mr-6">
+          <label>Cognome del paziente da cercare</label>
+          <input
+            type="text"
+            value={searchCriteria}
+            onChange={(e) => setSearchCriteria(e.target.value)}
+            className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus:shadow-outline focus:border-blue-200 placeholder-gray-400"
+            placeholder="Enter paziente da cercare"
+          />
+          <div className="flex justify-center">
+            <button
+              onClick={() => getPazienti(1)}
+              className="inline-block mt-6 bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer"
+            >
+              Cerca Paziente
+            </button>
+          </div>
+        </div>
 
-  {/* Stack of Buttons (Aligned to the far right, with space above) */}
-  <div className="flex flex-col space-y-3 ml-auto mt-6">
-    <button onClick={() => getPazientiWithManyConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
-      Pazienti con piu' consulti
-    </button>
-    <button onClick={() => getPazientiLastConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
-      Pazienti visitati di recente
-    </button>
-    <button className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
-      Azione 3
-    </button>
-  </div>
-</div>
+        {/* Stack of Buttons (Aligned to the far right, with space above) */}
+        <div className="flex flex-col space-y-3 ml-auto mt-6">
+          <button onClick={() => getPazientiWithManyConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
+            Pazienti con piu' consulti
+          </button>
+          <button onClick={() => getPazientiLastConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
+            Pazienti visitati di recente
+          </button>
+          <button className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
+            Azione 3
+          </button>
+        </div>
+      </div>
 
 
 
