@@ -26,8 +26,8 @@ let mainWindow;
 function createMainWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: config.mainWindow.width,
+    height: config.mainWindow.height,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),

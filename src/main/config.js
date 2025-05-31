@@ -22,9 +22,13 @@ export function loadConfig(homeDir, __dirname) {
     log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
 
     const defaultConfig = {
-    dbPath: path.join(homeDir, "/woa/", "./woa.db"),
-    logPath: path.join(homeDir, "/woa/", "./woa.log"),
-    formatDate: 'dd/MM/yyyy'
+      dbPath: path.join(homeDir, "/woa/", "./woa.db"),
+      logPath: path.join(homeDir, "/woa/", "./woa.log"),
+      formatDate: 'dd/MM/yyyy',
+      mainWindow:{
+        width:900,
+        height:670
+      }
     };
 
     try {

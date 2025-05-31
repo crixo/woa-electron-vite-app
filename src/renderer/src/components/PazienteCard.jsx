@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
-import { calculateAge } from '../utils'
+import { calculateAge, formatDateAsSettings } from '../utils'
 
 export const PazienteCard = ({paziente}) => {
 
     return(
-        <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border">
+        <div className="max-w-sm min-w-[300px] mx-auto bg-white shadow-lg rounded-lg overflow-hidden border">
             <div className="bg-blue-600 p-2 text-white text-center">
               <h2 className="text-xl font-semibold">
-                {paziente.nome} {paziente.cognome} (eta' {calculateAge(paziente.data_nascita)})
+                {paziente.nome} {paziente.cognome}
               </h2>
-              <p className="opacity-80">{paziente.professione}</p>
+              <p className="opacity-80">{calculateAge(paziente.data_nascita)} anni - {paziente.professione}</p>
             </div>
 
             <div className="flex items-center justify-between bg-gray-200 p-2">
@@ -55,7 +55,7 @@ export const PazienteCard = ({paziente}) => {
                 <strong>Email:</strong> {paziente.email}
               </p>
               <p>
-                <strong>Data di nascita:</strong> {paziente.data_nascita}
+                <strong>Data di nascita:</strong> {formatDateAsSettings(paziente.data_nascita)}
               </p>
             </div>
           </div>        

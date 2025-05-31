@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
-import { formatDate } from '../utils'
+import { formatDateAsSettings } from '../utils'
 
 export const ConsultoCard = ({consulto}) => {
     return (
-        <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border">
+        <div className="max-w-sm min-w-[300px] mx-auto bg-white shadow-lg rounded-lg overflow-hidden border">
         <div className="bg-blue-600 p-2 text-white text-center">
           <h2 className="text-xl font-semibold">
-            Consulto del {formatDate(consulto.data)}
+            Consulto del 
           </h2>
-          <p className="opacity-80">here</p>
+          <p className="opacity-80">{formatDateAsSettings(consulto.data)}</p>
         </div>
 
         <div className="flex items-center justify-between bg-gray-200 p-2">
@@ -34,7 +34,7 @@ export const ConsultoCard = ({consulto}) => {
         <input type="checkbox" id="toggleDetailsC" className="hidden peer" />
         <div className="p-2 space-y-2 text-gray-700 hidden peer-checked:block">
           <p>
-            <strong>Data:</strong> <span>{consulto.data}</span>
+            <strong>Data:</strong> <span>{formatDateAsSettings(consulto.data)}</span>
           </p>
           <p>
             <strong>Problema Iniziale:</strong> {consulto.problema_iniziale}
