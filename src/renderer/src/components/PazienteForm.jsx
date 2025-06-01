@@ -1,24 +1,16 @@
 import { useEffect, useState } from 'react'
-import { formatDate } from '../utils'
+import { formatDateForFormField } from '../utils/dateUtils'
+import { handleFormChange } from '../utils/formUtils';
 
 const PazienteForm = ({ paziente, onSubmit }) => {
   const [formData, setFormData] = useState(paziente)
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
+  const handleChange = (e) => handleFormChange(e, formData, setFormData);
 
   useEffect(() => {
       console.log(formData.data_nascita)
     }, [formData]
   )
-
-  // const formatDate = (dateString) => {
-  //   if (dateString === undefined || dateString=="") return null
-  //   const date = new Date(dateString)
-  //   return date.toISOString().split('T')[0] // Extracts yyyy-MM-dd
-  // }
 
   return (
     <form
@@ -142,7 +134,7 @@ const PazienteForm = ({ paziente, onSubmit }) => {
         <input
           type="date"
           name="data_nascita"
-          value={formatDate(formData.data_nascita)}
+          value={formatDateForFormField(formData.data_nascita)}
           onChange={handleChange}
           className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
           placeholder="enter Data di Nascita"

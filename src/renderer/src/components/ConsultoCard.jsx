@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { formatDateAsSettings } from '../utils'
+import { formatDateAsSettings } from '../utils/dateUtils'
 
 export const ConsultoCard = ({consulto}) => {
     return (

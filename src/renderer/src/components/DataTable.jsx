@@ -1,40 +1,10 @@
 import { Link } from 'react-router-dom'
-import { useState } from "react";
-import { formatDate, formatDateAsSettings } from '../utils';
+import { formatDateAsSettings } from '../utils/dateUtils';
 
 export const DataTable = ({ idConfig, entityType, data, onDeleting, deleteHandler, convertLookup }) => {
   if (!data || data.length === 0) {
     return <p>No data available</p>
   }
-
-
-  // const [modalOpen, setModalOpen] = useState(false);
-  // const [deleteId, setDeleteId] = useState(null);
-  // const [confirmationInput, setConfirmationInput] = useState("");
-  // const DELETE_CONFIRM_TYPING = "delete-me"
-
-  // const handleDeleteClick = (id) => {
-  //   setDeleteId(id);
-  //   setModalOpen(true);
-  //   setConfirmationInput("");
-  // };
-
-  // const handleConfirmDelete = () => {
-  //   const entityToDelete = data.find((item) => item.id === deleteId);
-  //   if (entityToDelete && confirmationInput === DELETE_CONFIRM_TYPING) {
-  //     //setData(data.filter((item) => item.id !== deleteId));
-  //     deleteHandler(entityToDelete)
-  //     setModalOpen(false);
-  //     setConfirmationInput("");
-  //   }
-  // };  
-
-  // const dataNoFK = data.map(obj => {
-  //   return Object.fromEntries(
-  //     Object.entries(obj).filter(([key]) => !key.startsWith("ID_"))
-  //   );
-  // });
-
   const dataNoFK = data;
   const headers = Object.keys(dataNoFK[0])
 
@@ -97,10 +67,6 @@ export const DataTable = ({ idConfig, entityType, data, onDeleting, deleteHandle
           ))}
         </tbody>
       </table>
-
-
-
-
     </div>
   )
 }

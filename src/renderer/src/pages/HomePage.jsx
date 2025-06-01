@@ -66,7 +66,7 @@ const HomePage = () => {
   return (
     //if loading=yes, then display "loading"
     <div>
-      <div class="flex justify-end">
+      <div className="flex justify-end">
         <Link
           to="/create"
           className="inline-block mt-0 shadow-md bg-blue-700 text-white rounded-lg px-4 py-2 font-bold hover:bg-blue-500 hover:cursor-pointer">

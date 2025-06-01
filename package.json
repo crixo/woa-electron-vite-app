@@ -1,6 +1,6 @@
 {
   "name": "woa-electron-vite-app",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "An Electron application with React",
   "main": "./out/main/index.js",
   "author": "example.com",
@@ -14,9 +14,11 @@
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
+    "prebuild:mac": "node scripts/updateVersion.js",
     "build:mac": "npm run rebuild-sqlite3 && npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
     "rebuild-sqlite3": "electron-rebuild -f -w better-sqlite3",
+    "prebuild:mac-x64": "node scripts/updateVersion.js",
     "build:mac-x64": "npm run rebuild-sqlite3-x64 && npm run build && electron-builder --mac --x64",
     "build:mac-universal": "npm run build && electron-builder --mac --universal",
     "rebuild-sqlite3-x64": "electron-rebuild -f -w --arch=x64 better-sqlite3"

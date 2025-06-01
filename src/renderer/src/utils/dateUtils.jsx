@@ -1,6 +1,6 @@
 // utils.js
 import { DateTime } from 'luxon'
-import { useSettings } from './data/SettingsContext';
+import { useSettings } from '../data/SettingsContext';
 
 export function calculateAge(dobStr) {
     if (!dobStr) return "-"; // Handle undefined or empty DOB
@@ -14,8 +14,16 @@ export function calculateAge(dobStr) {
     return Math.floor(age);
 }
 
-export function formatDate (dateString) {
-    //console.log(dateString)
+
+export function formatDate (dateString, formatOutput, formatInput='yyyy-MM-dd') {
+    console.log(dateString)
+    if (dateString === undefined || dateString=="") return ''
+    const localDate = DateTime.fromFormat(dateString, formatInput, { zone: 'Europe/Rome' })
+    return localDate.toFormat(formatOutput)
+}
+
+export function formatDateForFormField (dateString) {
+    console.log(dateString)
     if (dateString === undefined || dateString=="") return ''
     const dateAndHour = dateString.split(' ');
     const format = dateAndHour.length==2? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'

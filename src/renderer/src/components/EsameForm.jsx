@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { formatDate } from '../utils'
+import { formatDateForFormField } from '../utils/dateUtils'
+import { handleFormChange } from '../utils/formUtils';
 
 const EsameForm = ({ esame, onSubmit, tipi }) => {
   const [formData, setFormData] = useState(esame)
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const handleChange = (e) => handleFormChange(e, formData, setFormData);
 
   console.log(formData)
 
@@ -24,7 +23,7 @@ const EsameForm = ({ esame, onSubmit, tipi }) => {
         <input
           type="date"
           name="data"
-          value={formatDate(formData.data)}
+          value={formatDateForFormField(formData.data)}
           onChange={handleChange}
           className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
           placeholder="enter Data"

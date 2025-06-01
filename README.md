@@ -152,6 +152,32 @@ or a self-signed cert generated via keychain
 codesign --deep --force --verbose --sign "CrixoDev" ./dist/mac-arm64/woa-electron-vite-app.app 
 ```
 
+- Verify signing 
+```
+codesign --verify --verbose /path/to/app.app
+```
+Verify who signed
+```
+codesign -dv --verbose=4 /path/to/app.app
+```
+
+- Check arch
+```
+file /path/to/app.app/Contents/MacOS/app-binary
+or
+lipo -info /path/to/app.app/Contents/MacOS/app-binary
+```
+
+
+- Fix unsigned app
+If Gatekeeper will show warnings like “This app cannot be opened because it is from an unidentified developer.”, Users must manually approve the app
+```
+sudo spctl --add /path/to/YourApp.app 
+or 
+xattr -d com.apple.quarantine /path/to/YourApp.app
+```
+
+
 - verify the date format used by local app when a date is selected with html datepicker
 
 - dates from (old) DB are stored w/ time as 00:00:00. New app will save it w/o time. Time portion is handled in utils.formatDate while loading the date.

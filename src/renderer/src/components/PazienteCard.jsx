@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { calculateAge, formatDateAsSettings } from '../utils'
+import { calculateAge, formatDateAsSettings } from '../utils/dateUtils'
 
 export const PazienteCard = ({paziente}) => {
 
