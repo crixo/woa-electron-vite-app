@@ -1,4 +1,4 @@
-const {app} = require('electron');
+const {app, dialog} = require('electron');
 const log = require('electron-log');
 const {autoUpdater} = require("electron-updater");
 
@@ -14,6 +14,8 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
+autoUpdater.autoDownload = false // default is true
+
 function sendStatusToWindow(text) {
   log.info(text);
   //win.webContents.send('message', text);
@@ -24,6 +26,16 @@ autoUpdater.on('checking-for-update', () => {
 })
 autoUpdater.on('update-available', (info) => {
   sendStatusToWindow('Update available.');
+  //Prompt user to start download
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update avaialble',
+    message: 'A new version of WOA is available. Do you want to udpate now? If no, you will be asked at next lanch of the app',
+    buttons: ['Update', 'No']
+  }).then(res => {
+    let buttonIndex = res.response
+    if(buttonIndex === 0) autoUpdater.downloadUpdate()
+  })
 })
 autoUpdater.on('update-not-available', (info) => {
   sendStatusToWindow('Update not available.');
@@ -39,6 +51,16 @@ autoUpdater.on('download-progress', (progressObj) => {
 })
 autoUpdater.on('update-downloaded', (info) => {
   sendStatusToWindow('Update downloaded');
+  // Prompt the user to install update
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update downloaded ready to install',
+    message: 'Install and restart the app now?',
+    buttons: ['Yes', 'Later']
+  }).then(res => {
+    let buttonIndex = res.response
+    if(buttonIndex === 0) autoUpdater.quitAndInstall(false, true)
+  })  
 });
 
 

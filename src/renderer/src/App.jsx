@@ -32,10 +32,11 @@ export default function App() {
       <ConsultoProvider>
       <div>
         <nav className="bg-gray-800">
-          <div className="container mx-auto p-2">
+          <div className="container mx-auto p-2 flex justify-between items-center">
             <Link to="/">
               <h2 className="text-white text-2xl font-bold">WOA</h2>
             </Link>
+            <span className="text-gray-400 text-sm">Version X.X.X</span>
           </div>
         </nav>
 
