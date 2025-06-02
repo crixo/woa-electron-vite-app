@@ -9,6 +9,7 @@ import os from 'os';
 import { setupPazienteDAL } from './pazienteDAL';
 import { loadConfig, dumpConfig, shareSettings } from './config';
 import log from 'electron-log';
+import './electron-updater'
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -104,7 +105,6 @@ function createLocateDBWindow() {
   });
 }
 
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -173,4 +173,8 @@ process.on('uncaughtException', (error) => {
 
 process.on('unhandledRejection', (reason, promise) => {
     log.error('Unhandled Promise Rejection:', reason);
+});
+
+ipcMain.handle('get-app-version', () => {
+  return app.getVersion();
 });

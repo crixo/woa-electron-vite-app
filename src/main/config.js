@@ -67,3 +67,4 @@ ipcMain.handle("open-file-dialog", async () => {
         return result.filePaths[0]; // Return full file path
     }
 });
+

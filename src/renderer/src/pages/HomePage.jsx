@@ -11,6 +11,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState();
   const [hasMore, setHasMore] = useState(true); // Assume more data available
   const [searchNumber, setSearchNumber] = useState(0)
+  const [version, setVersion] = useState("");
 
   const getPazienti = async (pageNumber = 1) => {
     //e.preventDefault()
@@ -62,6 +63,11 @@ const HomePage = () => {
 //   useEffect(() => {
 //     console.log("Updated pazienti:", pazienti.length);
 // }, [pazienti]); // Runs every time users change
+
+  useEffect(() => {
+      settings.getVersion().then(setVersion);
+  }, []);
+
 
   return (
     //if loading=yes, then display "loading"
@@ -137,7 +143,10 @@ const HomePage = () => {
             </button>
           </div>
         </>
-      ) : ( searchNumber>0  && <>no pazienti found</>)}
+      ) : ( searchNumber>0  && <p>no pazienti found</p>)}
+      <div class="text-sm text-center p-2 bg-gray-200 fixed bottom-0 left-0 right-0 z-50">
+          Version 1.0.0
+      </div>
     </div>
   )
 }

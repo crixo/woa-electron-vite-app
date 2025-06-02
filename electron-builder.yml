@@ -10,6 +10,8 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
 asarUnpack:
   - resources/**
+publish:
+  provider: github
 win:
   executableName: woa-electron-vite-app
 nsis:
@@ -18,7 +20,9 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
-  ##identity: null
+  ##identity: null # skip signing
+  #identity: 'CrixoDev'
+  identity: 'Apple Development: cristiano.deg@gmail.com (5KDE7ZCFAZ)'
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -38,6 +42,6 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-publish:
-  provider: generic
-  url: https://example.com/auto-updates
+# publish:
+#   provider: generic
+#   url: https://example.com/auto-updates

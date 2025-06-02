@@ -1,10 +1,11 @@
 {
   "name": "woa-electron-vite-app",
-  "version": "1.0.2",
+  "version": "1.0.8",
   "description": "An Electron application with React",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
+  "repository": "https://github.com/crixo/woa-electron-vite-app",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -18,10 +19,12 @@
     "build:mac": "npm run rebuild-sqlite3 && npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
     "rebuild-sqlite3": "electron-rebuild -f -w better-sqlite3",
-    "prebuild:mac-x64": "node scripts/updateVersion.js",
     "build:mac-x64": "npm run rebuild-sqlite3-x64 && npm run build && electron-builder --mac --x64",
+    "prebuild:mac-x64": "node scripts/updateVersion.js",
     "build:mac-universal": "npm run build && electron-builder --mac --universal",
-    "rebuild-sqlite3-x64": "electron-rebuild -f -w --arch=x64 better-sqlite3"
+    "rebuild-sqlite3-x64": "electron-rebuild -f -w --arch=x64 better-sqlite3",
+    "prerelease:mac": "node scripts/updateVersion.js",
+    "release:mac": "npm run rebuild-sqlite3 && npm run build && electron-builder --mac --publish 'onTagOrDraft'"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -39,6 +42,7 @@
     "electron": "^35.1.5",
     "electron-builder": "^25.1.8",
     "electron-rebuild": "^3.2.9",
+    "electron-updater": "^6.6.2",
     "electron-vite": "^3.1.0",
     "eslint": "^9.24.0",
     "eslint-plugin-react": "^7.37.5",

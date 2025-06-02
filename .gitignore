@@ -9,4 +9,4 @@ logs
 # db
 *.db*
 
-config.yaml
+private
