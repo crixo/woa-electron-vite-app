@@ -29,7 +29,6 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "@fortawesome/fontawesome-free": "^6.7.2",
     "better-sqlite3": "^11.10.0",
     "electron-log": "^5.4.0",
     "electron-updater": "^6.6.2",
@@ -38,6 +37,7 @@
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.0.0",
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@tailwindcss/vite": "^4.1.6",
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^35.1.5",
@@ -52,6 +52,7 @@
     "prettier": "^3.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-error-boundary": "^6.0.0",
     "react-router-dom": "^7.6.0",
     "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.6",

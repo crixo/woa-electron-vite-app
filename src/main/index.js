@@ -178,3 +178,8 @@ process.on('unhandledRejection', (reason, promise) => {
 ipcMain.handle('get-app-version', () => {
   return app.getVersion();
 });
+
+ipcMain.handle('error-to-file', (_, error, stackTrace) => {
+  log.error('Error From React:', error, stackTrace)
+});
+

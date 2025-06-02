@@ -96,7 +96,7 @@ npm run rebuild-sqlite3
 npm run dev
 ```
 
-## Rebuild project for apecific
+## Rebuild project for apecific arch
 
 - Dowload repo into a specific folder for the target platform e. mac amd 
 ```
@@ -122,28 +122,20 @@ npm run rebuild-sqlite3
 npm run build:mac-universal
 ```
 
-- Once built, you can check whether the binary is universal by running:
+- Once built, you can check whether the binary arch by running:
 ```
-lipo -info dist/mac-universal/woa-electron-vite-app.app/Contents/MacOS/woa-electron-vite-app
-
+file /path/to/app.app/Contents/MacOS/app-binary
+```
+or
+```
+lipo -info /path/to/app.app/Contents/MacOS/app-binary
 ```
 
----
-
-
-## Note
-
-- [DaisyUI](https://yon.fun/top-tailwind-component-libs/)
-
-## Logbook
-
-- Use BrowserRouter works w/ Electron final package (win, mac, ..) BrowserRouter does not. BrowserRoute works only in dev mode.
-
-- use 
+## Signing
+- find the name of signing certificate and electron-build log for identity value 
 ```
 security find-identity -v -p codesigning
 ```
-to find the name of signing certificate and electron-build log for identity value
 
 - Sign app manually after bundle
 ```
@@ -161,22 +153,38 @@ Verify who signed
 codesign -dv --verbose=4 /path/to/app.app
 ```
 
-- Check arch
-```
-file /path/to/app.app/Contents/MacOS/app-binary
-or
-lipo -info /path/to/app.app/Contents/MacOS/app-binary
-```
-
-
-- Fix unsigned app
+## Fix unsigned app
 If Gatekeeper will show warnings like “This app cannot be opened because it is from an unidentified developer.”, Users must manually approve the app
+- Open the app manually via Terminal
 ```
-sudo spctl --add /path/to/YourApp.app 
-or 
-xattr -d com.apple.quarantine /path/to/YourApp.app
+open /path/to/YourApp.app
 ```
+This might still trigger Gatekeeper warnings, but it attempts to launch the app.
 
+- Add the app to the Gatekeeper exception list
+```
+sudo spctl --add /path/to/YourApp.app
+```
+Then, check the status with:
+
+```
+spctl --status
+```
+If it's enabled, you can disable Gatekeeper temporarily:
+
+```
+sudo spctl --master-disable
+```
+(Not recommended for long-term security reasons!)
+
+
+## Note
+
+- [DaisyUI](https://yon.fun/top-tailwind-component-libs/)
+
+## Logbook
+
+- Use BrowserRouter works w/ Electron final package (win, mac, ..) BrowserRouter does not. BrowserRoute works only in dev mode.
 
 - verify the date format used by local app when a date is selected with html datepicker
 

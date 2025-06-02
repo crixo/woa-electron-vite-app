@@ -22,11 +22,12 @@ import CreaValutazionePage from './pages/CreaValutazionePage'
 import ModificaValutazionePage from './pages/ModificaValutazionePage'
 import ErrorBoundary from './components/ErrorBoundary';
 import { SettingsProvider } from "./data/SettingsContext";
+import CustomErrorBoundary from './components/CustomErrorBoundary'
 
 
 export default function App() {
   return (
-     <ErrorBoundary>
+     <CustomErrorBoundary>
       <SettingsProvider>
     <PazienteProvider>
       <ConsultoProvider>
@@ -70,6 +71,6 @@ export default function App() {
       </ConsultoProvider> 
     </PazienteProvider>
     </SettingsProvider>
-    </ErrorBoundary>
+    </CustomErrorBoundary>
   )
 }

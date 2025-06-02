@@ -71,6 +71,10 @@ contextBridge.exposeInMainWorld('settings', {
   getVersion: () => ipcRenderer.invoke('get-app-version'),
 })
 
+contextBridge.exposeInMainWorld('errors', {
+  sendToFile: (error, stackTrace) => ipcRenderer.invoke('error-to-file', error, stackTrace),
+})
+
 // contextBridge.exposeInMainWorld("electron", {
 //     // Send the selected database path to the main process
 //     selectDatabase: (dbPath) => ipcRenderer.send("db-selected", dbPath),
