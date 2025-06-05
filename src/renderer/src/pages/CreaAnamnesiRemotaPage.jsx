@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { PazienteContext } from '../data/PazienteContext'
+import { PazienteContext } from '../contexts/PazienteContext'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
 import { PazienteCard } from '../components/PazienteCard'
 //import { VITE_BACKEND_URL } from "../App";

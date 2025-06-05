@@ -5,8 +5,4 @@ out
 .eslintcache
 logs
 *.log*
-
-# db
-*.db*
-
 private

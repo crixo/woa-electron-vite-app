@@ -1,5 +1,6 @@
-appId: com.electron.app
-productName: woa-electron-vite-app
+appId: it.webprofessor.woa-electron-vite-app
+productName: WOA
+#"copyright": "© 2025 Crixo All rights reserved.",
 directories:
   buildResources: build
 files:

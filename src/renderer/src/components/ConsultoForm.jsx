@@ -15,29 +15,29 @@ const ConsultoForm = ({ entity, onSubmit }) => {
       }}
     >
       <div className="space-y-2">
-        <label>Data</label>
+        <label className="form-label">Data</label>
         <input
           type="date"
           name="data"
           value={formatDateForFormField(formData.data)}
           onChange={handleChange}
-          className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+          className="form-field"
           placeholder="enter Data"
         />
       </div>
       <div className="space-y-2">
-        <label>Problema Iniziale</label>
+        <label className="form-label">Problema Iniziale</label>
         <input
           type="text"
           value={formData.problema_iniziale}
           name="problema_iniziale"
           onChange={handleChange}
-          className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+          className="form-field"
           placeholder="enter Problema Iniziale"
         />
       </div>
       <div>
-        <button className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
+        <button className="form-button">
           Salva
         </button>
         </div>

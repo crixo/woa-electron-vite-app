@@ -28,34 +28,34 @@ export const DataTable = ({ idConfig, entityType, data, onDeleting, deleteHandle
 
 
   return (
-    <div className="relative overflow-x-auto">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    
+    <div className="mt-6 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+      <table className="w-full border-collapse">
+        <thead className="bg-gray-200 dark:bg-gray-700">
           <tr>
             {headers.map((header) => (
-              (!header.startsWith('ID_') && <th scope="col" className="px-6 py-3" key={header}>
+              (!header.startsWith('ID_') && <th scope="col" className="p-2 border border-gray-300 dark:border-gray-600" key={header}>
                 {header}
               </th>)
             ))}
-            <th></th>
+            <th scope="col" className="p-2 border border-gray-300 dark:border-gray-600" ></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white dark:bg-gray-800">
           {dataNoFK.map((item, index) => (
             <tr
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               key={index}
             >
               {headers.map((header) => (
                 (!header.startsWith('ID_') && <td
                   scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="p-2 border border-gray-300 dark:border-gray-600"
                   key={header}
                 >
                   { renderRow(header,item) }
                 </td>)
               ))}
-                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
+                <td className="p-2 border border-gray-300 dark:border-gray-600 text-right">
                   <a
                     onClick={() => onDeleting(entityType, item, deleteHandler)}
                     className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 cursor-pointer"

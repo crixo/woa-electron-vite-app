@@ -1,6 +1,6 @@
 // utils.js
 import { DateTime } from 'luxon'
-import { useSettings } from '../data/SettingsContext';
+import { useSettings } from '../contexts/SettingsContext';
 
 export function calculateAge(dobStr) {
     if (!dobStr) return "-"; // Handle undefined or empty DOB

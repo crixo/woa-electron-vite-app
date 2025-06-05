@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import PazienteForm from '../components/PazienteForm'
-import { PazienteContext } from '../data/PazienteContext'
+import { PazienteContext } from '../contexts/PazienteContext'
 import { toast } from 'react-toastify'
 import { PazienteCard } from '../components/PazienteCard'
 

@@ -1,10 +1,11 @@
 {
-  "name": "woa-electron-vite-app",
+  "name": "woa",
   "version": "1.0.7",
-  "description": "An Electron application with React",
+  "description": "Web Osteopathic Application",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "Crixo",
+  "copyright": "© 2025 Crixo All rights reserved.",
+  "homepage": "https://github.com/crixo/",
   "repository": "https://github.com/crixo/woa-electron-vite-app",
   "scripts": {
     "format": "prettier --write .",

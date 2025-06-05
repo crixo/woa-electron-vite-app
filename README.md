@@ -161,6 +161,20 @@ open /path/to/YourApp.app
 ```
 This might still trigger Gatekeeper warnings, but it attempts to launch the app.
 
+- Try to remove the attribute if present
+```
+xattr /path/to/YourApp.app
+```
+get more detials about quarantine flag
+```
+xattr -p com.apple.quarantine /path/to/YourApp.app
+```
+remove the flag
+```
+xattr -d com.apple.quarantine /path/to/YourApp.app
+```
+
+
 - Add the app to the Gatekeeper exception list
 ```
 sudo spctl --add /path/to/YourApp.app
@@ -176,6 +190,7 @@ If it's enabled, you can disable Gatekeeper temporarily:
 sudo spctl --master-disable
 ```
 (Not recommended for long-term security reasons!)
+
 
 
 ## Note

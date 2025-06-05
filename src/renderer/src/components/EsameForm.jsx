@@ -25,7 +25,7 @@ const EsameForm = ({ esame, onSubmit, tipi }) => {
           name="data"
           value={formatDateForFormField(formData.data)}
           onChange={handleChange}
-          className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+          className="form-field"
           placeholder="enter Data"
         />
       </div>
@@ -35,7 +35,7 @@ const EsameForm = ({ esame, onSubmit, tipi }) => {
           name="tipo"
           value={formData.tipo}
           onChange={handleChange}
-          className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+          className="form-field"
         >
           <option value="">-- Scegli --</option>
           {tipi.map((tipo) => (
@@ -52,12 +52,12 @@ const EsameForm = ({ esame, onSubmit, tipi }) => {
           name="descrizione"
           value={formData.descrizione}
           onChange={handleChange}
-          className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+          className="form-field"
           placeholder="enter Descrizione"
         />
       </div>
       <div>
-        <button className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
+        <button className="form-button">
           Salva
         </button>
         </div>

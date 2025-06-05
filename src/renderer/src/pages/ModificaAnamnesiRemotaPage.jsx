@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { PazienteContext } from '../data/PazienteContext'
+import { PazienteContext } from '../contexts/PazienteContext'
 import { useParams } from 'react-router-dom'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
 import { PazienteCard } from '../components/PazienteCard'

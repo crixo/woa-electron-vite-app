@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
-import { PazienteContext } from '../data/PazienteContext'
-import { ConsultoContext } from '../data/ConsultoContext'
+import { PazienteContext } from '../contexts/PazienteContext'
+import { ConsultoContext } from '../contexts/ConsultoContext'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { ConsultoCard } from '../components/ConsultoCard'

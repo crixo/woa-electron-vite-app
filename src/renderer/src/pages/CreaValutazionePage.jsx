@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { ConsultoContext } from '../data/ConsultoContext'
+import { ConsultoContext } from '../contexts/ConsultoContext'
 import PazienteConsultoCards from '../components/PazienteConsultoCards'
-import { PazienteContext } from '../data/PazienteContext'
+import { PazienteContext } from '../contexts/PazienteContext'
 import ValutazioneForm from '../components/ValutazioneForm'
 
 const CreaValutazionePage = () => {

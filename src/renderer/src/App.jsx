@@ -5,10 +5,10 @@ import ModificaPazientePage from './pages/ModificaPazientePage'
 import PazientePage from './pages/PazientePage'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { PazienteProvider } from './data/PazienteContext'
+import { PazienteProvider } from './contexts/PazienteContext'
 import CreaAnamnesiRemotaPage from './pages/CreaAnamnesiRemotaPage'
 import ModificaAnamnesiRemotaPage from './pages/ModificaAnamnesiRemotaPage'
-import { ConsultoProvider } from './data/ConsultoContext'
+import { ConsultoProvider } from './contexts/ConsultoContext'
 import CreaConsultoPage from './pages/CreaConsultoPage'
 import ModificaConsultoPage from './pages/ModificaConsultoPage'
 import ConsultoPage from './pages/ConsultoPage'
@@ -20,9 +20,9 @@ import CreaAnamnesiProssimaPage from './pages/CreaAnamnesiProssimaPage'
 import ModificaAnamnesiProssimaPage from './pages/ModificaAnamnesiProssimaPage'
 import CreaValutazionePage from './pages/CreaValutazionePage'
 import ModificaValutazionePage from './pages/ModificaValutazionePage'
-import ErrorBoundary from './components/ErrorBoundary';
-import { SettingsProvider } from "./data/SettingsContext";
+import { SettingsProvider } from "./contexts/SettingsContext";
 import CustomErrorBoundary from './components/CustomErrorBoundary'
+import TopBar from './components/TopBar'
 
 
 export default function App() {
@@ -32,15 +32,8 @@ export default function App() {
     <PazienteProvider>
       <ConsultoProvider>
       <div>
-        <nav className="bg-gray-800">
-          <div className="container mx-auto p-2 flex justify-between items-center">
-            <Link to="/">
-              <h2 className="text-white text-2xl font-bold">WOA</h2>
-            </Link>
-            <span className="text-gray-400 text-sm">Version X.X.X</span>
-          </div>
-        </nav>
 
+        <TopBar />
         <div className="container mx-auto p-2 h-full">
           <Routes>
             <Route index element={<HomePage />}></Route>

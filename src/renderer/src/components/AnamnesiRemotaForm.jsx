@@ -17,24 +17,24 @@ const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
       }}
     >
         <div className="space-y-2">
-          <label>Data</label>
+          <label className="form-label">Data</label>
           <input
             type="date"
             name="data"
             value={formatDateForFormField(formData.data)}
             onChange={handleChange}
-            className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+            className="form-field"
             placeholder="enter Data"
           />
         </div>
 
         <div className="space-y-2">
-          <label>Tipo</label>
+          <label className="form-label">Tipo</label>
           <select
             name="tipo"
             value={formData.tipo}
             onChange={handleChange}
-            className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+            className="form-field"
           >
             <option value="">-- Scegli --</option>
             {tipi.map((tipo) => (
@@ -45,18 +45,18 @@ const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
           </select>
         </div>
         <div className="space-y-2">
-          <label>Descrizione</label>
+          <label className="form-label">Descrizione</label>
           <input
             type="text"
             value={formData.descrizione}
             name="descrizione"
             onChange={handleChange}
-            className="w-full block border p-3 text-gray-600 rounded focus:outline-none focus shadoow-outline focus:border-blue-200 placeholder-gray-400"
+            className="form-field"
             placeholder="enter Descrizione"
           />
         </div>
         <div>
-          <button className="block w-full mt-6 bg-blue-700 text-white rounded-sm px-4 py-2 font-bold hover:bg-blue-600 hover:cursor-pointer">
+          <button className="form-button">
             Salva
           </button>
         </div>
