@@ -114,6 +114,7 @@ const HomePage = () => {
           <button className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
             Azione 3
           </button>
+          <Link to="/statistics">Stats</Link>
         </div>
       </div>
 

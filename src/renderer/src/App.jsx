@@ -23,6 +23,7 @@ import ModificaValutazionePage from './pages/ModificaValutazionePage'
 import { SettingsProvider } from "./contexts/SettingsContext";
 import CustomErrorBoundary from './components/CustomErrorBoundary'
 import TopBar from './components/TopBar'
+import StatisticsPage from './pages/StatisticsPage'
 
 
 export default function App() {
@@ -56,7 +57,9 @@ export default function App() {
             <Route path="/consulto/:id/trattamenti/create" element={ <CreaTrattamentoPage />}></Route>          
 
             <Route path="/valutazione/:id/edit" element={ <ModificaValutazionePage />}></Route>
-            <Route path="/consulto/:id/valutazioni/create" element={ <CreaValutazionePage />}></Route>                
+            <Route path="/consulto/:id/valutazioni/create" element={ <CreaValutazionePage />}></Route>       
+
+            <Route path="/statistics" element={ <StatisticsPage />}></Route>
           </Routes>         
         </div>
         <ToastContainer />

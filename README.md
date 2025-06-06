@@ -192,6 +192,9 @@ sudo spctl --master-disable
 (Not recommended for long-term security reasons!)
 
 
+## AI
+- Installing the [model](https://cheatsheet.md/llm-leaderboard/how-to-run-mistral-locally.en)
+
 
 ## Note
 

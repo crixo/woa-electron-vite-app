@@ -31,12 +31,21 @@ function createMainWindow() {
     height: config.mainWindow.height,
     show: false,
     autoHideMenuBar: true,
+    //icon: process.cwd() + '/build/woa.icns',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
+
+  // Retrieve product name dynamically and append the version
+  const productName = app.getName();
+  const productVersion = app.getVersion();
+  // Ensure the title is set after the page loads
+  mainWindow.webContents.once('did-finish-load', () => {
+    mainWindow.setTitle(`${productName} v${productVersion}`);
+  });
   
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -74,6 +83,7 @@ function createLocateDBWindow() {
           sandbox: false,
       },
   });
+
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     locateDBWindow.loadURL(process.env['ELECTRON_RENDERER_URL']+'/locate-db.html')

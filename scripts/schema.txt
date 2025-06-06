@@ -1,0 +1,100 @@
+This is my sqlite db schema
+
+CREATE TABLE [anamnesi_prossima] (
+	[ID_consulto]	integer,
+	[ID_paziente]	integer,
+	[prima_volta]	nvarchar(50) COLLATE NOCASE,
+	[tipologia]	nvarchar(50) COLLATE NOCASE,
+	[localizzazione]	nvarchar(50) COLLATE NOCASE,
+	[irradiazione]	nvarchar(50) COLLATE NOCASE,
+	[periodo_insorgenza]	nvarchar(50) COLLATE NOCASE,
+	[durata]	nvarchar(50) COLLATE NOCASE,
+	[familiarita]	nvarchar(50) COLLATE NOCASE,
+	[altre_terapie]	nvarchar(50) COLLATE NOCASE,
+	[varie]	nvarchar COLLATE NOCASE,
+	PRIMARY KEY(ID_paziente, ID_consulto),
+	FOREIGN KEY(ID_consulto) REFERENCES consulto(ID)
+)
+
+CREATE TABLE "anamnesi_remota" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`tipo`	integer,
+	`descrizione`	nvarchar,
+	FOREIGN KEY(tipo) REFERENCES lkp_anamnesi(ID),
+	FOREIGN KEY(ID_paziente) REFERENCES paziente(ID)
+)
+
+CREATE TABLE "consulto" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`problema_iniziale`	nvarchar,
+	FOREIGN KEY(ID_paziente) REFERENCES paziente(ID)
+)
+
+CREATE TABLE "esame" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_consulto`	integer,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`descrizione`	nvarchar,
+	`tipo`	integer,
+	FOREIGN KEY(tipo) REFERENCES lkp_esame(ID),
+	FOREIGN KEY(ID_consulto) REFERENCES consulto(ID),
+)
+
+CREATE TABLE "lkp_anamnesi" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`descrizione`	nvarchar(50)
+)
+
+CREATE TABLE "lkp_esame" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`descrizione`	nvarchar(50)
+)
+
+CREATE TABLE [lkp_provincia] (
+	[sigla]	nvarchar(2) COLLATE NOCASE,
+	[descrizione]	nvarchar(50) COLLATE NOCASE
+
+)
+
+CREATE TABLE "paziente" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`cognome`	nvarchar(50),
+	`nome`	nvarchar(50),
+	`professione`	nvarchar(50),
+	`indirizzo`	nvarchar(50),
+	`citta`	nvarchar(50),
+	`telefono`	nvarchar(50),
+	`cellulare`	nvarchar(50),
+	`prov`	nvarchar(2),
+	`cap`	nvarchar(5),
+	`email`	nvarchar(100),
+	`data_nascita`	datetime
+)
+
+CREATE TABLE "trattamento" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_consulto`	integer,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`descrizione`	nvarchar,
+	FOREIGN KEY(ID_consulto) REFERENCES consulto(ID)
+)
+
+CREATE TABLE "valutazione" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_consulto`	integer,
+	`ID_paziente`	integer,
+	`strutturale`	nvarchar,
+	`cranio_sacrale`	nvarchar,
+	`ak_ortodontica`	nvarchar,
+	FOREIGN KEY(ID_consulto) REFERENCES consulto(ID)
+)
+
+Keep in mind the DB is SQLite, use only function supported by it
+Generate always a single query.
+

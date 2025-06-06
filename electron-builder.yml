@@ -21,6 +21,7 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
+  icon: build/woa.icns
   ##identity: null # skip signing
   #identity: 'CrixoDev'
   identity: 'Apple Development: cristiano.deg@gmail.com (5KDE7ZCFAZ)'
