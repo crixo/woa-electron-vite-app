@@ -13,6 +13,7 @@ const ModificaAnamnesiProssimaPage = () => {
     const navigate = useNavigate()
 
     const { id } = useParams() // Extracts the ID from URL
+    console.log('editing anamnesi prossima:'+id)
     const entityToUpd = consulto.anamnesiProssime.find(e=>e.ID==id)
     const [entity, setEntity] = useState(entityToUpd)        
   

@@ -4,21 +4,25 @@ import { Link } from 'react-router-dom'
 
 export default function (){
     return (
-        <ThemeProvider>
-        {/* <nav className="bg-gray-800">
-          <div className="container mx-auto p-2 flex justify-between items-center">
-            <Link to="/">
-              <h2 className="text-white text-2xl font-bold">WOA</h2>
-            </Link>
-            <span className="text-gray-400 text-sm"><ThemeToggle /></span>
-          </div>
-        </nav> */}
-        <nav class="p-4 bg-gray-200 dark:bg-gray-800 flex justify-between">
-          <h1 class="text-lg font-bold text-black dark:text-white">
-            <Link to="/">WOA</Link>
-          </h1>
-          <span className="text-gray-400 text-sm"><ThemeToggle /></span>
-        </nav>        
-        </ThemeProvider>        
+  <ThemeProvider>
+    <nav class="flex-shrink-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                          <Link to="/">WOA</Link>
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                  <ThemeToggle />
+                </div>
+            </div>
+        </div>
+    </nav>     
+  </ThemeProvider>        
     )
 }

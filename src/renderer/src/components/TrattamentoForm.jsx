@@ -8,7 +8,7 @@ const TrattamentoForm = ({ entity, onSubmit }) => {
   const handleChange = (e) => handleFormChange(e, formData, setFormData);
 
   return (
-    <form
+    <form className='form-container'
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit(formData)
@@ -36,7 +36,7 @@ const TrattamentoForm = ({ entity, onSubmit }) => {
           placeholder="enter Descrizione"
         />
       </div>
-      <div>
+      <div className="flex justify-center">
         <button className="form-button">
           Salva
         </button>

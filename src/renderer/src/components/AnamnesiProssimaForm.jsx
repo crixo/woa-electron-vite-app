@@ -10,7 +10,7 @@ const AnamnesiProssimaForm = ({ entity, onSubmit }) => {
   console.log(formData)
 
   return (
-    <form
+    <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit(formData)
@@ -115,7 +115,7 @@ const AnamnesiProssimaForm = ({ entity, onSubmit }) => {
           placeholder="enter Varie"
         />
       </div>      
-      <div>
+      <div className="flex justify-center">
         <button className="form-button">
           Salva
         </button>

@@ -7,7 +7,7 @@ import { PazienteCard } from '../components/PazienteCard'
 import { DataTable } from '../components/DataTable'
 import { toast } from 'react-toastify'
 import { DeleteModal } from '../components/DeleteModal'
-//
+import { DataTableTile } from '../components/DataTableTitle'
 
 const PazientePage = () => {
   const { id } = useParams() // Extracts the ID from URL
@@ -78,44 +78,22 @@ const PazientePage = () => {
         <>
           <PazienteCard paziente={paziente} />
 
-          <div className="flex items-center space-x-2">
-            <h3 className="h3-primary">Anamnesi Remote</h3>
-            <Link
-              to={`/paziente/${paziente.ID}/anamnesi-remote/create`}
-              className="text-blue-600 hover:underline"
-            >
-              <i className="fa fa-plus"></i>
-            </Link>
-          </div>
+          <DataTableTile title="Anamnesi Prossime" createPageUri={`/paziente/${paziente.ID}/anamnesi-remote/create`} />
+          <DataTable 
+            entityType='Anamnesi Remote'
+            data={paziente.anamnesiRemote} 
+            idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
+            onDeleting={handleDeleteClick}
+            deleteHandler={onDeleteAnamnesiRemota}
+            convertLookup={convertLookupAnamnesi} />
 
-          <div>
-            <DataTable 
-              entityType='Anamnesi Remota'
-              data={paziente.anamnesiRemote} 
-              idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              onDeleting={handleDeleteClick}
-              deleteHandler={onDeleteAnamnesiRemota}
-              convertLookup={convertLookupAnamnesi} />
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <h3 className="h3-primary">Consulti</h3>
-            <Link
-              to={`/paziente/${paziente.ID}/consulti/create`}
-              className="text-blue-600 hover:underline"
-            >
-              <i className="fa fa-plus"></i>
-            </Link>
-          </div>
-          <div>
-            <DataTable 
-              entityType='Consulto'
-              data={paziente.consulti} 
-              idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}
-              onDeleting={handleDeleteClick}
-              deleteHandler={onDeleteConsulto} />
-          </div>
-
+          <DataTableTile title="Consulti" createPageUri={`/paziente/${paziente.ID}/consulti/create`} />
+          <DataTable 
+            entityType='Consulto'
+            data={paziente.consulti} 
+            idConfig={{entityUrlSegment:'/consulto/:id', iconCss:'fa fa-notes-medical'}}
+            onDeleting={handleDeleteClick}
+            deleteHandler={onDeleteConsulto} />
 
 {modalOpen && (
   <DeleteModal 

@@ -6,7 +6,7 @@ export const PazienteCard = ({paziente}) => {
   const [showBio, setShowBio] = useState(false)
 
     return(
-      <div className="max-w-sm min-w-[300px] mx-auto bg-white dark:bg-gray-800 p-4 rounded-lg shadow relative">
+      <div className="max-w-sm min-w-[300px] mx-auto bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow relative">
         <div className="flex items-center">
           <div className="ml-4">
             <h2 className="text-lg font-semibold text-black dark:text-white">{paziente.nome} {paziente.cognome}</h2>

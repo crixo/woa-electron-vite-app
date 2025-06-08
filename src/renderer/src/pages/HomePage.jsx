@@ -118,27 +118,29 @@ const HomePage = () => {
 
 
       {pazienti.length > 0  ? (
-        <div className="grid grid-cols-3 lg:grid-cols-4 gap-4 mt-5">
-          {pazienti.map((p, index) => (
-            <div key={index} className="card">
-              <Paziente key={index} paziente={p} />
-            </div>
+        <div className='w-full max-w-6xl mx-auto p-6 dark:bg-gray-900 bg-white rounded-lg shadow-md'>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {pazienti.map((p) => (
+            <Paziente paziente={p} />
           ))}
-          <div className="col-span-2 lg:col-span-4 flex justify-center items-center space-x-4 mt-4">
+        </div>
+        <div>
+          <div className="flex justify-center items-center space-x-6 mt-6">
             <button 
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50"
+              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50"
               onClick={() => getPazienti(currentPage - 1)} 
               disabled={currentPage === 1}>
               Previous
             </button>
-            <span className="px-4 py-2 rounded-lg bg-gray-300 text-gray-900 dark:bg-gray-600 dark:text-white shadow">Page {currentPage}</span>
+            <span className="px-4 py-2 rounded-full bg-blue-500 dark:bg-blue-400 text-white dark:text-gray-900 font-bold shadow-md">Page {currentPage}</span>
             <button 
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg disabled:opacity-50"
+              className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50"
               onClick={() => getPazienti(currentPage + 1)} 
               disabled={!hasMore}>
               Next
             </button>
           </div>
+        </div>
         </div>
       ) : ( searchNumber>0  && <p>no pazienti found</p>)}
     </div>

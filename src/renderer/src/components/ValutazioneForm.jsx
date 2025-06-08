@@ -10,7 +10,7 @@ const ValutazioneForm = ({ entity, onSubmit }) => {
   console.log(formData)
 
   return (
-    <form
+    <form className='form-container'
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit(formData)
@@ -49,7 +49,7 @@ const ValutazioneForm = ({ entity, onSubmit }) => {
           placeholder="enter AK Ortodontica"
         />
       </div>
-      <div>
+      <div className="flex justify-center">
         <button className="form-button">
           Salva
         </button>

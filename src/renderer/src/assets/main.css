@@ -3,7 +3,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 .h3-primary{
-    @apply p-3 rounded-lg bg-gray-200 dark:bg-gray-800 shadow-md max-w-3xl mx-auto my-4 text-lg
+    @apply p-3 rounded-lg bg-gray-200 dark:bg-gray-800 shadow-md my-2 text-lg text-center min-w-1/2 
+}
+
+.form-container{
+    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow my-2
 }
 
 .form-label{
@@ -15,7 +19,7 @@
 }
 
 .form-button{
-    @apply mt-4 p-2 bg-blue-500 dark:bg-blue-700 text-white rounded
+    @apply mt-4 p-2 bg-blue-500 dark:bg-blue-700 text-white rounded w-32
 }
 
 .button-crud{

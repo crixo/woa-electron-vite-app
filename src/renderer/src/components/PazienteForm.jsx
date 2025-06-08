@@ -13,7 +13,7 @@ const PazienteForm = ({ paziente, onSubmit }) => {
   )
 
   return (
-    <form className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
+    <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit(formData)
@@ -140,11 +140,11 @@ const PazienteForm = ({ paziente, onSubmit }) => {
           placeholder="enter Data di Nascita"
         />
       </div>
-      <div>
+      <div className="flex justify-center">
         <button className="form-button">
           Salva
         </button>
-        </div>
+      </div>
     </form>
   )
 }

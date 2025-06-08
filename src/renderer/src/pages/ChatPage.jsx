@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLayout } from '../contexts/LayoutContext';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState([
@@ -15,6 +16,8 @@ export default function ChatInterface() {
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef(null);
 
+    const { setBottomSection } = useLayout();
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -22,6 +25,45 @@ export default function ChatInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // This page has a custom bottom section instead of chat input
+    setBottomSection(
+      <div 
+        className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4"
+        style={{ height: '80px', flexShrink: 0 }}
+      >
+        <div className="flex items-end space-x-3">
+          <div className="flex-1">
+            <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your message..."
+              className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600"
+              rows={1}
+              style={{ minHeight: '44px', maxHeight: '44px' }}
+            />
+          </div>
+          <button
+            onClick={handleSendMessage}
+            disabled={!inputText.trim()}
+            className={`p-3 rounded-xl transition-all ${
+              inputText.trim()
+                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white'
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    );
+    
+    return () => {
+      setBottomSection(null);
+    };
+  }, [setBottomSection]);  
 
   const handleSendMessage = () => {
     if (inputText.trim()) {
@@ -60,7 +102,7 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white" style={{ height: '100vh', overflow: 'hidden', paddingTop: '0px' }}>
+    <div>
       {/* Header - Fixed */}
       <div 
         className="bg-white dark:bg-gray-800 px-6 py-2 flex items-center"
@@ -71,7 +113,7 @@ export default function ChatInterface() {
 
       {/* Messages Area - Scrollable */}
       <div 
-        className="px-6 py-4 space-y-4 overflow-y-auto"
+        className="px-6 py-4 space-y-4"
         style={{ 
           height: 'calc(100vh - 120px)', 
           flexGrow: 1,
@@ -111,36 +153,6 @@ export default function ChatInterface() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area - Fixed */}
-      <div 
-        className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4"
-        style={{ height: '80px', flexShrink: 0 }}
-      >
-        <div className="flex items-end space-x-3">
-          <div className="flex-1">
-            <textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600"
-              rows={1}
-              style={{ minHeight: '44px', maxHeight: '44px' }}
-            />
-          </div>
-          <button
-            onClick={handleSendMessage}
-            disabled={!inputText.trim()}
-            className={`p-3 rounded-xl transition-all ${
-              inputText.trim()
-                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white'
-                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-            }`}
-          >
-                          Send
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

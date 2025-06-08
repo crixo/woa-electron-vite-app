@@ -8,6 +8,7 @@ import { PazienteCard } from '../components/PazienteCard'
 import { DataTable } from '../components/DataTable'
 import { DeleteModal } from '../components/DeleteModal'
 import { toast } from 'react-toastify'
+import { DataTableTile } from '../components/DataTableTitle'
 //
 
 const ConsultoPage = () => {
@@ -89,79 +90,40 @@ const ConsultoPage = () => {
 
           <ConsultoCard consulto={consulto} />
         </div>
-          <div className="flex items-center space-x-2">
-            <h3 className="h3-primary">Anamnesi Prossime</h3>
-            <Link
-              to={`/consulto/${consulto.ID}/anamnesi-prossime/create`}
-              className="text-blue-600 hover:underline"
-            >
-              <i className="fa fa-plus"></i>
-            </Link>
-          </div>
 
-          <div>
-            <DataTable
-              entityType='Anamnesi Prossima'
-              data={consulto.anamnesiProssime}
-              idConfig={{entityUrlSegment:'/anamnesi-prossima/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              onDeleting={handleDeleteClick}
-              deleteHandler={onDeleteAnamnesiProssima} />
-          </div>
+        <DataTableTile title="Anamnesi Prossime" createPageUri={`/consulto/${consulto.ID}/anamnesi-prossime/create`} />
+        <DataTable
+          entityType='Anamnesi Prossima'
+          data={consulto.anamnesiProssime}
+          idConfig={{entityUrlSegment:'/anamnesi-prossima/:id/edit', iconCss:'fas fa-pencil-alt'}}
+          onDeleting={handleDeleteClick}
+          deleteHandler={onDeleteAnamnesiProssima} />
 
-          <div className="flex items-center space-x-2">
-            <h3 className="h3-primary">Esami</h3>
-            <Link
-              to={`/consulto/${consulto.ID}/esami/create`}
-              className="text-blue-600 hover:underline"
-            >
-              <i className="fa fa-plus"></i>
-            </Link>
-          </div>
-          <div>
-            <DataTable 
-              entityType='Esame'
-              data={consulto.esami}
-              idConfig={{entityUrlSegment:'/esame/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              convertLookup={convertLookupEsami}
-              onDeleting={handleDeleteClick}
-              deleteHandler={onDeleteEsame} />
-          </div>
+        <DataTableTile title="Esami" createPageUri={`/consulto/${consulto.ID}/esami/create`} />
+        <DataTable 
+          entityType='Esame'
+          data={consulto.esami}
+          idConfig={{entityUrlSegment:'/esame/:id/edit', iconCss:'fas fa-pencil-alt'}}
+          convertLookup={convertLookupEsami}
+          onDeleting={handleDeleteClick}
+          deleteHandler={onDeleteEsame} />
 
-          <div className="flex items-center space-x-2">
-            <h3 className="h3-primary">Trattamenti</h3>
-            <Link
-              to={`/consulto/${consulto.ID}/trattamenti/create`}
-              className="text-blue-600 hover:underline"
-            >
-              <i className="fa fa-plus"></i>
-            </Link>
-          </div>
-          <div>
-            <DataTable 
-              entityType='Trattamento'
-              data={consulto.trattamenti} 
-              idConfig={{entityUrlSegment:'/trattamento/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              onDeleting={handleDeleteClick}
-              deleteHandler={onDeleteTrattamento} />
-          </div>
+        <DataTableTile title="Trattamenti" createPageUri={`/consulto/${consulto.ID}/trattamenti/create`} />
+        <DataTable 
+          entityType='Trattamento'
+          data={consulto.trattamenti} 
+          idConfig={{entityUrlSegment:'/trattamento/:id/edit', iconCss:'fas fa-pencil-alt'}}
+          onDeleting={handleDeleteClick}
+          deleteHandler={onDeleteTrattamento} />
+
          
-          <div className="flex items-center space-x-2">
-            <h3 className="h3-primary">Valutazioni</h3>
-            <Link
-              to={`/consulto/${consulto.ID}/valutazioni/create`}
-              className="text-blue-600 hover:underline"
-            >
-              <i className="fa fa-plus"></i>
-            </Link>
-          </div>
-          <div>
-            <DataTable 
-              entityType='Valutazione'
-              data={consulto.valutazioni} 
-              idConfig={{entityUrlSegment:'/valutazione/:id/edit', iconCss:'fas fa-pencil-alt'}}
-              onDeleting={handleDeleteClick}
-              deleteHandler={onDeleteValutazione} />
-          </div>
+        <DataTableTile title="Valutazioni" createPageUri={`/consulto/${consulto.ID}/valutazioni/create`} />
+        <DataTable 
+          entityType='Valutazione'
+          data={consulto.valutazioni} 
+          idConfig={{entityUrlSegment:'/valutazione/:id/edit', iconCss:'fas fa-pencil-alt'}}
+          onDeleting={handleDeleteClick}
+          deleteHandler={onDeleteValutazione} />
 
 {modalOpen && (
   <DeleteModal 

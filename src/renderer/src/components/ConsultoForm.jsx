@@ -36,11 +36,11 @@ const ConsultoForm = ({ entity, onSubmit }) => {
           placeholder="enter Problema Iniziale"
         />
       </div>
-      <div>
+      <div className="flex justify-center">
         <button className="form-button">
           Salva
         </button>
-        </div>
+      </div>
     </form>
   )
 }

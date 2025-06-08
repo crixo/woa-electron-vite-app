@@ -29,7 +29,7 @@ export const DataTable = ({ idConfig, entityType, data, onDeleting, deleteHandle
 
   return (
     
-    <div className="mt-6 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+    <div className="mb-4 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
       <table className="w-full border-collapse">
         <thead className="bg-gray-200 dark:bg-gray-700">
           <tr>

@@ -12,7 +12,7 @@ const EsameForm = ({ esame, onSubmit, tipi }) => {
 
 
   return (
-    <form
+    <form className='form-container'
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit(formData)
@@ -56,7 +56,7 @@ const EsameForm = ({ esame, onSubmit, tipi }) => {
           placeholder="enter Descrizione"
         />
       </div>
-      <div>
+      <div className="flex justify-center">
         <button className="form-button">
           Salva
         </button>
