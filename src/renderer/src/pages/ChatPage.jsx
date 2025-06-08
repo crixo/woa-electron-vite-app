@@ -1,34 +1,46 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLayout } from '../contexts/LayoutContext';
+import { useSettings } from '../contexts/SettingsContext';
+import { ChatMessages } from '../components/ChatMessages';
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! How can I help you today?", sender: "bot", timestamp: new Date() },
-    { id: 2, text: "Hi there! I'd like to know about React components.", sender: "user", timestamp: new Date() },
-    { id: 3, text: "Great question! React components are reusable pieces of UI that can manage their own state and lifecycle. They're the building blocks of React applications.", sender: "bot", timestamp: new Date() },
-    { id: 4, text: "That's really helpful! Can you tell me more about state management?", sender: "user", timestamp: new Date() },
-    { id: 5, text: "Absolutely! State management in React can be handled in several ways...", sender: "bot", timestamp: new Date() },
-    { id: 6, text: "What about hooks?", sender: "user", timestamp: new Date() },
-    { id: 7, text: "Hooks are a powerful feature introduced in React 16.8 that allow you to use state and other React features in functional components.", sender: "bot", timestamp: new Date() },
-    { id: 8, text: "Can you give me an example?", sender: "user", timestamp: new Date() },
-    { id: 9, text: "Sure! The useState hook is one of the most commonly used hooks. It allows you to add state to functional components.", sender: "bot", timestamp: new Date() }
-  ]);
-  const [inputText, setInputText] = useState('');
-  const messagesEndRef = useRef(null);
+  const hasRun = useRef(false);
+  const newChat = [
+    { id: 1, text: "Ciao. Sono il tuo assistente AI per la consultazione del tuo database pazienti. Cosa vorresti sapere oggi?", sender: "bot", timestamp: new Date() },
+  ]
+  const [messages, setMessages] = useState([])
+  const [inputText, setInputText] = useState('')
+  const [conversationId, setConversationId] = useState('')  
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadingMessage, setLoadingMessage] = useState('Loading...')
+  const [aiProvider, setAiProvider] = useState('')
+  const [models, setModels] = useState([])
 
-    const { setBottomSection } = useLayout();
+  const { setBottomSection } = useLayout()
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const settings = useSettings()
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const startNewChat = async (aiProvider) => {
+    setIsLoading(true);
+    setLoadingMessage('Calling API...');
+    try {
+      console.log('Starting new chat...');
+      setMessages([])
+      const newConversationId = await dal.startConversation(aiProvider)
+      setConversationId(newConversationId)
+      console.log('conversation started with id:'+newConversationId)
+      setMessages(newChat)        
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false);
+    }      
+  }
 
   useEffect(() => {
     // This page has a custom bottom section instead of chat input
-    setBottomSection(
+    if(aiProvider && conversationId){
+      setBottomSection(
       <div 
         className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4"
         style={{ height: '80px', flexShrink: 0 }}
@@ -47,9 +59,9 @@ export default function ChatInterface() {
           </div>
           <button
             onClick={handleSendMessage}
-            disabled={!inputText.trim()}
+            disabled={!inputText.trim() && isLoading}
             className={`p-3 rounded-xl transition-all ${
-              inputText.trim()
+              inputText.trim() && !isLoading
                 ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
             }`}
@@ -58,36 +70,79 @@ export default function ChatInterface() {
           </button>
         </div>
       </div>
-    );
-    
-    return () => {
-      setBottomSection(null);
-    };
-  }, [setBottomSection]);  
+      )
+    }
 
-  const handleSendMessage = () => {
-    if (inputText.trim()) {
-      const newUserMessage = {
-        id: messages.length + 1,
-        text: inputText,
-        sender: "user",
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, newUserMessage]);
-      setInputText('');
-      
-      // Simulate bot response
-      setTimeout(() => {
-        const botResponse = {
-          id: messages.length + 2,
-          text: "Thanks for your message! I'm here to help with any questions you have.",
-          sender: "bot",
+    return () => {
+      setBottomSection(null)
+    }
+  }, [inputText, setInputText, setBottomSection, conversationId]);  
+
+  useEffect(()=>{
+    if (!hasRun.current) {
+      if(aiProvider)
+        startNewChat(aiProvider);
+      else
+        console.log('select an AI provider')
+      hasRun.current = true;
+    }
+  },[])
+
+  useEffect(()=>{
+    const providersList = Object.keys(settings.aiProviders);
+    setModels(providersList)
+  },[])
+
+  const handleSelection = (e) => {
+    const provider = e.target.value
+    setAiProvider(provider);
+    startNewChat(provider)
+  };
+ 
+  const handleNewChat = async () => {
+    await startNewChat(aiProvider)
+  };  
+
+  const handleSendMessage = async () => {
+    setIsLoading(true);
+    setLoadingMessage('Calling API...');
+
+    try {
+      if (inputText.trim()) {
+        const newUserMessage = {
+          id: messages.length + 1,
+          text: inputText,
+          sender: "user",
           timestamp: new Date()
         };
-        setMessages(prev => [...prev, botResponse]);
-      }, 1000);
+        
+        setMessages(prev => [...prev, newUserMessage]);
+        setInputText('');
+
+        console.log('sending question in conversation id:'+conversationId)
+
+        const answer = await dal.askToLLM(conversationId, inputText)
+        // await new Promise(resolve => setTimeout(resolve, 4000)); // Simulate a 2-second delay
+        // const answer = 'test answer'
+
+        console.log('Bot answer: '+answer)
+        
+        // Simulate bot response
+        // setTimeout(() => {
+          const botResponse = {
+            id: messages.length + 2,
+            text: answer,
+            sender: "bot",
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, botResponse]);
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false);
     }
+
   };
 
   const handleKeyPress = (e) => {
@@ -97,62 +152,55 @@ export default function ChatInterface() {
     }
   };
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const LoadingOverlay = ({ isVisible, message = 'Loading...' }) => {
+    if (!isVisible) return null;    
+    return (
+      <div className="fixed inset-0 bg-black/30 dark:bg-white/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-lg p-8 flex flex-col items-center shadow-2xl border border-gray-200/50 dark:border-gray-700/50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mb-4"></div>
+          <p className="text-lg font-medium text-gray-800 dark:text-gray-100">{message}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">Please wait...</p>
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div>
-      {/* Header - Fixed */}
-      <div 
-        className="bg-white dark:bg-gray-800 px-6 py-2 flex items-center"
-        style={{ height: '40px', flexShrink: 0 }}
-      >
-        <p className="text-sm text-gray-600 dark:text-gray-400">Online now</p>
-      </div>
+    <>
+     {/* Header - Fixed -> make sure containaer does not use py-X otherwise sticky won't work */}
+    <div className="fixed top-16 left-0 right-0 z-40 bg-blue-50 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-800 transition-colors duration-300 flex items-center justify-between px-4">
+      <select name="provider" onChange={handleSelection} className="form-field-fit">
+          <option value="" disabled selected>Scegli un AI provider</option>
+          {models.map((m, index) => (
+              <option key={index} value={m}>
+                  {m}
+              </option>
+          ))}
+      </select>
 
-      {/* Messages Area - Scrollable */}
-      <div 
-        className="px-6 py-4 space-y-4"
-        style={{ 
-          height: 'calc(100vh - 120px)', 
-          flexGrow: 1,
-          flexShrink: 1
-        }}
-      >
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`max-w-xs lg:max-w-md xl:max-w-lg ${message.sender === 'user' ? 'order-2' : 'order-1'}`}>
-              <div
-                className={`px-4 py-3 rounded-2xl shadow-sm ${
-                  message.sender === 'user'
-                    ? 'bg-blue-500 dark:bg-blue-600 text-white'
-                    : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600'
-                }`}
-              >
-                <p className="text-sm leading-relaxed">{message.text}</p>
-              </div>
-              <div
-                className={`text-xs mt-1 text-gray-500 dark:text-gray-400 ${
-                  message.sender === 'user' ? 'text-right' : 'text-left'
-                }`}
-              >
-                {formatTime(message.timestamp)}
-              </div>
-            </div>
-            {message.sender === 'bot' && (
-              <div className="w-8 h-8 rounded-full mr-3 flex items-center justify-center text-sm font-medium bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
-                AI
-              </div>
-            )}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
+      <button
+        onClick={handleNewChat}
+        disabled={!aiProvider}
+        className="disabled:opacity-50 disabled:cursor-not-allowed w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-gray-300"
+        title="Start new chat">
+          <i className="fas fa-plus text-lg"></i>
+      </button>        
     </div>
+
+    {(aiProvider==='' || conversationId==='') && (
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div class="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-md w-120 text-center">
+        <p class="text-xl font-semibold">
+            Seleziona un AI provider, poi verra' lanciata una nuova chat.<br />
+            Cambiando AI provider verra' lanciata una nuova chat
+        </p>
+      </div>
+    </div>
+    )}
+
+      <ChatMessages messages={messages} />
+
+      <LoadingOverlay isVisible={isLoading} message={loadingMessage} />
+    </>
   );
 }

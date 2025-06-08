@@ -2,7 +2,7 @@
   "name": "woa",
   "version": "1.0.7",
   "description": "Web Osteopathic Application",
-  "main": "./out/main/index.js",
+  "main": "./out/main/index.mjs",
   "author": "Crixo",
   "copyright": "© 2025 Crixo All rights reserved.",
   "homepage": "https://github.com/crixo/",
@@ -30,10 +30,13 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@huggingface/inference": "^4.0.6",
     "better-sqlite3": "^11.10.0",
     "electron-log": "^5.4.0",
     "electron-updater": "^6.6.2",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "openai": "^5.3.0",
+    "undici": "^7.10.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.0.0",

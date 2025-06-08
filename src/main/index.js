@@ -1,20 +1,18 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { dirname, join } from 'path';
-import path from 'node:path';
-import { fileURLToPath } from 'url';
+// import path from 'node:path';
+// import { fileURLToPath } from 'url';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset';
 import { configureLogging } from './log';
-import os from 'os';
 import { setupPazienteDAL } from './pazienteDAL';
-import { loadConfig, dumpConfig, shareSettings } from './config';
+import { dumpConfig, shareSettings, getConfig } from './config';
 import log from 'electron-log';
 import './electron-updater'
 
-
-const __filename = fileURLToPath(import.meta.url);
+// const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const homeDir = os.homedir();
+// const homeDir = os.homedir();
 //This will print the absolute path to the application's root directory where your package.json file is located. 
 //If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
 
@@ -24,6 +22,15 @@ let isDBConfigured = false;
 let locateDBWindow;
 let mainWindow;
 ///////////////////////////////////////////////////
+  console.log('loading config from app.whenReady - index.js')
+  // Configuration
+  config = await getConfig()
+  //console.log(config)
+  shareSettings(config)
+  configureLogging(config)
+  const dbStatus = setupPazienteDAL(config);
+
+
 function createMainWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -129,12 +136,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  //createWindow()
-  // Configuration
-  config = loadConfig(homeDir, __dirname)
-  shareSettings(config)
-  configureLogging(config)
-  const dbStatus = setupPazienteDAL(config);
+
  
   if (!dbStatus.success) {
       createLocateDBWindow(); // Forces user to select a DB

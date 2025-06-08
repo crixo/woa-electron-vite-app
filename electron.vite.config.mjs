@@ -7,6 +7,18 @@ import {viteStaticCopy} from 'vite-plugin-static-copy'
 
 export default defineConfig({
   main: {
+    build: {
+      rollupOptions: {
+        output: {
+          // Ensures ES module output
+          // Switching ton ES allows await on file root
+          // preventing the follow error: Module format "cjs" does not support top-level await. Use the "es" or "system" output formats rather.
+          // Adding this settings, you need to change in package.json the entrypoint from
+          // "main": "./out/main/index.js" -> "main": "./out/main/index.mjs"
+          format: "es", 
+        },
+      },
+    },
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
@@ -25,21 +37,6 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
-    //build: {
-      // rollupOptions: {
-      //   input: {
-      //     'locate-db':'src/renderer/locate-db.html',
-      //     //index: 'build-out/index.html',
-      //   },
-      //   output: {
-      //     dir: 'out/renderer'
-      //   }
-      // },
-      // outDir: 'build-out', // or 'build', depending on your preference
-      // assetsDir: 'assets', // Ensures assets are placed properly    
-    //},    
-    //publicDir: path.resolve(__dirname, 'build-out/assets'), // Correct build output folder   
-
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src')
@@ -51,8 +48,8 @@ export default defineConfig({
       viteStaticCopy({
         targets: [
           {
-            src: path.resolve(__dirname, 'src/renderer/locate-db.html'), // Source file
-            dest: path.resolve(__dirname, 'out/renderer')// Destination in out/
+            src: path.resolve(__dirname, 'src/renderer/locate-db.html').replace(/\\/g, '/'), // Source file - for win compliance
+            dest: path.resolve(__dirname, 'out/renderer').replace(/\\/g, '/'),// Destination in out/  - for win compliance
           }
         ]
       })      

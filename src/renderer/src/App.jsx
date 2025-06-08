@@ -37,7 +37,7 @@ const AppLayout = () => {
 
         {/* Main Scrollable Content Area */}
         <main id="main-content" class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">  
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{/* do not use py-2 otherwise pages cannot have a top fix bar such as ChatPage */}
         <Routes>
           <Route index element={<HomePage />}></Route>
           <Route path="/create" element={<CreaPazientePage />}></Route>

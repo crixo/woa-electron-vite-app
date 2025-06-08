@@ -18,6 +18,10 @@
     @apply w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-gray-100 dark:bg-gray-700
 }
 
+.form-field-fit{
+    @apply w-fit p-2 border border-gray-300 dark:border-gray-600 rounded bg-gray-100 dark:bg-gray-700
+}
+
 .form-button{
     @apply mt-4 p-2 bg-blue-500 dark:bg-blue-700 text-white rounded w-32
 }
