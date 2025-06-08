@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import Database from "better-sqlite3";
 import log from 'electron-log';
 import * as fs from 'fs';
-import { answerWithLLM } from './generate-sql-with-llm';
+import { ask } from './chat-with-llm';
 
 let db
 
@@ -495,9 +495,9 @@ ipcMain.handle('tipo-anamnesi-remota', async (_) => {
   }
 });  
 
-ipcMain.handle('answer-with-llm', async (_, userRequest) => {
+ipcMain.handle('ask-to-llm', async (_, conversationId, question) => {
   try {
-    return answerWithLLM(userRequest, db)
+    return ask(conversationId, question)
   } catch (error) {
     console.log('IPC Error:', error);
     throw error; // Sends error back to renderer

@@ -1,22 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLayout } from '../contexts/LayoutContext';
+import { DateTime } from "luxon";
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState([
     { id: 1, text: "Hello! How can I help you today?", sender: "bot", timestamp: new Date() },
-    { id: 2, text: "Hi there! I'd like to know about React components.", sender: "user", timestamp: new Date() },
-    { id: 3, text: "Great question! React components are reusable pieces of UI that can manage their own state and lifecycle. They're the building blocks of React applications.", sender: "bot", timestamp: new Date() },
-    { id: 4, text: "That's really helpful! Can you tell me more about state management?", sender: "user", timestamp: new Date() },
-    { id: 5, text: "Absolutely! State management in React can be handled in several ways...", sender: "bot", timestamp: new Date() },
-    { id: 6, text: "What about hooks?", sender: "user", timestamp: new Date() },
-    { id: 7, text: "Hooks are a powerful feature introduced in React 16.8 that allow you to use state and other React features in functional components.", sender: "bot", timestamp: new Date() },
-    { id: 8, text: "Can you give me an example?", sender: "user", timestamp: new Date() },
-    { id: 9, text: "Sure! The useState hook is one of the most commonly used hooks. It allows you to add state to functional components.", sender: "bot", timestamp: new Date() }
+    // { id: 2, text: "Hi there! I'd like to know about React components.", sender: "user", timestamp: new Date() },
+    // { id: 3, text: "Great question! React components are reusable pieces of UI that can manage their own state and lifecycle. They're the building blocks of React applications.", sender: "bot", timestamp: new Date() },
+    // { id: 4, text: "That's really helpful! Can you tell me more about state management?", sender: "user", timestamp: new Date() },
+    // { id: 5, text: "Absolutely! State management in React can be handled in several ways...", sender: "bot", timestamp: new Date() },
+    // { id: 6, text: "What about hooks?", sender: "user", timestamp: new Date() },
+    // { id: 7, text: "Hooks are a powerful feature introduced in React 16.8 that allow you to use state and other React features in functional components.", sender: "bot", timestamp: new Date() },
+    // { id: 8, text: "Can you give me an example?", sender: "user", timestamp: new Date() },
+    // { id: 9, text: "Sure! The useState hook is one of the most commonly used hooks. It allows you to add state to functional components.", sender: "bot", timestamp: new Date() }
   ]);
   const [inputText, setInputText] = useState('');
+  const [conversationId, setConversationId] = useState( DateTime.now().toISO());
   const messagesEndRef = useRef(null);
-
-    const { setBottomSection } = useLayout();
+  const { setBottomSection } = useLayout();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -26,44 +27,48 @@ export default function ChatInterface() {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    // This page has a custom bottom section instead of chat input
-    setBottomSection(
-      <div 
-        className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4"
-        style={{ height: '80px', flexShrink: 0 }}
-      >
-        <div className="flex items-end space-x-3">
-          <div className="flex-1">
-            <textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600"
-              rows={1}
-              style={{ minHeight: '44px', maxHeight: '44px' }}
-            />
-          </div>
-          <button
-            onClick={handleSendMessage}
-            disabled={!inputText.trim()}
-            className={`p-3 rounded-xl transition-all ${
-              inputText.trim()
-                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white'
-                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            Send
-          </button>
-        </div>
-      </div>
-    );
+  // useEffect(() => {
+  //   // This page has a custom bottom section instead of chat input
+  //   setBottomSection(
+  //     <div 
+  //       className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4"
+  //       style={{ height: '80px', flexShrink: 0 }}
+  //     >
+  //       <div className="flex items-end space-x-3">
+  //         <div className="flex-1">
+  //           {/* <textarea
+  //             value={inputText}
+  //             onChange={(e) => setInputText(e.target.value)}
+  //             onKeyPress={handleKeyPress}
+  //             placeholder="Type your message..."
+  //             className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600"
+  //             rows={1}
+  //             style={{ minHeight: '44px', maxHeight: '44px' }}
+  //           /> */}
+  //           <input type='text' 
+  //             value={inputText}
+  //             onChange={(e) => {setInputText(e.target.value)}}
+  //             className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600" />
+  //         </div>
+  //         <button
+  //           onClick={handleSendMessage}
+  //           disabled={!inputText.trim()}
+  //           className={`p-3 rounded-xl transition-all ${
+  //             inputText.trim()
+  //               ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white'
+  //               : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+  //           }`}
+  //         >
+  //           Send
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
     
-    return () => {
-      setBottomSection(null);
-    };
-  }, [setBottomSection]);  
+  //   return () => {
+  //     setBottomSection(null);
+  //   };
+  // }, [setBottomSection]);  
 
   const handleSendMessage = () => {
     if (inputText.trim()) {
@@ -74,19 +79,20 @@ export default function ChatInterface() {
         timestamp: new Date()
       };
       
-      setMessages(prev => [...prev, newUserMessage]);
+      // setMessages(prev => [...prev, newUserMessage]);
       setInputText('');
+      const answer = dal.askToLLM(conversationId, inputText)
       
       // Simulate bot response
-      setTimeout(() => {
+      // setTimeout(() => {
         const botResponse = {
           id: messages.length + 2,
-          text: "Thanks for your message! I'm here to help with any questions you have.",
+          text: answer,
           sender: "bot",
           timestamp: new Date()
         };
-        setMessages(prev => [...prev, botResponse]);
-      }, 1000);
+      //   setMessages(prev => [...prev, botResponse]);
+      // }, 1000);
     }
   };
 
@@ -152,6 +158,38 @@ export default function ChatInterface() {
         ))}
         <div ref={messagesEndRef} />
       </div>
+
+
+      <div>
+        <div className="flex items-end space-x-3">
+          <div className="flex-1">
+            {/* <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your message..."
+              className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600"
+              rows={1}
+              style={{ minHeight: '44px', maxHeight: '44px' }}
+            /> */}
+            <input type='text' 
+              value={inputText}
+              onChange={(e) => {setInputText(e.target.value)}}
+              className="w-full px-4 py-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600" />
+          </div>
+          <button
+            onClick={handleSendMessage}
+            disabled={!inputText.trim()}
+            className={`p-3 rounded-xl transition-all ${
+              inputText.trim()
+                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white'
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            Send
+          </button>
+        </div>
+      </div>      
 
     </div>
   );
