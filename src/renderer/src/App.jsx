@@ -23,7 +23,7 @@ import ModificaValutazionePage from './pages/ModificaValutazionePage'
 import { SettingsProvider } from "./contexts/SettingsContext";
 import CustomErrorBoundary from './components/CustomErrorBoundary'
 import TopBar from './components/TopBar'
-import StatisticsPage from './pages/StatisticsPage'
+import ChatPage from './pages/ChatPage'
 
 
 export default function App() {
@@ -59,7 +59,7 @@ export default function App() {
             <Route path="/valutazione/:id/edit" element={ <ModificaValutazionePage />}></Route>
             <Route path="/consulto/:id/valutazioni/create" element={ <CreaValutazionePage />}></Route>       
 
-            <Route path="/statistics" element={ <StatisticsPage />}></Route>
+            <Route path="/chat" element={ <ChatPage />}></Route>
           </Routes>         
         </div>
         <ToastContainer />

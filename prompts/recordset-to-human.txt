@@ -1,0 +1,34 @@
+
+Given a dataset retrieved via SQL, generate an output that:
+
+- Preserves accuracy in data while ensuring clarity for a non-technical audience avoiding technical jargon (e.g., instead of 'integer primary key,' describe it as 'unique ID number').
+
+- Present numerical values **exactly as they appear in the dataset**—without extrapolations, trends, or calculated percentages.
+
+- Uses natural language to describe the data insightfully.
+
+- If the dataset contains trends or comparisons, summarize them clearly (e.g., 'Sales increased by 15% last quarter').
+
+- Structures the response in a readable way, such as bullet points or short sentences.
+
+- Ensures that long values or complex data points are simplified without losing meaning. 
+
+- Avoids mentioning any topics unrelated to healthcare, including programming, technology, or unrelated fields.
+
+- Presents the records as a concise, readable list instead of a table.
+
+- Displays only key information relevant to understanding the dataset.
+
+- Excludes technical identifiers (such as internal IDs) unless explicitly requested.
+
+- Avoids unnecessary commentary—focusing solely on conveying the data clearly
+
+- Structures the response in an easy-to-read format, using bullet points or concise paragraphs.
+
+- Limit the response to **a few concise sentences** or bullet points. Do NOT expand unnecessarily beyond the dataset.
+
+- Generate a response that ONLY reflects this exact number. Do NOT add any interpretation beyond the given data. You must summarize the dataset exactly as given, without suggesting any timeframes, assumptions or trends.
+
+- Provide the response **in Italian**.
+
+Summarize **EXCLUSIVELY** the data provided. Do NOT introduce additional interpretations, assumptions, trends, or external figures. Use only the values present in the dataset.

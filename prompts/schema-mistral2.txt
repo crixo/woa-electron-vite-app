@@ -1,0 +1,111 @@
+### Instructions:
+Your task is to convert a question into a SQL query, given a SQLite database schema.
+Adhere to these rules:
+- **Deliberately go through the question and database schema word by word** to appropriately answer the question
+- **Use Table Aliases** to prevent ambiguity. For example, `SELECT table1.col1, table2.col1 FROM table1 JOIN table2 ON table1.id = table2.id`.
+- When creating a ratio, always cast the numerator as float
+- Strictly adheres to SQLite syntax and constraints (e.g., no RIGHT JOIN, ensure usage of INTEGER PRIMARY KEY for auto-increment).
+- Avoids unsupported functions like DATEDIFF or attempts to create custom functions. If date differences are required, use supported alternatives like JULIANDAY or date/time arithmetic (e.g., strftime('%s', end_date) - strftime('%s', start_date)).
+- Uses indexes and avoids full-table scans where possible.
+- Handles NULL values safely.
+- Uses parameterized queries where needed to prevent SQL injection.
+- If aggregation is required, use efficient grouping techniques (e.g., GROUP BY with indexed fields).
+- Returns only the necessary columns and limits results when appropriate (e.g., LIMIT for performance optimization). "Your output should contain only the SQL statement, formatted clearly. If clarification is needed, provide brief comments within the query."
+- Generate a SQL query using only the `SELECT` statement. Do not include `INSERT`, `UPDATE`, `DELETE`, or any other SQL commands.
+
+### Input:
+Generate a SQL query that answers the question `Quanti pazienti sono presenti nel database?`.
+This query will run on a database whose schema is represented in this string:
+CREATE TABLE "paziente" ( --The table rapresenting the patients of the physician
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT, -- unique ID for each patient
+	`cognome`	nvarchar(50), -- patient last name 
+	`nome`	nvarchar(50), -- patient name
+	`professione`	nvarchar(50), -- patient occupation
+	`indirizzo`	nvarchar(50), -- patient address
+	`citta`	nvarchar(50), -- patient city
+	`telefono`	nvarchar(50), -- patient home phone
+	`cellulare`	nvarchar(50), -- patient cellphone
+	`prov`	nvarchar(2),
+	`cap`	nvarchar(5),
+	`email`	nvarchar(100), -- patient email
+	`data_nascita`	datetime -- patient date of birth
+)
+
+
+CREATE TABLE [anamnesi_prossima] (
+	[ID_consulto]	integer, -- in combination with ID_paziente are the primary key
+	[ID_paziente]	integer,-- in combination with ID_consulto are the primary key
+	[prima_volta]	nvarchar(50) COLLATE NOCASE,
+	[tipologia]	nvarchar(50) COLLATE NOCASE,
+	[localizzazione]	nvarchar(50) COLLATE NOCASE,
+	[irradiazione]	nvarchar(50) COLLATE NOCASE,
+	[periodo_insorgenza]	nvarchar(50) COLLATE NOCASE,
+	[durata]	nvarchar(50) COLLATE NOCASE,
+	[familiarita]	nvarchar(50) COLLATE NOCASE,
+	[altre_terapie]	nvarchar(50) COLLATE NOCASE,
+	[varie]	nvarchar COLLATE NOCASE
+)
+
+CREATE TABLE "anamnesi_remota" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`tipo`	integer,
+	`descrizione`	nvarchar
+)
+
+CREATE TABLE "consulto" ( -- patient visit occurred with the physician
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,--Unique ID for each patient visit
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`problema_iniziale`	nvarchar
+)
+
+CREATE TABLE "esame" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_consulto`	integer,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`descrizione`	nvarchar,
+	`tipo`	integer
+)
+
+CREATE TABLE "lkp_anamnesi" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`descrizione`	nvarchar(50)
+)
+
+CREATE TABLE "lkp_esame" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`descrizione`	nvarchar(50)
+)
+
+CREATE TABLE [lkp_provincia] (
+	[sigla]	nvarchar(2) COLLATE NOCASE,
+	[descrizione]	nvarchar(50) COLLATE NOCASE
+)
+
+CREATE TABLE "trattamento" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_consulto`	integer,
+	`ID_paziente`	integer,
+	`data`	datetime,
+	`descrizione`	nvarchar
+)
+
+CREATE TABLE "valutazione" (
+	`ID`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`ID_consulto`	integer,
+	`ID_paziente`	integer,
+	`strutturale`	nvarchar,
+	`cranio_sacrale`	nvarchar,
+	`ak_ortodontica`	nvarchar
+)
+
+-- consulto.ID_paziente can be joined with paziente.ID
+-- anamnesi_remota.ID_paziente can be joined with paziente.ID
+-- anamnesi_prossima.ID_consulto can be joined with consulto.ID
+-- esame.ID_consulto can be joined with consulto.ID
+-- trattamento.ID_consulto can be joined with consulto.ID
+-- valutazione.ID_consulto can be joined with consulto.ID
+

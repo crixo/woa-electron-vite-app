@@ -4,6 +4,7 @@ productName: WOA
 directories:
   buildResources: build
 files:
+  - 'prompts/**'
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'

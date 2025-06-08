@@ -1,5 +1,4 @@
-
-const { ipcMain, dialog } = require("electron");
+import { app, dialog, ipcMain } from 'electron'
 import path from 'node:path';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -20,6 +19,7 @@ export function loadConfig(homeDir, __dirname) {
     log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
     log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
     log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
+    log.silly("app.getAppPath():", app.getAppPath())
 
     const defaultConfig = {
       dbPath: path.join(homeDir, "/woa/", "./woa.db"),

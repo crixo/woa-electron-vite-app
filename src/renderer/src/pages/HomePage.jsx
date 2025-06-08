@@ -111,10 +111,7 @@ const HomePage = () => {
           <button onClick={() => getPazientiLastConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
             Pazienti visitati di recente
           </button>
-          <button className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400">
-            Azione 3
-          </button>
-          <Link to="/statistics">Stats</Link>
+          <Link to="/chat" className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400 text-center">AI Statistiche</Link>
         </div>
       </div>
 
