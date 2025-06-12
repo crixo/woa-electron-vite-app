@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import Database from "better-sqlite3";
 import log from 'electron-log';
 import * as fs from 'fs';
-import { ask } from './chat-with-llm';
+import { ask, startConversation } from './chat-with-llm';
 
 let db
 
@@ -495,7 +495,16 @@ ipcMain.handle('tipo-anamnesi-remota', async (_) => {
   }
 });  
 
-ipcMain.handle('ask-to-llm', async (_, conversationId, question) => {
+ipcMain.handle('ai-start-conversation', async (_,) => {
+  try {
+    return startConversation()
+  } catch (error) {
+    console.log('IPC Error:', error);
+    throw error; // Sends error back to renderer
+  }
+});
+
+ipcMain.handle('ai-ask', async (_, conversationId, question) => {
   try {
     return ask(conversationId, question)
   } catch (error) {
