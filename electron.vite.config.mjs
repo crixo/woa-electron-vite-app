@@ -25,21 +25,6 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
-    //build: {
-      // rollupOptions: {
-      //   input: {
-      //     'locate-db':'src/renderer/locate-db.html',
-      //     //index: 'build-out/index.html',
-      //   },
-      //   output: {
-      //     dir: 'out/renderer'
-      //   }
-      // },
-      // outDir: 'build-out', // or 'build', depending on your preference
-      // assetsDir: 'assets', // Ensures assets are placed properly    
-    //},    
-    //publicDir: path.resolve(__dirname, 'build-out/assets'), // Correct build output folder   
-
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src')
@@ -51,8 +36,8 @@ export default defineConfig({
       viteStaticCopy({
         targets: [
           {
-            src: path.resolve(__dirname, 'src/renderer/locate-db.html'), // Source file
-            dest: path.resolve(__dirname, 'out/renderer')// Destination in out/
+            src: path.resolve(__dirname, 'src/renderer/locate-db.html').replace(/\\/g, '/'), // Source file - for win compliance
+            dest: path.resolve(__dirname, 'out/renderer').replace(/\\/g, '/'),// Destination in out/  - for win compliance
           }
         ]
       })      
