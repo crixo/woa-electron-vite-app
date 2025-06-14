@@ -12,3 +12,5 @@ class MockSQLExecutor {
     return { affectedRows: 1, message: 'Query executed successfully' };
   }
 }
+
+export {MockSQLExecutor}

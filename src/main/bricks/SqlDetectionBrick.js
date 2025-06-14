@@ -1,3 +1,4 @@
+import BaseBrick from './BaseBrick.js'
 class SQLDetectionBrick extends BaseBrick {
   constructor(options = {}) {
     super(options);
@@ -46,3 +47,5 @@ class SQLDetectionBrick extends BaseBrick {
     return sqlStatements;
   }
 }
+
+export {SQLDetectionBrick}

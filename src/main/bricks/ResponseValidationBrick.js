@@ -1,3 +1,4 @@
+import BaseBrick from './BaseBrick.js'
 class ResponseValidationBrick extends BaseBrick {
   constructor(options = {}) {
     super(options);
@@ -30,3 +31,5 @@ class ResponseValidationBrick extends BaseBrick {
     return context;
   }
 }
+
+export {ResponseValidationBrick}

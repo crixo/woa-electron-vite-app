@@ -1,3 +1,4 @@
+import BaseBrick from './BaseBrick.js'
 class SQLExecutionBrick extends BaseBrick {
   constructor(options = {}) {
     super(options);
@@ -44,3 +45,5 @@ class SQLExecutionBrick extends BaseBrick {
     return context;
   }
 }
+
+export {SQLExecutionBrick}

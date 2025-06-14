@@ -2,9 +2,14 @@
 import fs from 'fs';
 import path from 'node:path';
 import {ChainBuilder} from './bricks/ChainBuilder.js'
-import {OpenApiBrick} from './bricks/OpenApiBrick.js'
+import {APIBrick} from './bricks/APIBrick.js'
 import {ProcessingContext} from './bricks/ProcessingContext.js'
+import { SQLDetectionBrick } from './bricks/SqlDetectionBrick.js';
+import { SQLExecutionBrick } from './bricks/SqlExecutionBrick.js';
+import { MockSQLExecutor } from './bricks/MockSqlExecutor.js';
+import { ResponseFormattingBrick } from './bricks/ResponseFormattingBrick.js';
 import {FinalProcessingBrick} from './bricks/FinalProcessingBrick.js'
+import { OpenAiCall } from './bricks/OpenAiCall.js';
 
 
 // Function to read the file and parse the key-value pairs
@@ -27,29 +32,42 @@ const getOpenApiConfiguration = (filePath) => {
 // Example usage
 //const filePath = path.join(app.getAppPath(), 'private/open-ai-secrets.txt')
 const filePath = path.join('../../', 'private/open-ai-secrets.txt')
-const openApiConfiguration = getOpenApiConfiguration(filePath);
+const openAiConfiguration = getOpenApiConfiguration(filePath);
 //console.log(openApiConfiguration);
 
 
+function loadPrompt(promptPath) {
+    try {
+        let prompt = fs.readFileSync(promptPath, "utf-8");
+        prompt = prompt.replace(/\r/g, "").trim();  // Remove carriage returns (Windows/macOS)
+        return prompt;
+    } catch (error) {
+        console.error(`Error: Prompt file '${promptPath}' not found.`);
+        process.exit(1);
+    }
+}
+const sytemPromptPath = path.join('../../', 'prompts/woa-db-system-message.md')
+const sytemPrompt = loadPrompt(sytemPromptPath)
 
+const openAiCall = new OpenAiCall(openAiConfiguration)
 async function demonstrateChainUsage() {
   // Create the processing chain
   const chain = new ChainBuilder()
-    .add(new OpenApiBrick(openApiConfiguration))
-    // .add(new SQLDetectionBrick({ debug: true }))
-    // .add(new SQLExecutionBrick({ 
-    //   sqlExecutor: new MockSQLExecutor(),
-    //   debug: true 
-    // }))
-    // .add(new ResponseFormattingBrick({ debug: true }))
+    .add(new APIBrick({apiCall: openAiCall}))
+    .add(new SQLDetectionBrick({ debug: true }))
+    .add(new SQLExecutionBrick({ 
+      sqlExecutor: new MockSQLExecutor(),
+      debug: true 
+    }))
+    .add(new ResponseFormattingBrick({ debug: true, apiCall: openAiCall }))
     // .add(new ResponseValidationBrick({ debug: true }))
     .add(new FinalProcessingBrick({ debug: true }))
     .build();
 
   // Process a message
   const context = new ProcessingContext(
-    "Show me all users in the engineering department",
-    []
+    "Conta i consulti dell'anno corrente raggruppati per mese",
+    [{role:"system",content:sytemPrompt}]
   );
 
   try {

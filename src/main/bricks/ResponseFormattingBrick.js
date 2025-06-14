@@ -1,4 +1,11 @@
+import BaseBrick from './BaseBrick.js'
+import { APIBrick } from './APIBrick.js';
 class ResponseFormattingBrick extends BaseBrick {
+  constructor(options = {}) {
+    super(options)
+    this.apiCall = options.apiCall
+  }
+
   async process(context) {
     // If no SQL was executed, return original response
     if (!context.getMetadata('hasSql')) {
@@ -12,10 +19,10 @@ class ResponseFormattingBrick extends BaseBrick {
       sqlResults
     );
 
-    // Create new context for formatting request
-    const formatContext = new ProcessingContext(hiddenMessage, context.conversationHistory);
+    // Create internal context for formatting request
+    const formatContext = context.createInternalContext(hiddenMessage);
     
-    // Send to API for formatting
+    // Send to API for formatting (won't add to main conversation history)
     const apiBrick = new APIBrick(this.options);
     const formatResult = await apiBrick.process(formatContext);
 
@@ -49,3 +56,4 @@ class ResponseFormattingBrick extends BaseBrick {
     return message;
   }
 }
+export {ResponseFormattingBrick}
