@@ -1,11 +1,14 @@
 class MockSQLExecutor {
   async execute(sql) {
-    console.log('[MockSQLExecutor] Executing:', sql);
+    //this.log('[MockSQLExecutor] Executing:', sql);
     
     if (sql.toLowerCase().includes('select')) {
       return [
-        { id: 1, name: 'John Doe', email: 'john@example.com', department: 'Engineering' },
-        { id: 2, name: 'Jane Smith', email: 'jane@example.com', department: 'Marketing' }
+        { mese: '01', numero_consulti: 2 },
+        { mese: '02', numero_consulti: 5 },
+        { mese: '03', numero_consulti: 7 },
+        { mese: '04', numero_consulti: 4 },
+        { mese: '05', numero_consulti: 8 },
       ];
     }
     

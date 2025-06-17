@@ -1,5 +1,4 @@
-import { app } from 'electron'
-import os from 'os'
+//import { app } from 'electron'
 import fs from 'fs';
 import path from 'node:path';
 import {ChainBuilder} from './bricks/ChainBuilder.js'
@@ -7,14 +6,11 @@ import {APIBrick} from './bricks/APIBrick.js'
 import {ProcessingContext} from './bricks/ProcessingContext.js'
 import { SQLDetectionBrick } from './bricks/SqlDetectionBrick.js';
 import { SQLExecutionBrick } from './bricks/SqlExecutionBrick.js';
+import { MockSQLExecutor } from './bricks/MockSqlExecutor.js';
 import { ResponseFormattingBrick } from './bricks/ResponseFormattingBrick.js';
 import {FinalProcessingBrick} from './bricks/FinalProcessingBrick.js'
 import { OpenAiCall } from './bricks/OpenAiCall.js';
-import { SQLiteSQLExecutor } from './bricks/SQLiteSqlExecutor.js';
 // import Database from "better-sqlite3";
-
-let conversationHistory
-let conversationId
 
 
 // Function to read the file and parse the key-value pairs
@@ -36,7 +32,7 @@ const getOpenApiConfiguration = (filePath) => {
 
 // Example usage
 //const filePath = path.join(app.getAppPath(), 'private/open-ai-secrets.txt')
-const filePath = path.join(app.getAppPath(), 'private/open-ai-secrets.txt')
+const filePath = path.join('../../', 'private/open-ai-secrets.txt')
 const openAiConfiguration = getOpenApiConfiguration(filePath);
 //console.log(openApiConfiguration);
 
@@ -51,59 +47,64 @@ function loadPrompt(promptPath) {
         process.exit(1);
     }
 }
+const sytemPromptPath = path.join('../../', 'prompts/woa-db-system-message.md')
+const sytemPrompt = loadPrompt(sytemPromptPath)
 
+// function initDatabase(dbPath) {
+//   let db = new Database(dbPath);
+//   db.pragma("journal_mode = WAL");
+//   return db;
+// }
+// const db = initDatabase('../../private/woa-sample.db')
 
 const openAiCall = new OpenAiCall(openAiConfiguration)
-// Create the processing chain
-const chain = new ChainBuilder()
-  .add(new APIBrick({apiCall: openAiCall}))
-  .add(new SQLDetectionBrick({ debug: true }))
-  .add(new SQLExecutionBrick({ sqlExecutor: new SQLiteSQLExecutor(), debug: false}))
-  .add(new ResponseFormattingBrick({ debug: true, apiCall: openAiCall }))
-  // .add(new ResponseValidationBrick({ debug: true }))
-  .add(new FinalProcessingBrick({ debug: false }))
-  .build();
+async function demonstrateChainUsage() {
+  // Create the processing chain
+  const chain = new ChainBuilder()
+    .add(new APIBrick({apiCall: openAiCall}))
+    .add(new SQLDetectionBrick({ debug: true }))
+    .add(new SQLExecutionBrick({ 
+      sqlExecutor: new MockSQLExecutor(),
+      debug: false 
+    }))
+    .add(new ResponseFormattingBrick({ debug: true, apiCall: openAiCall }))
+    // .add(new ResponseValidationBrick({ debug: true }))
+    .add(new FinalProcessingBrick({ debug: false }))
+    .build();
 
-export async function startConversation(params) {
-    conversationId = new Date().toISOString().replace(/[:.]/g, '-')
-    conversationHistory = []
-    const systemMessageContent =  loadPrompt(path.join(app.getAppPath(), 'prompts/woa-db-system-message.md'))
-    const systemMessage = { role: "system", content: systemMessageContent }
-    conversationHistory.push(systemMessage)
-    console.log('new conversation:'+conversationId)
-    return conversationId
-}
 
-export async function ask(conversationId, userQuestion) {
-  console.log(conversationId)
-  console.log(userQuestion)
-  let botAnswer
-  const homeDir = os.homedir();
-  const historyFile = path.join(homeDir, "/woa/conversations/", `./history-${conversationId}.json`)
-    // const conversationHistory = (fs.existsSync(historyFile)) ?  
-    //     JSON.parse(fs.readFileSync(historyFile, "utf-8")) 
-    //     : [];
-  try {
-    const context = new ProcessingContext(
-      userQuestion,
-      conversationHistory
-    );  
-    const result = await chain.execute(context);
-    conversationHistory = result.getHistory()
-    botAnswer=result.currentMessage
 
+  function printResult(result){
+    console.log('\n=== FINAL RESULT ===');
+    console.log('Success:', result.success);
+    console.log('Final Response:', result.currentMessage);
     console.log('\n=== CONVERSATION HISTORY ===');
     result.getHistory().forEach((msg, i) => {
       console.log(`${i + 1}. [${msg.role}]: ${msg.content.substring(0, 100)}...`);
     });
+    console.log('\n=== HISTORY STATS ===');
+    console.log(result.getHistoryStats());
+  }
+
+  try {
+  // Process a message
+  const context = new ProcessingContext(
+    "Conta i consulti dell'anno corrente raggruppati per mese",
+    [{role:"system",content:sytemPrompt}]
+  );    
+    const result = await chain.execute(context);
+
+  // Process a message
+  const context2 = new ProcessingContext(
+    "Conta i consulti dell'anno 2024 raggruppati per mese",
+    context.getHistory()
+  );    
+    printResult(result)
+    const result2 = await chain.execute(context2);  
+    printResult(result2)
   } catch (error) {
     console.error('Chain execution failed:', error);
-  }  
-
-  // Ensure the directory exists
-  fs.mkdirSync(path.dirname(historyFile), { recursive: true });
-  // Save updated history to file    
-  fs.writeFileSync(historyFile, JSON.stringify(conversationHistory, null, 2));    
-
-  return botAnswer
+  }
 }
+
+demonstrateChainUsage()

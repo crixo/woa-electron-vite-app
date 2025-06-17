@@ -11,6 +11,11 @@ export function shareSettings(config){
 }
 
 let configPath
+let finalConfig
+
+export function getConfig(){
+  return finalConfig;
+}
 
 export function loadConfig(homeDir, __dirname) {
     //This will print the absolute path to the application's root directory where your package.json file is located. 
@@ -43,7 +48,9 @@ export function loadConfig(homeDir, __dirname) {
         const fileContents = fs.readFileSync(configPath, "utf8");
         const config = yaml.load(fileContents) || {}
 
-        return { ...defaultConfig, ...config }; // Merge defaults with existing config
+        finalConfig = { ...defaultConfig, ...config }; // Merge defaults with existing config
+
+        return finalConfig
     } catch (e) {
         console.error("Error loading config:", e)
         return defaultConfig;

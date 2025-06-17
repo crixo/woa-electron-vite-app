@@ -2,7 +2,7 @@ class BaseBrick {
   constructor(options = {}) {
     this.options = options;
     this.nextBrick = null;
-    this.debug = options.debug || true;
+    this.debug = options.debug || false;
   }
 
   // Chain this brick to the next one

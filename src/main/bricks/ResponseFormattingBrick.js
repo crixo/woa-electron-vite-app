@@ -18,13 +18,18 @@ class ResponseFormattingBrick extends BaseBrick {
       context.originalMessage,
       sqlResults
     );
+    this.log(hiddenMessage)
 
     // Create internal context for formatting request
     const formatContext = context.createInternalContext(hiddenMessage);
+
+    context.addUserMessage(hiddenMessage)
     
     // Send to API for formatting (won't add to main conversation history)
     const apiBrick = new APIBrick(this.options);
+    //const formatResult = await apiBrick.process(formatContext);
     const formatResult = await apiBrick.process(formatContext);
+    context.addAssistantMessage(formatResult.currentMessage)
 
     // Update the main context with formatted response
     context.updateMessage(formatResult.currentMessage);
@@ -37,21 +42,21 @@ class ResponseFormattingBrick extends BaseBrick {
   }
 
   createFormattingMessage(originalQuestion, sqlResults) {
-    let message = `Based on the user's question: "${originalQuestion}"\n\n`;
-    message += `You previously suggested SQL queries. Here are the execution results:\n\n`;
+    let message = `A fronte della seguete domanda dell'utente: "${originalQuestion}"\n\n`;
+    message += `Tu hai suggerito le segueri queries. Questi sono i risultati delle lore esecuzioni:\n\n`;
     
     sqlResults.forEach((result, index) => {
       message += `Query ${index + 1}: ${result.sql}\n`;
       if (result.success) {
-        message += `Result: ${JSON.stringify(result.data, null, 2)}\n`;
-        message += `Rows returned: ${result.rowCount}\n\n`;
+        message += `Risultato: ${JSON.stringify(result.data, null, 2)}\n`;
+        message += `Numero di righe restiruite: ${result.rowCount}\n\n`;
       } else {
-        message += `Error: ${result.error}\n\n`;
+        message += `Errore: ${result.error}\n\n`;
       }
     });
     
-    message += `Please provide a natural, human-readable answer to the user's original question based on these SQL results. `;
-    message += `Do not show the SQL queries or raw data - just give a clear, conversational response about what the data shows.`;
+    message += `Fornire una risposta naturale, leggibile dall'uomo, alla domanda originale dell'utente, basata su questi risultati SQL.`;
+    message += `Non mostrate le query SQL o i dati grezzi, ma date solo una risposta chiara e discorsiva su ciò che i dati mostrano.`;
     
     return message;
   }

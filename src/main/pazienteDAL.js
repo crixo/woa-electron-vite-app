@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import Database from "better-sqlite3";
 import log from 'electron-log';
 import * as fs from 'fs';
-import { ask, startConversation } from './chat-with-llm';
+import { ask, startConversation } from './chat-with-ai';
 
 let db
 
@@ -19,6 +19,10 @@ export function setupPazienteDAL(config){
   }
   return { success: true };
 
+}
+
+export function executeSQL(sqlStatemnt){
+ return db.prepare(sqlStatemnt).all();
 }
 
 function initDatabase(config) {

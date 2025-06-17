@@ -12,71 +12,35 @@ class APIBrick extends BaseBrick {
 
   async process(context) {
     // Add user message to history if this is the initial API call
-    if (!context.isInternal()) {
-      const added = context.addUserMessage();
-    }
+    //if (!context.isInternal()) {
+      context.addUserMessage(context.currentMessage);
+    //}
 
-    const response = await this.sendToAPI(
+    const botAnswer = await this.sendToAPI(
       context.currentMessage, 
       context.getHistory()
     );
+    context.addAssistantMessage(botAnswer.content)
 
-    context.updateMessage(response.content);
+    context.updateMessage(botAnswer.content);
     context.addResult('api_response', {
       originalMessage: context.originalMessage,
-      apiResponse: response.content,
-      metadata: response.metadata,
-      isInternal: context.isInternal()
+      //apiResponse: response.content,
+      //metadata: response.metadata,
+      //isInternal: context.isInternal()
     });
 
     return context;
   }
 
   async sendToAPI(message, conversationHistory) {
-    console.log(conversationHistory)
-    console.log(message)
+    //console.log(conversationHistory)
+    //console.log(message)
 
     let lastError;
     
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        // const response = await fetch(this.apiEndpoint, {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify(payload)
-        // });
-
-        // if (!response.ok) {
-        //   throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        // }
-
-        //const result = await response.json();
-        // const result = { role: "assistant", content: "sono qui per aiutare" }
-        // return {
-        //   content: result.response || result.message || result.content,
-        //   metadata: result.metadata || {}
-        // };        
-
-        // const endpoint = this.options.AZURE_OPENAI_ENDPOINT
-        // const apiKey = this.options.AZURE_OPENAI_API_KEY 
-        // const apiVersion = "2025-01-01-preview";
-        // const deployment = "model-router"; // This must match your deployment name
-
-        // const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment });
-
-        // const result = await client.chat.completions.create({
-        //     messages: conversationHistory,
-        //     max_tokens: 8192,
-        //     temperature: 0.7,
-        //     top_p: 0.95,
-        //     frequency_penalty: 0,
-        //     presence_penalty: 0,
-        //     stop: null
-        // });
-
-        // //console.log(JSON.stringify(result, null, 2));
-        // var botMessage = result.choices[0].message
-
         var botMessage = await this.apiCall.sendRequest(conversationHistory)
 
         return {

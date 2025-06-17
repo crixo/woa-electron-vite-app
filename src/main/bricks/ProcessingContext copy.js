@@ -1,5 +1,5 @@
 // Context object that flows through the chain
-class ProcessingContext {
+class ProcessingContextOld {
   constructor(originalMessage, conversationHistory = []) {
     this.originalMessage = originalMessage;
     this.currentMessage = originalMessage;
@@ -40,27 +40,37 @@ class ProcessingContext {
   // === CENTRALIZED HISTORY MANAGEMENT ===
 
   // Add user message to history (called once at the beginning)
-  addUserMessage(message) {
-    this.conversationHistory.push({
-      role: 'user',
-      content: message,
-      timestamp: new Date().toISOString()
-    });
+  addUserMessage() {
+    if (!this.userMessageAdded) {
+      this.conversationHistory.push({
+        role: 'user',
+        content: this.originalMessage,
+        timestamp: new Date().toISOString()
+      });
+      this.userMessageAdded = true;
+      return true;
+    }
+    return false;
   }
 
   // Add assistant message to history (called once at the end)
-  addAssistantMessage(message) {
+  addAssistantMessage() {
+    if (!this.assistantMessageAdded && this.currentMessage) {
       this.conversationHistory.push({
         role: 'assistant',
-        content: message,
+        content: this.currentMessage,
         timestamp: new Date().toISOString(),
         metadata: {
-          //hadSql: this.getMetadata('hasSql') || false,
-          //sqlStatementsCount: (this.getMetadata('sqlStatements') || []).length,
-          //processingChain: this.results.map(r => r.brick),
-          //processingDuration: Date.now() - new Date(this.timestamp).getTime()
+          hadSql: this.getMetadata('hasSql') || false,
+          sqlStatementsCount: (this.getMetadata('sqlStatements') || []).length,
+          processingChain: this.results.map(r => r.brick),
+          processingDuration: Date.now() - new Date(this.timestamp).getTime()
         }
-      })
+      });
+      this.assistantMessageAdded = true;
+      return true;
+    }
+    return false;
   }
 
   // Create a context for internal API calls (like formatting)
@@ -91,11 +101,8 @@ class ProcessingContext {
       total: this.conversationHistory.length,
       userMessages,
       assistantMessages,
-      // userMessageAdded: this.userMessageAdded,
-      // assistantMessageAdded: this.assistantMessageAdded
+      userMessageAdded: this.userMessageAdded,
+      assistantMessageAdded: this.assistantMessageAdded
     };
   }
 }
-
-
-export {ProcessingContext}
