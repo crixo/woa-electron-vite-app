@@ -11,11 +11,9 @@ import { ResponseFormattingBrick } from './bricks/ResponseFormattingBrick.js';
 import {FinalProcessingBrick} from './bricks/FinalProcessingBrick.js'
 import { OpenAiCall } from './bricks/OpenAiCall.js';
 import { SQLiteSQLExecutor } from './bricks/SQLiteSqlExecutor.js';
-// import Database from "better-sqlite3";
 
 let conversationHistory
 let conversationId
-
 
 // Function to read the file and parse the key-value pairs
 const getOpenApiConfiguration = (filePath) => {
@@ -34,12 +32,8 @@ const getOpenApiConfiguration = (filePath) => {
     return result;
 };
 
-// Example usage
-//const filePath = path.join(app.getAppPath(), 'private/open-ai-secrets.txt')
 const filePath = path.join(app.getAppPath(), 'private/open-ai-secrets.txt')
 const openAiConfiguration = getOpenApiConfiguration(filePath);
-//console.log(openApiConfiguration);
-
 
 function loadPrompt(promptPath) {
     try {
@@ -52,15 +46,22 @@ function loadPrompt(promptPath) {
     }
 }
 
+function saveHistoryToFile(converationId, conversationHistory){
+  const homeDir = os.homedir();
+  const historyFile = path.join(homeDir, "/woa/conversations/", `./history-${conversationId}.json`)
+  // Ensure the directory exists
+  fs.mkdirSync(path.dirname(historyFile), { recursive: true });
+  // Save updated history to file    
+  fs.writeFileSync(historyFile, JSON.stringify(conversationHistory, null, 2));    
+}
 
 const openAiCall = new OpenAiCall(openAiConfiguration)
 // Create the processing chain
 const chain = new ChainBuilder()
   .add(new APIBrick({apiCall: openAiCall}))
-  .add(new SQLDetectionBrick({ debug: true }))
+  .add(new SQLDetectionBrick({ debug: false }))
   .add(new SQLExecutionBrick({ sqlExecutor: new SQLiteSQLExecutor(), debug: false}))
-  .add(new ResponseFormattingBrick({ debug: true, apiCall: openAiCall }))
-  // .add(new ResponseValidationBrick({ debug: true }))
+  .add(new ResponseFormattingBrick({ debug: false, apiCall: openAiCall }))
   .add(new FinalProcessingBrick({ debug: false }))
   .build();
 
@@ -75,14 +76,9 @@ export async function startConversation(params) {
 }
 
 export async function ask(conversationId, userQuestion) {
-  console.log(conversationId)
-  console.log(userQuestion)
-  let botAnswer
-  const homeDir = os.homedir();
-  const historyFile = path.join(homeDir, "/woa/conversations/", `./history-${conversationId}.json`)
-    // const conversationHistory = (fs.existsSync(historyFile)) ?  
-    //     JSON.parse(fs.readFileSync(historyFile, "utf-8")) 
-    //     : [];
+  console.log(`converationId:${conversationId}`)
+  // const conversationHistory = (fs.existsSync(historyFile)) ? JSON.parse(fs.readFileSync(historyFile, "utf-8")) : [];
+  let answer
   try {
     const context = new ProcessingContext(
       userQuestion,
@@ -90,20 +86,16 @@ export async function ask(conversationId, userQuestion) {
     );  
     const result = await chain.execute(context);
     conversationHistory = result.getHistory()
-    botAnswer=result.currentMessage
+    answer=result.currentMessage
 
-    console.log('\n=== CONVERSATION HISTORY ===');
+    console.log(`\n=== CONVERSATION HISTORY success:${result.success} ===`);
     result.getHistory().forEach((msg, i) => {
       console.log(`${i + 1}. [${msg.role}]: ${msg.content.substring(0, 100)}...`);
     });
   } catch (error) {
+    answer = error.message
     console.error('Chain execution failed:', error);
   }  
-
-  // Ensure the directory exists
-  fs.mkdirSync(path.dirname(historyFile), { recursive: true });
-  // Save updated history to file    
-  fs.writeFileSync(historyFile, JSON.stringify(conversationHistory, null, 2));    
-
-  return botAnswer
+  saveHistoryToFile(conversationId, conversationHistory)
+  return answer
 }

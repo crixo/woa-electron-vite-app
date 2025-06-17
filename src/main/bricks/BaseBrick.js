@@ -38,12 +38,14 @@ class BaseBrick {
       return result;
     } catch (error) {
       this.log(`Error in ${this.constructor.name}:`, error);
-      return {
-        ...context,
-        error: error.message,
-        stop: true,
-        success: false
-      };
+      // return {
+      //   ...context,
+      //   error: error.message,
+      //   stop: true,
+      //   success: false
+      // };
+      context.setError(error)
+      return context
     }
   }
 

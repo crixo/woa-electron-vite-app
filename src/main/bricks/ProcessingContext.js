@@ -8,6 +8,7 @@ class ProcessingContext {
     this.results = [];
     this.success = true;
     this.stop = false;
+    this.error = null
     this.timestamp = new Date().toISOString();
     this.userMessageAdded = false;
     this.assistantMessageAdded = false;
@@ -53,13 +54,7 @@ class ProcessingContext {
       this.conversationHistory.push({
         role: 'assistant',
         content: message,
-        timestamp: new Date().toISOString(),
-        metadata: {
-          //hadSql: this.getMetadata('hasSql') || false,
-          //sqlStatementsCount: (this.getMetadata('sqlStatements') || []).length,
-          //processingChain: this.results.map(r => r.brick),
-          //processingDuration: Date.now() - new Date(this.timestamp).getTime()
-        }
+        timestamp: new Date().toISOString()
       })
   }
 
@@ -94,6 +89,13 @@ class ProcessingContext {
       // userMessageAdded: this.userMessageAdded,
       // assistantMessageAdded: this.assistantMessageAdded
     };
+  }
+
+  setError(error){
+    this.stop = true
+    this.success = false
+    this.error = error
+    this.updateMessage(error.message)
   }
 }
 

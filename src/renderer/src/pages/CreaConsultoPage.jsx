@@ -50,10 +50,8 @@ const CreaConsultoPage = () => {
   return (
   <>
     <PazienteCard paziente={paziente} />
-    <div className="max-w-lg bg-white shadow-lg mx-auto p-7 rounded mt-6">
-      <h3 className="h3-primary">Create un nuovo Consulto</h3>
-      <ConsultoForm entity={{ID_paziente:paziente.ID, data:'', problema_iniziale:''}} onSubmit={saveConsulto} />
-    </div>
+    <h3 className="h3-primary">Create un nuovo Consulto</h3>
+    <ConsultoForm entity={{ID_paziente:paziente.ID, data:'', problema_iniziale:''}} onSubmit={saveConsulto} />
   </>
   )
 }

@@ -1,8 +1,8 @@
   
   export const DeleteModal = ({confirmationInput, setConfirmationInput, setModalOpen, handleConfirmDelete}) => {
     return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-        <div className="bg-white p-6 rounded shadow-md">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-50/80 dark:bg-gray-900/80">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-md">
         <h2 className="text-lg font-bold mb-4">Conferma la cancellazione</h2>
         <p>Digita il tipo di entita' per finalizzare la cancellazione:</p>
         <input

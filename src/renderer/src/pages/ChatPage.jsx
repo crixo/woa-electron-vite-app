@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLayout } from '../contexts/LayoutContext';
 import { DateTime } from "luxon";
 
 export default function ChatInterface() {
+  const hasRun = useRef(false);
   const newChat = [
-    { id: 1, text: "Hello! How can I help you today?", sender: "bot", timestamp: new Date() },
+    { id: 1, text: "Ciao. Sono il tuo assistente AI per la consultazione del tuo database pazienti. Cosa vorresti sapere oggi?", sender: "bot", timestamp: new Date() },
   ]
   const [messages, setMessages] = useState(newChat);
   const [inputText, setInputText] = useState('');
@@ -18,6 +19,40 @@ export default function ChatInterface() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const  startNewChat = async () => {
+  
+
+    setIsLoading(true);
+    setLoadingMessage('Calling API...');
+
+    try {
+
+      console.log('Starting new chat...');
+      setMessages([])
+      const newConversationId = await dal.startConversation()
+      setConversationId(newConversationId)
+      console.log('conversation started with id:'+newConversationId)
+      setMessages(newChat)        
+
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false);
+    }      
+
+
+  }
+
+  useEffect(()=>{
+    if (!hasRun.current) {
+      startNewChat();
+      hasRun.current = true;
+    }
+
+  
+
+  },[])
 
   useEffect(() => {
     scrollToBottom();
@@ -62,28 +97,7 @@ export default function ChatInterface() {
   }, [inputText, setInputText, setBottomSection]);  
 
   const handleNewChat = async () => {
-    setIsLoading(true);
-    setLoadingMessage('Calling API...');
-
-    try {
-      console.log('Starting new chat...');
-
-      setMessages([])
-
-      const newConversationId = await dal.startConversation()
-      // await new Promise(resolve => setTimeout(resolve, 4000)); // Simulate a 2-second delay
-      // const newConversationId = 'test'
-
-      setConversationId(newConversationId)
-      console.log('conversation started with id:'+newConversationId)
-      
-      // For demo purposes, we'll show an alert
-      setMessages(newChat)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsLoading(false);
-    }
+    await startNewChat()
   };  
 
   const handleSendMessage = async () => {

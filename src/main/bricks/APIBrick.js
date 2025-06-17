@@ -3,8 +3,6 @@ import BaseBrick from './BaseBrick.js'
 class APIBrick extends BaseBrick {
   constructor(options = {}) {
     super(options);
-    // this.apiEndpoint = options.AZURE_OPENAI_ENDPOINT || '/api/chat';
-    // this.apiKey = options.AZURE_OPENAI_API_KEY;
     this.maxRetries = options.maxRetries || 1;
     this.isInitialCall = options.isInitialCall !== false; // Default true
     this.apiCall = options.apiCall
@@ -36,7 +34,6 @@ class APIBrick extends BaseBrick {
   async sendToAPI(message, conversationHistory) {
     //console.log(conversationHistory)
     //console.log(message)
-
     let lastError;
     
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
