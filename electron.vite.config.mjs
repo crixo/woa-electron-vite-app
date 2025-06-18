@@ -7,6 +7,18 @@ import {viteStaticCopy} from 'vite-plugin-static-copy'
 
 export default defineConfig({
   main: {
+    build: {
+      rollupOptions: {
+        output: {
+          // Ensures ES module output
+          // Switching ton ES allows await on file root
+          // preventing the follow error: Module format "cjs" does not support top-level await. Use the "es" or "system" output formats rather.
+          // Adding this settings, you need to change in package.json the entrypoint from
+          // "main": "./out/main/index.js" -> "main": "./out/main/index.mjs"
+          format: "es", 
+        },
+      },
+    },
     plugins: [externalizeDepsPlugin()]
   },
   preload: {

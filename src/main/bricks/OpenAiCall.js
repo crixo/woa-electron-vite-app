@@ -8,10 +8,10 @@ class OpenAiCall {
 
   async sendRequest(conversationHistory) {
       
-    const endpoint = this.options.AZURE_OPENAI_ENDPOINT
-    const apiKey = this.options.AZURE_OPENAI_API_KEY 
-    const apiVersion = "2025-01-01-preview";
-    const deployment = "model-router"; // This must match your deployment name
+    const endpoint = this.options.endpoint
+    const apiKey = this.options.apiKey
+    const apiVersion = this.options.apiVersion
+    const deployment = this.options.deployment
 
     const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment });
 

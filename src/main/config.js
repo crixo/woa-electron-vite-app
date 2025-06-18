@@ -1,8 +1,10 @@
 import { app, dialog, ipcMain } from 'electron'
-import path from 'node:path';
+//import path from 'node:path';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import log from 'electron-log';
+import os from 'os';
+import path from 'path';
 
 export function shareSettings(config){
   ipcMain.handle('settings', async () => {
@@ -10,51 +12,61 @@ export function shareSettings(config){
   })
 }
 
+//const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const homeDir = os.homedir();
+// console.log('__dirname:'+__dirname)
+// console.log('__filename:'+__filename)
+
 let configPath
 let finalConfig
+let configPromise = null
 
-export function getConfig(){
-  return finalConfig;
+export function getConfig() {
+  if (!configPromise) {
+    configPromise = Promise.resolve(loadConfig(homeDir, __dirname)); // Ensuring single call & promise wrapping
+  }
+  return configPromise;
 }
 
-export function loadConfig(homeDir, __dirname) {
-    //This will print the absolute path to the application's root directory where your package.json file is located. 
-    //If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
-    log.silly(`process.cwd(():${process.cwd()}`);
-    log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
-    log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
-    log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
-    log.silly("app.getAppPath():", app.getAppPath())
+function loadConfig(homeDir, __dirname) {
+  //This will print the absolute path to the application's root directory where your package.json file is located. 
+  //If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
+  log.silly(`process.cwd(():${process.cwd()}`);
+  log.silly("App Path:", path.join(__dirname, "../dist/index.html"));
+  log.silly("Resolved Path:", path.resolve(__dirname, "../dist/index.html"));
+  log.silly("Electron Load URL:", `file://${path.join(__dirname, "../dist/index.html")}`);
+  log.silly("app.getAppPath():", app.getAppPath())
 
-    const defaultConfig = {
-      dbPath: path.join(homeDir, "/woa/", "./woa.db"),
-      logPath: path.join(homeDir, "/woa/", "./woa.log"),
-      formatDate: 'dd/MM/yyyy',
-      mainWindow:{
-        width:900,
-        height:670
-      }
-    };
-
-    try {
- 
-        configPath = path.join(homeDir, "/woa/", "./config.yaml")
-
-        if (!fs.existsSync(configPath)) {
-        console.warn("Config file not found, using default configuration.")
-        return defaultConfig;
-        }
-
-        const fileContents = fs.readFileSync(configPath, "utf8");
-        const config = yaml.load(fileContents) || {}
-
-        finalConfig = { ...defaultConfig, ...config }; // Merge defaults with existing config
-
-        return finalConfig
-    } catch (e) {
-        console.error("Error loading config:", e)
-        return defaultConfig;
+  const defaultConfig = {
+    dbPath: path.join(homeDir, "/woa/", "./woa.db"),
+    logPath: path.join(homeDir, "/woa/", "./woa.log"),
+    formatDate: 'dd/MM/yyyy',
+    mainWindow:{
+      width:900,
+      height:670
     }
+  };
+
+  try {
+
+      configPath = path.join(homeDir, "/woa/", "./config.yaml")
+
+      if (!fs.existsSync(configPath)) {
+      console.warn("Config file not found, using default configuration.")
+      return defaultConfig;
+      }
+
+      const fileContents = fs.readFileSync(configPath, "utf8");
+      const config = yaml.load(fileContents) || {}
+
+      finalConfig = { ...defaultConfig, ...config }; // Merge defaults with existing config
+
+      return finalConfig
+  } catch (e) {
+      console.error("Error loading config:", e)
+      return defaultConfig;
+  }
 }
 
 export function dumpConfig(config) {

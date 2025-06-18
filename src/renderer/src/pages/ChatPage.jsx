@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLayout } from '../contexts/LayoutContext';
 import { DateTime } from "luxon";
+import { useSettings } from '../contexts/SettingsContext';
 
 export default function ChatInterface() {
   const hasRun = useRef(false);
@@ -15,14 +16,16 @@ export default function ChatInterface() {
   
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('Loading...');
+  const [model, setModel] = useState()
+  const [models, setModels] = useState([])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const  startNewChat = async () => {
-  
+  const settings = useSettings()
 
+  const  startNewChat = async () => {
     setIsLoading(true);
     setLoadingMessage('Calling API...');
 
@@ -40,8 +43,6 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false);
     }      
-
-
   }
 
   useEffect(()=>{
@@ -49,9 +50,11 @@ export default function ChatInterface() {
       startNewChat();
       hasRun.current = true;
     }
+  },[])
 
-  
-
+  useEffect(()=>{
+    const providersList = Object.keys(settings.aiProviders);
+    setModels(providersList)
   },[])
 
   useEffect(() => {
@@ -96,6 +99,11 @@ export default function ChatInterface() {
     }
   }, [inputText, setInputText, setBottomSection]);  
 
+  const handleSelection = (event) => {
+    setModel(event.target.value);
+    alert(`You selected the model: ${event.target.value}`);
+  };
+ 
   const handleNewChat = async () => {
     await startNewChat()
   };  
@@ -167,12 +175,18 @@ export default function ChatInterface() {
   );
 };
 
-
   return (
     <>
      {/* Header - Fixed -> make sure containaer does not use py-X otherwise sticky won't work */}
     <div className="fixed top-16 left-0 right-0 z-40 bg-blue-50 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-800 transition-colors duration-300 flex items-center justify-between px-4">
-      <p className="text-sm text-gray-600 dark:text-gray-400">Online now</p>
+      <select onChange={handleSelection} className="form-field-fit">
+          <option value="" disabled selected>Scegli un modello</option>
+          {models.map((model, index) => (
+              <option key={index} value={model}>
+                  {model}
+              </option>
+          ))}
+      </select>
 
       <button
         onClick={handleNewChat}

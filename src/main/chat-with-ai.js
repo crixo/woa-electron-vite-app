@@ -11,29 +11,10 @@ import { ResponseFormattingBrick } from './bricks/ResponseFormattingBrick.js';
 import {FinalProcessingBrick} from './bricks/FinalProcessingBrick.js'
 import { OpenAiCall } from './bricks/OpenAiCall.js';
 import { SQLiteSQLExecutor } from './bricks/SQLiteSqlExecutor.js';
+import { getConfig } from './config.js';
 
 let conversationHistory
 let conversationId
-
-// Function to read the file and parse the key-value pairs
-const getOpenApiConfiguration = (filePath) => {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    const lines = data.split('\n'); // Split the content by line
-
-    const result = {};
-
-    lines.forEach(line => {
-        if (line.trim()) { // Ensure the line is not empty
-            const [key, ...valueParts] = line.split(':'); // Stop at first occurrence of ':'
-            result[key.trim()] = valueParts.join(':').trim(); // Preserve any additional colons in value
-        }
-    });
-
-    return result;
-};
-
-const filePath = path.join(app.getAppPath(), 'private/open-ai-secrets.txt')
-const openAiConfiguration = getOpenApiConfiguration(filePath);
 
 function loadPrompt(promptPath) {
     try {
@@ -55,7 +36,9 @@ function saveHistoryToFile(converationId, conversationHistory){
   fs.writeFileSync(historyFile, JSON.stringify(conversationHistory, null, 2));    
 }
 
-const openAiCall = new OpenAiCall(openAiConfiguration)
+console.log('getting config from chat-with-ai')
+//const config = await getConfig()
+const openAiCall = null//new OpenAiCall(config.aiProviders.azure)
 // Create the processing chain
 const chain = new ChainBuilder()
   .add(new APIBrick({apiCall: openAiCall}))
