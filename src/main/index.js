@@ -10,7 +10,6 @@ import { dumpConfig, shareSettings, getConfig } from './config';
 import log from 'electron-log';
 import './electron-updater'
 
-
 // const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // const homeDir = os.homedir();
