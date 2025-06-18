@@ -10,6 +10,7 @@ import { SQLExecutionBrick } from './bricks/SqlExecutionBrick.js';
 import { ResponseFormattingBrick } from './bricks/ResponseFormattingBrick.js';
 import {FinalProcessingBrick} from './bricks/FinalProcessingBrick.js'
 import { OpenAiCall } from './bricks/OpenAiCall.js';
+import { HuggingFaceCall } from './bricks/HuggingFaceCall.js';
 import { SQLiteSQLExecutor } from './bricks/SQLiteSqlExecutor.js';
 import { getConfig } from './config.js';
 
@@ -36,25 +37,41 @@ function saveHistoryToFile(converationId, conversationHistory){
   fs.writeFileSync(historyFile, JSON.stringify(conversationHistory, null, 2));    
 }
 
-console.log('getting config from chat-with-ai')
-//const config = await getConfig()
-const openAiCall = null//new OpenAiCall(config.aiProviders.azure)
-// Create the processing chain
-const chain = new ChainBuilder()
-  .add(new APIBrick({apiCall: openAiCall}))
-  .add(new SQLDetectionBrick({ debug: false }))
-  .add(new SQLExecutionBrick({ sqlExecutor: new SQLiteSQLExecutor(), debug: false}))
-  .add(new ResponseFormattingBrick({ debug: false, apiCall: openAiCall }))
-  .add(new FinalProcessingBrick({ debug: false }))
-  .build();
+function createApiCallForProvider(aiProvider, config){
 
-export async function startConversation(params) {
+  switch (aiProvider) {
+      case "azure":
+          return new OpenAiCall(config.aiProviders.azure)
+          break;
+      case "ollama":
+          return new OpenAiCall(config.aiProviders.ollama)
+          break;
+      case "huggingFace":
+          return new HuggingFaceCall(config.aiProviders.huggingFace)
+          break;
+      default:
+          throw new Error(`AI provider ${aiProvider} not supported`)
+  }
+}
+
+let chain
+export async function startConversation(aiProvider) {
     conversationId = new Date().toISOString().replace(/[:.]/g, '-')
     conversationHistory = []
     const systemMessageContent =  loadPrompt(path.join(app.getAppPath(), 'prompts/woa-db-system-message.md'))
     const systemMessage = { role: "system", content: systemMessageContent }
     conversationHistory.push(systemMessage)
-    console.log('new conversation:'+conversationId)
+    console.log('new conversation:'+conversationId+' for '+aiProvider)
+    const config = await getConfig()
+    const apiCall = createApiCallForProvider(aiProvider, config)
+    chain = new ChainBuilder()
+      .add(new APIBrick({apiCall: apiCall}))
+      .add(new SQLDetectionBrick({ debug: false }))
+      .add(new SQLExecutionBrick({ sqlExecutor: new SQLiteSQLExecutor(), debug: false}))
+      .add(new ResponseFormattingBrick({ debug: false, apiCall: apiCall }))
+      .add(new FinalProcessingBrick({ debug: false }))
+      .build();
+
     return conversationId
 }
 

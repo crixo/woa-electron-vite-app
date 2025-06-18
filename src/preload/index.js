@@ -63,7 +63,7 @@ contextBridge.exposeInMainWorld('dal', {
   getTipologiaAnamnesiRemota: () => ipcRenderer.invoke('tipo-anamnesi-remota'),
 
   askToLLM: (conversationId, question) => ipcRenderer.invoke('ai-ask', conversationId, question),
-  startConversation: () => ipcRenderer.invoke('ai-start-conversation'),
+  startConversation: (aiProvider) => ipcRenderer.invoke('ai-start-conversation', aiProvider),
 })
 
 contextBridge.exposeInMainWorld('appSettings', {

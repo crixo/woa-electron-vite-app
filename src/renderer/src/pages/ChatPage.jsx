@@ -8,15 +8,15 @@ export default function ChatInterface() {
   const newChat = [
     { id: 1, text: "Ciao. Sono il tuo assistente AI per la consultazione del tuo database pazienti. Cosa vorresti sapere oggi?", sender: "bot", timestamp: new Date() },
   ]
-  const [messages, setMessages] = useState(newChat);
+  const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
-  const [conversationId, setConversationId] = useState( DateTime.utc().toFormat("yyyy-MM-dd_HH-mm-ss"));
+  const [conversationId, setConversationId] = useState('');
   const messagesEndRef = useRef(null);
   const { setBottomSection } = useLayout();
   
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('Loading...');
-  const [model, setModel] = useState()
+  const [model, setModel] = useState('')
   const [models, setModels] = useState([])
 
   const scrollToBottom = () => {
@@ -25,15 +25,19 @@ export default function ChatInterface() {
 
   const settings = useSettings()
 
-  const  startNewChat = async () => {
+  const startNewChat = async () => {
+    if(!model){
+      alert('scegli un AI provider')
+      return
+    }
+
     setIsLoading(true);
     setLoadingMessage('Calling API...');
-
     try {
 
       console.log('Starting new chat...');
       setMessages([])
-      const newConversationId = await dal.startConversation()
+      const newConversationId = await dal.startConversation(model)
       setConversationId(newConversationId)
       console.log('conversation started with id:'+newConversationId)
       setMessages(newChat)        
@@ -43,19 +47,10 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false);
     }      
+    //console.log('startNewChat-isLoading:'+isLoading)
   }
 
-  useEffect(()=>{
-    if (!hasRun.current) {
-      startNewChat();
-      hasRun.current = true;
-    }
-  },[])
 
-  useEffect(()=>{
-    const providersList = Object.keys(settings.aiProviders);
-    setModels(providersList)
-  },[])
 
   useEffect(() => {
     scrollToBottom();
@@ -99,9 +94,28 @@ export default function ChatInterface() {
     }
   }, [inputText, setInputText, setBottomSection]);  
 
-  const handleSelection = (event) => {
-    setModel(event.target.value);
-    alert(`You selected the model: ${event.target.value}`);
+  useEffect(()=>{
+    if (!hasRun.current) {
+      if(model)
+        startNewChat();
+      else
+        console.log('select a model')
+      hasRun.current = true;
+    }
+  },[])
+
+  useEffect(()=>{
+    const providersList = Object.keys(settings.aiProviders);
+    setModels(providersList)
+  },[])
+
+  useEffect(()=>{
+    console.log(`model:${model} - conversationId:${conversationId}`);
+  },[model, conversationId])
+
+  const handleSelection = (e) => {
+    setModel(e.target.value);
+    //alert(`You selected the model: ${e.target.value}`);
   };
  
   const handleNewChat = async () => {
@@ -179,11 +193,11 @@ export default function ChatInterface() {
     <>
      {/* Header - Fixed -> make sure containaer does not use py-X otherwise sticky won't work */}
     <div className="fixed top-16 left-0 right-0 z-40 bg-blue-50 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-800 transition-colors duration-300 flex items-center justify-between px-4">
-      <select onChange={handleSelection} className="form-field-fit">
+      <select name="provider" onChange={handleSelection} className="form-field-fit">
           <option value="" disabled selected>Scegli un modello</option>
-          {models.map((model, index) => (
-              <option key={index} value={model}>
-                  {model}
+          {models.map((m, index) => (
+              <option key={index} value={m}>
+                  {m}
               </option>
           ))}
       </select>
@@ -198,6 +212,14 @@ export default function ChatInterface() {
 
 
     <div id="scrollable-content" class="h-full overflow-y-auto transition-all duration-300">
+      {(model==='' || conversationId==='') && (
+<div class="flex items-center justify-center mt-50">
+  <div class="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-md w-80 text-center">
+    <p class="text-xl font-semibold">Seleziona un AI provider, poi lancia una nuova chat</p>
+  </div>
+</div>
+      )}
+
        {/* Messages Area - Scrollable */}
       <div className="px-6 py-12 space-y-4">
         {messages.map((message) => (

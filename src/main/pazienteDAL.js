@@ -499,9 +499,9 @@ ipcMain.handle('tipo-anamnesi-remota', async (_) => {
   }
 });  
 
-ipcMain.handle('ai-start-conversation', async (_,) => {
+ipcMain.handle('ai-start-conversation', async (_, aiProvider) => {
   try {
-    return startConversation()
+    return startConversation(aiProvider)
   } catch (error) {
     console.log('IPC Error:', error);
     throw error; // Sends error back to renderer
