@@ -13,6 +13,7 @@ import { OpenAiCall } from './bricks/OpenAiCall.js';
 import { HuggingFaceCall } from './bricks/HuggingFaceCall.js';
 import { SQLiteSQLExecutor } from './bricks/SQLiteSqlExecutor.js';
 import { getConfig } from './config.js';
+import { FakeCall } from './bricks/FakeCall.js';
 
 let conversationHistory
 let conversationId
@@ -44,7 +45,7 @@ function createApiCallForProvider(aiProvider, config){
           return new OpenAiCall(config.aiProviders.azure)
           break;
       case "ollama":
-          return new OpenAiCall(config.aiProviders.ollama)
+          return new FakeCall(config.aiProviders.ollama)
           break;
       case "huggingFace":
           return new HuggingFaceCall(config.aiProviders.huggingFace)

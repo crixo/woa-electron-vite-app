@@ -1,63 +1,46 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLayout } from '../contexts/LayoutContext';
-import { DateTime } from "luxon";
 import { useSettings } from '../contexts/SettingsContext';
+import { ChatMessages } from '../components/ChatMessages';
 
 export default function ChatInterface() {
   const hasRun = useRef(false);
   const newChat = [
     { id: 1, text: "Ciao. Sono il tuo assistente AI per la consultazione del tuo database pazienti. Cosa vorresti sapere oggi?", sender: "bot", timestamp: new Date() },
   ]
-  const [messages, setMessages] = useState([]);
-  const [inputText, setInputText] = useState('');
-  const [conversationId, setConversationId] = useState('');
-  const messagesEndRef = useRef(null);
-  const { setBottomSection } = useLayout();
-  
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState('Loading...');
-  const [model, setModel] = useState('')
+  const [messages, setMessages] = useState([])
+  const [inputText, setInputText] = useState('')
+  const [conversationId, setConversationId] = useState('')  
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadingMessage, setLoadingMessage] = useState('Loading...')
+  const [aiProvider, setAiProvider] = useState('')
   const [models, setModels] = useState([])
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const { setBottomSection } = useLayout()
 
   const settings = useSettings()
 
-  const startNewChat = async () => {
-    if(!model){
-      alert('scegli un AI provider')
-      return
-    }
-
+  const startNewChat = async (aiProvider) => {
     setIsLoading(true);
     setLoadingMessage('Calling API...');
     try {
-
       console.log('Starting new chat...');
       setMessages([])
-      const newConversationId = await dal.startConversation(model)
+      const newConversationId = await dal.startConversation(aiProvider)
       setConversationId(newConversationId)
       console.log('conversation started with id:'+newConversationId)
       setMessages(newChat)        
-
     } catch (error) {
       console.error(error)
     } finally {
       setIsLoading(false);
     }      
-    //console.log('startNewChat-isLoading:'+isLoading)
   }
 
-
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
   useEffect(() => {
     // This page has a custom bottom section instead of chat input
-    setBottomSection(
+    if(aiProvider && conversationId){
+      setBottomSection(
       <div 
         className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4"
         style={{ height: '80px', flexShrink: 0 }}
@@ -87,19 +70,20 @@ export default function ChatInterface() {
           </button>
         </div>
       </div>
-    );
+      )
+    }
 
     return () => {
       setBottomSection(null)
     }
-  }, [inputText, setInputText, setBottomSection]);  
+  }, [inputText, setInputText, setBottomSection, conversationId]);  
 
   useEffect(()=>{
     if (!hasRun.current) {
-      if(model)
-        startNewChat();
+      if(aiProvider)
+        startNewChat(aiProvider);
       else
-        console.log('select a model')
+        console.log('select an AI provider')
       hasRun.current = true;
     }
   },[])
@@ -109,17 +93,14 @@ export default function ChatInterface() {
     setModels(providersList)
   },[])
 
-  useEffect(()=>{
-    console.log(`model:${model} - conversationId:${conversationId}`);
-  },[model, conversationId])
-
   const handleSelection = (e) => {
-    setModel(e.target.value);
-    //alert(`You selected the model: ${e.target.value}`);
+    const provider = e.target.value
+    setAiProvider(provider);
+    startNewChat(provider)
   };
  
   const handleNewChat = async () => {
-    await startNewChat()
+    await startNewChat(aiProvider)
   };  
 
   const handleSendMessage = async () => {
@@ -171,30 +152,25 @@ export default function ChatInterface() {
     }
   };
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
   const LoadingOverlay = ({ isVisible, message = 'Loading...' }) => {
-  if (!isVisible) return null;
-  
-  return (
-    <div className="fixed inset-0 bg-black/30 dark:bg-white/20 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-lg p-8 flex flex-col items-center shadow-2xl border border-gray-200/50 dark:border-gray-700/50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mb-4"></div>
-        <p className="text-lg font-medium text-gray-800 dark:text-gray-100">{message}</p>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">Please wait...</p>
+    if (!isVisible) return null;    
+    return (
+      <div className="fixed inset-0 bg-black/30 dark:bg-white/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-lg p-8 flex flex-col items-center shadow-2xl border border-gray-200/50 dark:border-gray-700/50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mb-4"></div>
+          <p className="text-lg font-medium text-gray-800 dark:text-gray-100">{message}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">Please wait...</p>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   return (
     <>
      {/* Header - Fixed -> make sure containaer does not use py-X otherwise sticky won't work */}
     <div className="fixed top-16 left-0 right-0 z-40 bg-blue-50 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-800 transition-colors duration-300 flex items-center justify-between px-4">
       <select name="provider" onChange={handleSelection} className="form-field-fit">
-          <option value="" disabled selected>Scegli un modello</option>
+          <option value="" disabled selected>Scegli un AI provider</option>
           {models.map((m, index) => (
               <option key={index} value={m}>
                   {m}
@@ -204,59 +180,27 @@ export default function ChatInterface() {
 
       <button
         onClick={handleNewChat}
-        className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-gray-300"
+        disabled={!aiProvider}
+        className="disabled:opacity-50 disabled:cursor-not-allowed w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-gray-300"
         title="Start new chat">
           <i className="fas fa-plus text-lg"></i>
       </button>        
     </div>
 
-
-    <div id="scrollable-content" class="h-full overflow-y-auto transition-all duration-300">
-      {(model==='' || conversationId==='') && (
-<div class="flex items-center justify-center mt-50">
-  <div class="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-md w-80 text-center">
-    <p class="text-xl font-semibold">Seleziona un AI provider, poi lancia una nuova chat</p>
-  </div>
-</div>
-      )}
-
-       {/* Messages Area - Scrollable */}
-      <div className="px-6 py-12 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`max-w-xs lg:max-w-md xl:max-w-lg ${message.sender === 'user' ? 'order-2' : 'order-1'}`}>
-              <div
-                className={`px-4 py-3 rounded-2xl shadow-sm ${
-                  message.sender === 'user'
-                    ? 'bg-blue-500 dark:bg-blue-600 text-white'
-                    : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600'
-                }`}
-              >
-                <p className="text-sm leading-relaxed">{message.text}</p>
-              </div>
-              <div
-                className={`text-xs mt-1 text-gray-500 dark:text-gray-400 ${
-                  message.sender === 'user' ? 'text-right' : 'text-left'
-                }`}
-              >
-                {formatTime(message.timestamp)}
-              </div>
-            </div>
-            {message.sender === 'bot' && (
-              <div className="w-8 h-8 rounded-full mr-3 flex items-center justify-center text-sm font-medium bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
-                AI
-              </div>
-            )}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
+    {(aiProvider==='' || conversationId==='') && (
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div class="p-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-md w-120 text-center">
+        <p class="text-xl font-semibold">
+            Seleziona un AI provider, poi verra' lanciata una nuova chat.<br />
+            Cambiando AI provider verra' lanciata una nuova chat
+        </p>
       </div>
+    </div>
+    )}
+
+      <ChatMessages messages={messages} />
 
       <LoadingOverlay isVisible={isLoading} message={loadingMessage} />
-    </div>
     </>
   );
 }
