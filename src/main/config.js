@@ -70,7 +70,7 @@ function loadConfig(homeDir, __dirname) {
 }
 
 export function dumpConfig(config) {
-  const yamlStr = yaml.dump(config);
+  const yamlStr = yaml.dump(config, {lineWidth: -1});
 
   // Save to a file
   fs.writeFileSync(configPath, yamlStr, 'utf8');
