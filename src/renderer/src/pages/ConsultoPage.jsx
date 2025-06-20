@@ -89,7 +89,7 @@ const ConsultoPage = () => {
 
         <DataTableTile title="Anamnesi Prossime" 
           createPageUri={`/consulto/${consulto.ID}/anamnesi-prossime/create`} 
-          showAdd={consulto.anamnesiProssime.length==0} />
+          showAdd={!consulto.anamnesiProssime || consulto.anamnesiProssime.length === 0} />
         <DataTable
           entityType='Anamnesi Prossima'
           data={consulto.anamnesiProssime}

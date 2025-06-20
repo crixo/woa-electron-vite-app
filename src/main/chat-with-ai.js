@@ -91,7 +91,11 @@ export async function ask(conversationId, userQuestion) {
 
     console.log(`\n=== CONVERSATION HISTORY success:${result.success} ===`);
     result.getHistory().forEach((msg, i) => {
-      console.log(`${i + 1}. [${msg.role}]: ${msg.content.substring(0, 100)}...`);
+      if(msg.content){
+        console.log(`${i + 1}. [${msg.role}]: ${msg.content.substring(0, 100)}...`);
+      }else{
+        console.log('msg.content is undefined for: ',msg)
+      }
     });
   } catch (error) {
     answer = error.message
