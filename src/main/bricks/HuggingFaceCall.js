@@ -10,10 +10,10 @@ class HuggingFaceCall {
 
     const client = new InferenceClient(this.options.token);
     const chatCompletion = await client.chatCompletion({
-        // provider: "novita",
-        // model: "deepseek-ai/DeepSeek-V3-0324",
-        provider: "nscale",
-        model: "Qwen/Qwen2.5-Coder-32B-Instruct",   
+        provider: "novita",
+        model: "deepseek-ai/DeepSeek-V3-0324",
+        // provider: "nscale",
+        // model: "Qwen/Qwen2.5-Coder-32B-Instruct",   
         // provider: "featherless-ai",
         // model: "defog/llama-3-sqlcoder-8b", // non fornisce i richiesti delimitatori per statement SQL
         messages: conversationHistory,

@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { PazienteProvider } from './contexts/PazienteContext'
 import CreaAnamnesiRemotaPage from './pages/CreaAnamnesiRemotaPage'
 import ModificaAnamnesiRemotaPage from './pages/ModificaAnamnesiRemotaPage'
+import EntityUpsertPage from './pages/EntityUpsertPage'
 import { ConsultoProvider } from './contexts/ConsultoContext'
 import CreaConsultoPage from './pages/CreaConsultoPage'
 import ModificaConsultoPage from './pages/ModificaConsultoPage'
@@ -43,8 +44,8 @@ const AppLayout = () => {
           <Route path="/create" element={<CreaPazientePage />}></Route>
           <Route path="/paziente/:id" element={<PazientePage />}></Route>
           <Route path="/paziente/:id/edit" element={<ModificaPazientePage />}></Route>
-          <Route path="/paziente/:id/anamnesi-remote/create" element={<CreaAnamnesiRemotaPage />} />
-          <Route path="/anamnesi-remota/:id/edit" element={ <ModificaAnamnesiRemotaPage /> } />         
+          <Route path="/paziente/:idPaziente/:entityType/create" element={<EntityUpsertPage />} />
+          <Route path="/:entityType/:id/edit" element={ <EntityUpsertPage /> } />         
           <Route path="/paziente/:id/consulti/create" element={<CreaConsultoPage />} />
           <Route path="/consulto/:id/edit" element={<ModificaConsultoPage />}  />    
           <Route path="/consulto/:id" element={<ConsultoPage />} />    

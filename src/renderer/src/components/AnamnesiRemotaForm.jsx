@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { formatDateForFormField } from '../utils/dateUtils'
-import { handleFormChange } from '../utils/formUtils';
+import { handleFormChange, submitIfFormDataAreValid } from '../utils/formUtils';
+import { toast } from 'react-toastify'
 
 const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
   const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => handleFormChange(e, formData, setFormData);
+  
+  const missingMandatoryField = (formData) => (formData.data === '' || !formData.tipo || !formData.descrizione)
 
   console.log(formData)
 
@@ -13,7 +16,14 @@ const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
     <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
-        onSubmit(formData)
+        // if(missingMandatoryField(formData)){
+        //   toast.warn('please fill all input completely', {
+        //     position: 'top-right'
+        //   })
+        // }else{
+        //   onSubmit(formData)
+        // }
+        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
       }}
     >
         <div className="space-y-2">

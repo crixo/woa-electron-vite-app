@@ -32,26 +32,22 @@ const ConsultoPage = () => {
   //Modal delete
   const [modalOpen, setModalOpen] = useState(false); //modal cancel button
   const [deletingEntity, setDeletingEntity] = useState(null);
-  const [confirmationInput, setConfirmationInput] = useState("");//modal input
+  //const [confirmationInput, setConfirmationInput] = useState("");//modal input
 
   const handleDeleteClick = (entityType, entity, deleteEntity) => { // DataTable onDelete handler
     setDeletingEntity({entityType, entity,deleteEntity});
     setModalOpen(true);
-    setConfirmationInput("");
   };
 
-  const handleConfirmDelete = () => { // modal confirm button
-    if (deletingEntity && confirmationInput.toLocaleLowerCase() === deletingEntity.entityType.toLocaleLowerCase()) {
-      //setData(data.filter((item) => item.id !== deleteId));
-      deletingEntity.deleteEntity(deletingEntity.entity)
+  const canDelete = (input) => {
+    console.log(input)
+    return (deletingEntity && input.toLocaleLowerCase() === deletingEntity.entityType.toLocaleLowerCase())
+  }
 
+  const handleConfirmDelete = () => { // modal confirm button
+      deletingEntity.deleteEntity(deletingEntity.entity)
       setModalOpen(false);
-      setConfirmationInput("");
-    }else{
-      alert('tipo entita da cancellare non corretto')
-    }
   };  
-  // Modal delete
 
   const onDeleteAnamnesiProssima = async (entity) => {
     deleteEntityTemplate('Anamnesi Prossima', entity, deleteAnamnesiProssima)
@@ -91,7 +87,9 @@ const ConsultoPage = () => {
           <ConsultoCard consulto={consulto} />
         </div>
 
-        <DataTableTile title="Anamnesi Prossime" createPageUri={`/consulto/${consulto.ID}/anamnesi-prossime/create`} />
+        <DataTableTile title="Anamnesi Prossime" 
+          createPageUri={`/consulto/${consulto.ID}/anamnesi-prossime/create`} 
+          showAdd={!consulto.anamnesiProssime || consulto.anamnesiProssime.length === 0} />
         <DataTable
           entityType='Anamnesi Prossima'
           data={consulto.anamnesiProssime}
@@ -127,10 +125,9 @@ const ConsultoPage = () => {
 
 {modalOpen && (
   <DeleteModal 
-    confirmationInput={confirmationInput}
-    setConfirmationInput={setConfirmationInput} 
     setModalOpen={setModalOpen} 
-    handleConfirmDelete={handleConfirmDelete} />)}
+    handleConfirmDelete={handleConfirmDelete}
+    canDeleteHandler={canDelete} />)}
 
         </>
       ) : (
