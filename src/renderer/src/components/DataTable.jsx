@@ -26,16 +26,18 @@ export const DataTable = ({ idConfig, entityType, data, onDeleting, deleteHandle
     }
   };
 
+      // <div className="mb-4 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+      // <table className="w-full border-collapse">
 
   return (
-    
-    <div className="mb-4 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+  <div className="mb-4 rounded-lg border border-gray-300 dark:border-gray-700">
+    <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead className="bg-gray-200 dark:bg-gray-700">
           <tr>
             {headers.map((header) => (
               (!header.startsWith('ID_') && <th scope="col" className="p-2 border border-gray-300 dark:border-gray-600" key={header}>
-                {header}
+                {header.replace('_', ' ')}
               </th>)
             ))}
             <th scope="col" className="p-2 border border-gray-300 dark:border-gray-600" ></th>
@@ -68,5 +70,6 @@ export const DataTable = ({ idConfig, entityType, data, onDeleting, deleteHandle
         </tbody>
       </table>
     </div>
+  </div>
   )
 }

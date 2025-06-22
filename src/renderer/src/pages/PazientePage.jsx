@@ -19,24 +19,21 @@ const PazientePage = () => {
   //Modal delete
   const [modalOpen, setModalOpen] = useState(false); //modal cancel button
   const [deletingEntity, setDeletingEntity] = useState(null);
-  const [confirmationInput, setConfirmationInput] = useState("");//modal input
 
   const handleDeleteClick = (entityType, entity, deleteEntity) => { // DataTable onDelete handler
     setDeletingEntity({entityType, entity,deleteEntity});
     setModalOpen(true);
-    setConfirmationInput("");
   };
 
-  const handleConfirmDelete = () => { // modal confirm button
-    if (deletingEntity && confirmationInput.toLocaleLowerCase() === deletingEntity.entityType.toLocaleLowerCase()) {
-      //setData(data.filter((item) => item.id !== deleteId));
-      deletingEntity.deleteEntity(deletingEntity.entity)
+  const canDelete = (input) => {
+    console.log(input)
+    return (deletingEntity && input.toLocaleLowerCase() === deletingEntity.entityType.toLocaleLowerCase())
+  }
 
+  const handleConfirmDelete = () => { // modal confirm button
+      deletingEntity.deleteEntity(deletingEntity.entity)
       setModalOpen(false);
-      setConfirmationInput("");
-    }
   };  
-  // Modal delete
 
   useEffect(() => {
     //resetPaziente();
@@ -78,11 +75,11 @@ const PazientePage = () => {
         <>
           <PazienteCard paziente={paziente} />
 
-          <DataTableTile title="Anamnesi Prossime" createPageUri={`/paziente/${paziente.ID}/anamnesi-remote/create`} />
+          <DataTableTile title="Anamnesi Remote" createPageUri={`/paziente/${paziente.ID}/anamnesiRemota/create`} />
           <DataTable 
-            entityType='Anamnesi Remote'
+            entityType='Anamnesi Remota'
             data={paziente.anamnesiRemote} 
-            idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
+            idConfig={{entityUrlSegment:'/anamnesiRemota/:id/edit', iconCss:'fas fa-pencil-alt'}}
             onDeleting={handleDeleteClick}
             deleteHandler={onDeleteAnamnesiRemota}
             convertLookup={convertLookupAnamnesi} />
@@ -97,10 +94,9 @@ const PazientePage = () => {
 
 {modalOpen && (
   <DeleteModal 
-    confirmationInput={confirmationInput}
-    setConfirmationInput={setConfirmationInput} 
     setModalOpen={setModalOpen} 
-    handleConfirmDelete={handleConfirmDelete} />)}
+    handleConfirmDelete={handleConfirmDelete}
+    canDeleteHandler={canDelete} />)}
 
 
         </>

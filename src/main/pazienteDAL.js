@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import Database from "better-sqlite3";
 import log from 'electron-log';
 import * as fs from 'fs';
-import { answerWithLLM } from './generate-sql-with-llm';
+import { ask, startConversation } from './chat-with-ai';
 
 let db
 
@@ -19,6 +19,10 @@ export function setupPazienteDAL(config){
   }
   return { success: true };
 
+}
+
+export function executeSQL(sqlStatemnt){
+ return db.prepare(sqlStatemnt).all();
 }
 
 function initDatabase(config) {
@@ -495,9 +499,18 @@ ipcMain.handle('tipo-anamnesi-remota', async (_) => {
   }
 });  
 
-ipcMain.handle('answer-with-llm', async (_, userRequest) => {
+ipcMain.handle('ai-start-conversation', async (_, aiProvider) => {
   try {
-    return answerWithLLM(userRequest, db)
+    return startConversation(aiProvider)
+  } catch (error) {
+    console.log('IPC Error:', error);
+    throw error; // Sends error back to renderer
+  }
+});
+
+ipcMain.handle('ai-ask', async (_, conversationId, question) => {
+  try {
+    return ask(conversationId, question)
   } catch (error) {
     console.log('IPC Error:', error);
     throw error; // Sends error back to renderer
