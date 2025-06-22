@@ -1,17 +1,20 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { dirname, join } from 'path';
 // import path from 'node:path';
-// import { fileURLToPath } from 'url';
+
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset';
+//import icon from '../../resources/icon.png?asset';
+//import path from 'path'
 import { configureLogging } from './log';
 import { setupPazienteDAL } from './pazienteDAL';
 import { dumpConfig, shareSettings, getConfig } from './config';
 import log from 'electron-log';
 import './electron-updater'
 
+// import { fileURLToPath } from 'url';
 // const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const __dirname = dirname(__filename);
+
 // const homeDir = os.homedir();
 //This will print the absolute path to the application's root directory where your package.json file is located. 
 //If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
@@ -21,6 +24,7 @@ let config
 let isDBConfigured = false;
 let locateDBWindow;
 let mainWindow;
+//const iconPath = path.join(__dirname, '../resources/icon.png')
 ///////////////////////////////////////////////////
   console.log('loading config from app.whenReady - index.js')
   // Configuration
@@ -39,9 +43,9 @@ function createMainWindow() {
     show: false,
     autoHideMenuBar: true,
     //icon: process.cwd() + '/build/woa.icns',
-    ...(process.platform === 'linux' ? { icon } : {}),
+    //...(process.platform === 'linux' ? { icon: iconPath } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),//.mjs is creating during build due to type: module in package.json
       sandbox: false
     }
   })
@@ -77,7 +81,7 @@ function createMainWindow() {
     // Default open or close DevTools by F12 in development
     // mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))//.mjs is creating during build due to type: module in package.json
   }
 }
 
@@ -86,7 +90,7 @@ function createLocateDBWindow() {
       width: 500,
       height: 350,
       webPreferences: {
-          preload: join(__dirname, "../preload/locate-db.js"),
+          preload: join(__dirname, "../preload/locate-db.mjs"),
           sandbox: false,
       },
   });

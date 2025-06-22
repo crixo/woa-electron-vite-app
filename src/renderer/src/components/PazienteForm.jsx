@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { formatDateForFormField } from '../utils/dateUtils'
-import { handleFormChange, submitIfFormDataAreValid  } from '../utils/formUtils';
+import { handleFormChange, submitIfFormDataAreValid, validate  } from '../utils/formUtils'
+import { useSettings } from '../contexts/SettingsContext'
 
 const PazienteForm = ({ entity, onSubmit }) => {
   const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => handleFormChange(e, formData, setFormData);
-  const missingMandatoryField = (formData) => (!formData.nome || !formData.cognome || !formData.data_nascita )
+  const settings = useSettings()
+  const missingMandatoryField = (formData) => validate('paziente',formData, settings)//(!formData.nome || !formData.cognome || !formData.data_nascita )
 
   return (
     <form className="form-container"

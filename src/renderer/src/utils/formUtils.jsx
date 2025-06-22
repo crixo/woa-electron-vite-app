@@ -11,11 +11,27 @@ export const handleFormChange = (e, formData, setFormData) => {
 }
 
 export const submitIfFormDataAreValid = (formData, submit, verify) => {
-  if(verify(formData)){
+  if(!verify(formData)){
     toast.warn('please fill all input completely', {
       position: 'top-right'
     })
   }else{
     submit(formData)
   }
+}
+
+
+export function validate(entityType, formData, settings) {
+  const data = formData
+  console.log(entityType, settings.validations, settings.validations[entityType])
+  const mandatoryRules = settings.validations[entityType]
+  console.log(mandatoryRules)
+  for (const [key, rule] of Object.entries(mandatoryRules)) {
+    if (rule === 'mandatory') {
+      if (!(key in data) || data[key] === null || data[key] === undefined || data[key] === '') {
+        return false;
+      }
+    }
+  }
+  return true;
 }

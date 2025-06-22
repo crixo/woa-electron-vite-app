@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { formatDateForFormField } from '../utils/dateUtils'
-import { handleFormChange, submitIfFormDataAreValid } from '../utils/formUtils'
-import { toast } from 'react-toastify'
+import { handleFormChange, submitIfFormDataAreValid, validate } from '../utils/formUtils'
+import { useSettings } from '../contexts/SettingsContext'
 
 const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
   const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => handleFormChange(e, formData, setFormData);
-  const missingMandatoryField = (formData) => (formData.data === '' || !formData.tipo || !formData.descrizione)
+  const settings = useSettings()
+  const missingMandatoryField = (formData) => validate('anamnesi-remota',formData, settings)//(!formData.nome || !formData.cognome || !formData.data_nascita )
 
   return (
     <form className="form-container"

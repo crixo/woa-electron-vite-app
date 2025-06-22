@@ -15,7 +15,9 @@ export default defineConfig({
           // preventing the follow error: Module format "cjs" does not support top-level await. Use the "es" or "system" output formats rather.
           // Adding this settings, you need to change in package.json the entrypoint from
           // "main": "./out/main/index.js" -> "main": "./out/main/index.mjs"
-          format: "es", 
+          //format: "es", 
+          // alternatevly you can set type: module in package.json
+          entryFileNames: 'index.mjs'
         },
       },
     },
@@ -42,6 +44,11 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      include: ['src/renderer/**/*.test.js', 'tests/renderer/**/*.test.js']
+    },    
     plugins: [
       react(),
       tailwindcss(),
