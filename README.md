@@ -6,6 +6,14 @@ An Electron application with React
 
 - [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
+## Quick setup
+
+- Clone master branch
+
+- ```npm install```
+
+- When the locator DB screen starts, select an empty sample db loacated at data/woa-emtpy.db
+
 ## Project Setup
 
 ### Install
