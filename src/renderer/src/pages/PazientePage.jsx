@@ -75,11 +75,11 @@ const PazientePage = () => {
         <>
           <PazienteCard paziente={paziente} />
 
-          <DataTableTile title="Anamnesi Remote" createPageUri={`/paziente/${paziente.ID}/anamnesi-remote/create`} />
+          <DataTableTile title="Anamnesi Remote" createPageUri={`/paziente/${paziente.ID}/anamnesiRemota/create`} />
           <DataTable 
             entityType='Anamnesi Remota'
             data={paziente.anamnesiRemote} 
-            idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
+            idConfig={{entityUrlSegment:'/anamnesiRemota/:id/edit', iconCss:'fas fa-pencil-alt'}}
             onDeleting={handleDeleteClick}
             deleteHandler={onDeleteAnamnesiRemota}
             convertLookup={convertLookupAnamnesi} />

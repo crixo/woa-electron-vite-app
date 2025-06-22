@@ -12,6 +12,7 @@ export const handleFormChange = (e, formData, setFormData) => {
 
 export const persistEntity = async (formData, missingMandatoryField, persist, successMessage='Entità salvata con succeso') => {
 
+  console.log('missingMandatoryField(formData)'+missingMandatoryField(formData), formData)
   if (missingMandatoryField(formData)) {
     toast.warn('please fill all input completely', {
       position: 'top-right'
@@ -35,4 +36,14 @@ export const persistEntity = async (formData, missingMandatoryField, persist, su
     //setIsLoading(false);
     return false
   }  
+}
+
+export const submitIfFormDataAreValid = (formData, submit, verify) => {
+  if(verify(formData)){
+    toast.warn('please fill all input completely', {
+      position: 'top-right'
+    })
+  }else{
+    submit(formData)
+  }
 }

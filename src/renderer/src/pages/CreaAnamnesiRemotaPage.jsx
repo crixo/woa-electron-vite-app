@@ -9,6 +9,7 @@ import { persistEntity } from '../utils/formUtils'
 const CreaAnamnesiRemotaPage = () => {
   const { paziente, tipoAnamnesi } = useContext(PazienteContext)
   const navigate = useNavigate()
+  const entity = {ID_paziente:paziente.ID }
 
   const missingMandatoryField = (formData) => {
     return (formData.data === '' || formData.tipo === '' || formData.descrizione === '')
@@ -24,7 +25,7 @@ const CreaAnamnesiRemotaPage = () => {
     <>
     <PazienteCard paziente={paziente} />
     <h3 className="h3-primary">Crea nuova Anamnesi Remota</h3>
-    <AnamnesiRemotaForm entity={{ID_paziente:paziente.ID }} onSubmit={saveEntity} tipi={tipoAnamnesi} />
+    <AnamnesiRemotaForm entity={entity} onSubmit={saveEntity} tipi={tipoAnamnesi} />
     </>
   )
 }

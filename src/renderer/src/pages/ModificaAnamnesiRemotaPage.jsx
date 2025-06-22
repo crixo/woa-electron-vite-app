@@ -1,18 +1,17 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PazienteContext } from '../contexts/PazienteContext'
-import { useParams } from 'react-router-dom'
 import AnamnesiRemotaForm from '../components/AnamnesiRemotaForm'
 import { PazienteCard } from '../components/PazienteCard'
 import { persistEntity } from '../utils/formUtils'
+import { useParams } from 'react-router-dom'
 //import { VITE_BACKEND_URL } from "../App";
 
 const ModificaAnamnesiRemotaPage = () => {
-  const navigate = useNavigate()
   const { paziente, tipoAnamnesi } = useContext(PazienteContext)
+  const navigate = useNavigate()
   const { id } = useParams() // Extracts the ID from URL
-  const entityToUpd = paziente.anamnesiRemote.find(e=>e.ID==id)
-  const [entity, setEntity] = useState(entityToUpd)
+  const entity = paziente.anamnesiRemote.find(e=>e.ID==id)
 
   const missingMandatoryField = (formData) => {
     return (formData.data === '' || formData.tipo === '' || formData.descrizione === '')
