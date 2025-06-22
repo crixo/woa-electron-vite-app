@@ -75,7 +75,7 @@ const HomePage = () => {
     <div>
       <div className="flex justify-end">
         <Link
-          to="/create"
+          to="/paziente/create"
           className="button-crud">
           Crea un nuovo paziente
         </Link>

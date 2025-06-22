@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { submitIfFormDataAreValid } from '../utils/formUtils'
 
 const AnamnesiProssimaForm = ({ entity, onSubmit }) => {
   const [formData, setFormData] = useState(entity)
@@ -6,6 +7,8 @@ const AnamnesiProssimaForm = ({ entity, onSubmit }) => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
+  const missingMandatoryField = (formData) => (!formData.prima_volta)
+
 
   console.log(formData)
 
@@ -13,7 +16,7 @@ const AnamnesiProssimaForm = ({ entity, onSubmit }) => {
     <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
-        onSubmit(formData)
+        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
       }}
     >
       <div className="space-y-2">

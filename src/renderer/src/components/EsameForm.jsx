@@ -1,21 +1,18 @@
 import { useState } from 'react'
 import { formatDateForFormField } from '../utils/dateUtils'
-import { handleFormChange } from '../utils/formUtils';
+import { handleFormChange, submitIfFormDataAreValid } from '../utils/formUtils'
 
-const EsameForm = ({ esame, onSubmit, tipi }) => {
-  const [formData, setFormData] = useState(esame)
+const EsameForm = ({ entity, onSubmit, tipi }) => {
+  const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => handleFormChange(e, formData, setFormData);
-
-  console.log(formData)
-
-
+  const missingMandatoryField = (formData) => (!formData.data || !formData.tipo|| !formData.descrizione)
 
   return (
     <form className='form-container'
       onSubmit={(e) => {
         e.preventDefault()
-        onSubmit(formData)
+        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
       }}
     >
       <div className="space-y-2">

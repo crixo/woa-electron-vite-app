@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { submitIfFormDataAreValid } from '../utils/formUtils'
 
 const ValutazioneForm = ({ entity, onSubmit }) => {
   const [formData, setFormData] = useState(entity)
@@ -7,13 +8,14 @@ const ValutazioneForm = ({ entity, onSubmit }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  console.log(formData)
+  const missingMandatoryField = (formData) => (!formData.strutturale)
+
 
   return (
     <form className='form-container'
       onSubmit={(e) => {
         e.preventDefault()
-        onSubmit(formData)
+        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
       }}
     >
       <div className="space-y-2">

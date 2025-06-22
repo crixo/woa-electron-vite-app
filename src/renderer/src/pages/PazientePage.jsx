@@ -75,16 +75,16 @@ const PazientePage = () => {
         <>
           <PazienteCard paziente={paziente} />
 
-          <DataTableTile title="Anamnesi Remote" createPageUri={`/paziente/${paziente.ID}/anamnesiRemota/create`} />
+          <DataTableTile title="Anamnesi Remote" createPageUri={`/paziente/${paziente.ID}/anamnesi-remota/create`} />
           <DataTable 
             entityType='Anamnesi Remota'
             data={paziente.anamnesiRemote} 
-            idConfig={{entityUrlSegment:'/anamnesiRemota/:id/edit', iconCss:'fas fa-pencil-alt'}}
+            idConfig={{entityUrlSegment:'/anamnesi-remota/:id/edit', iconCss:'fas fa-pencil-alt'}}
             onDeleting={handleDeleteClick}
             deleteHandler={onDeleteAnamnesiRemota}
             convertLookup={convertLookupAnamnesi} />
 
-          <DataTableTile title="Consulti" createPageUri={`/paziente/${paziente.ID}/consulti/create`} />
+          <DataTableTile title="Consulti" createPageUri={`/paziente/${paziente.ID}/consulto/create`} />
           <DataTable 
             entityType='Consulto'
             data={paziente.consulti} 
@@ -97,8 +97,6 @@ const PazientePage = () => {
     setModalOpen={setModalOpen} 
     handleConfirmDelete={handleConfirmDelete}
     canDeleteHandler={canDelete} />)}
-
-
         </>
       ) : (
         <p>No paziente found with id={pazienteId}</p>

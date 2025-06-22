@@ -88,7 +88,7 @@ const ConsultoPage = () => {
         </div>
 
         <DataTableTile title="Anamnesi Prossime" 
-          createPageUri={`/consulto/${consulto.ID}/anamnesi-prossime/create`} 
+          createPageUri={`/consulto/${consulto.ID}/anamnesi-prossima/create`} 
           showAdd={!consulto.anamnesiProssime || consulto.anamnesiProssime.length === 0} />
         <DataTable
           entityType='Anamnesi Prossima'
@@ -97,7 +97,7 @@ const ConsultoPage = () => {
           onDeleting={handleDeleteClick}
           deleteHandler={onDeleteAnamnesiProssima} />
 
-        <DataTableTile title="Esami" createPageUri={`/consulto/${consulto.ID}/esami/create`} />
+        <DataTableTile title="Esami" createPageUri={`/consulto/${consulto.ID}/esame/create`} />
         <DataTable 
           entityType='Esame'
           data={consulto.esami}
@@ -106,7 +106,7 @@ const ConsultoPage = () => {
           onDeleting={handleDeleteClick}
           deleteHandler={onDeleteEsame} />
 
-        <DataTableTile title="Trattamenti" createPageUri={`/consulto/${consulto.ID}/trattamenti/create`} />
+        <DataTableTile title="Trattamenti" createPageUri={`/consulto/${consulto.ID}/trattamento/create`} />
         <DataTable 
           entityType='Trattamento'
           data={consulto.trattamenti} 
@@ -115,7 +115,7 @@ const ConsultoPage = () => {
           deleteHandler={onDeleteTrattamento} />
 
          
-        <DataTableTile title="Valutazioni" createPageUri={`/consulto/${consulto.ID}/valutazioni/create`} />
+        <DataTableTile title="Valutazioni" createPageUri={`/consulto/${consulto.ID}/valutazione/create`} />
         <DataTable 
           entityType='Valutazione'
           data={consulto.valutazioni} 
