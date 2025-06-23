@@ -21,17 +21,50 @@ export const submitIfFormDataAreValid = (formData, submit, verify) => {
 }
 
 
-export function validate(entityType, formData, settings) {
-  const data = formData
-  console.log(entityType, settings.validations, settings.validations[entityType])
-  const mandatoryRules = settings.validations[entityType]
-  console.log(mandatoryRules)
-  for (const [key, rule] of Object.entries(mandatoryRules)) {
-    if (rule === 'mandatory') {
-      if (!(key in data) || data[key] === null || data[key] === undefined || data[key] === '') {
-        return false;
+export function validate(mandatoryFields, formData) {
+  if(mandatoryFields){
+    const data = formData
+    for (const [key, rule] of Object.entries(mandatoryFields)) {
+      if (rule === 'mandatory') {
+        if (!(key in data) || data[key] === null || data[key] === undefined || data[key] === '') {
+          return 'Completa i campi obbligatori';
+        }
       }
     }
+    return '';
+  }else{
+    //no mandatory fields but user did not valorize any entity property
+    const formDataNoIDs = Object.fromEntries(
+      Object.entries(formData).filter(([key]) => !key.startsWith("ID"))
+    )
+    const allEmpty = Object.values(formDataNoIDs).every(value => !value)
+    return allEmpty? 'Non è possibile salvare una entità vuota' : ''
   }
-  return true;
+}
+
+export function markMandatoryFields(mandatoryFields){
+  if(!mandatoryFields) return
+  const fields = Object.keys(mandatoryFields)
+  const formGroup = document.querySelector('.space-y-2');
+  const noteExists = document.querySelector('.campo-obbligatorio-note');
+
+  if (formGroup && !noteExists) {
+    const note = document.createElement('div');
+    note.className = 'text-right text-sm campo-obbligatorio-note'; // Added unique class
+    note.textContent = '* campo obbligatorio';
+    formGroup.parentNode?.insertBefore(note, formGroup);
+  }
+
+  // Append asterisks to matching labels
+  fields.forEach((fieldName) => {
+    const inputEl = document.querySelector(
+      `input[name="${fieldName}"], select[name="${fieldName}"], textarea[name="${fieldName}"]`
+    )
+    if (inputEl) {
+      const labelEl = inputEl.closest('div')?.querySelector('label');
+      if (labelEl && !labelEl.textContent.includes('*')) {
+        labelEl.textContent += ' *';
+      }
+    }
+  });
 }

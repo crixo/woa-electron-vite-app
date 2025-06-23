@@ -1,20 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatDateForFormField } from '../utils/dateUtils'
-import { handleFormChange, submitIfFormDataAreValid, validate  } from '../utils/formUtils'
-import { useSettings } from '../contexts/SettingsContext'
+import { handleFormChange, markMandatoryFields } from '../utils/formUtils'
 
-const PazienteForm = ({ entity, onSubmit }) => {
+const PazienteForm = ({ entity, onSubmit, mandatoryFields }) => {
   const [formData, setFormData] = useState(entity)
+  const handleChange = (e) => handleFormChange(e, formData, setFormData)
 
-  const handleChange = (e) => handleFormChange(e, formData, setFormData);
-  const settings = useSettings()
-  const missingMandatoryField = (formData) => validate('paziente',formData, settings)//(!formData.nome || !formData.cognome || !formData.data_nascita )
+  useEffect(() => {
+    markMandatoryFields(mandatoryFields)
+  }, []);
 
   return (
     <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
-        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
+        onSubmit(formData)
       }}
     >
       <div className="space-y-2">

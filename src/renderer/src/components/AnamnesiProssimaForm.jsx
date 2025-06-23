@@ -1,22 +1,22 @@
-import { useState } from 'react'
-import { submitIfFormDataAreValid } from '../utils/formUtils'
+import { useState, useEffect } from 'react'
+import { markMandatoryFields } from '../utils/formUtils'
 
-const AnamnesiProssimaForm = ({ entity, onSubmit }) => {
+const AnamnesiProssimaForm = ({ entity, onSubmit, mandatoryFields  }) => {
   const [formData, setFormData] = useState(entity)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
-  const missingMandatoryField = (formData) => (!formData.prima_volta)
 
-
-  console.log(formData)
+  useEffect(() => {
+    markMandatoryFields(mandatoryFields)
+  }, []);
 
   return (
     <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
-        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
+        onSubmit(formData)
       }}
     >
       <div className="space-y-2">

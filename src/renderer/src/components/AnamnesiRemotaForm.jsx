@@ -1,27 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatDateForFormField } from '../utils/dateUtils'
-import { handleFormChange, submitIfFormDataAreValid, validate } from '../utils/formUtils'
-import { useSettings } from '../contexts/SettingsContext'
+import { handleFormChange, markMandatoryFields } from '../utils/formUtils'
 
-const AnamnesiRemotaForm = ({ entity, onSubmit, tipi }) => {
+
+const AnamnesiRemotaForm = ({ entity, onSubmit, mandatoryFields, tipi }) => {
   const [formData, setFormData] = useState(entity)
-
   const handleChange = (e) => handleFormChange(e, formData, setFormData);
-  const settings = useSettings()
-  const missingMandatoryField = (formData) => validate('anamnesi-remota',formData, settings)//(!formData.nome || !formData.cognome || !formData.data_nascita )
+    console.log(mandatoryFields)
+
+  useEffect(() => {
+    markMandatoryFields(mandatoryFields)
+  }, []);
 
   return (
     <form className="form-container"
       onSubmit={(e) => {
         e.preventDefault()
-        // if(missingMandatoryField(formData)){
-        //   toast.warn('please fill all input completely', {
-        //     position: 'top-right'
-        //   })
-        // }else{
-        //   onSubmit(formData)
-        // }
-        submitIfFormDataAreValid(formData, onSubmit, missingMandatoryField)
+        onSubmit(formData)
       }}
     >
         <div className="space-y-2">

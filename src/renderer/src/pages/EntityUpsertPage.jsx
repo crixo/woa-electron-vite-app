@@ -6,6 +6,8 @@ import { PazienteCard } from '../components/PazienteCard'
 import PazienteConsultoCards from '../components/PazienteConsultoCards'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useSettings } from '../contexts/SettingsContext'
+import { validate  } from '../utils/formUtils'
 
 import PazienteForm from '../components/PazienteForm'
 
@@ -18,6 +20,7 @@ import TrattamentoForm from '../components/TrattamentoForm'
 import ValutazioneForm from '../components/ValutazioneForm'
 
 const EntityUpsertPage = () => {
+  console.log('d')
   const { paziente, addPaziente, updatePaziente, tipoAnamnesi } = useContext(PazienteContext)
   const { consulto, add, update, 
     addEsame, updateEsame, tipoEsami, 
@@ -94,8 +97,8 @@ const EntityUpsertPage = () => {
       cardComponent: <PazienteConsultoCards paziente={paziente} consulto={consulto} />
     }
   }
-
   console.log(id, entityType, consulto)
+  const settings = useSettings()
   const entityMapped = entityMapper[entityType]
   const FormComponent = entityMapped.component
   const entity = entityMapped.instanceFinder(id)
@@ -104,11 +107,21 @@ const EntityUpsertPage = () => {
   const lkp = entityMapped.lkp
   const navigateTo = entityMapped.navigateTo(paziente, consulto)
   const CardComponent = entityMapped.cardComponent
+  const mandatoryFields = settings.validations[entityType]
+
 
   const saveEntity = async (formData) => {
+    const warnMessage = validate(mandatoryFields, formData, )
+    if(warnMessage){
+      toast.warn(warnMessage, {
+        position: 'top-right'
+      })
+      return
+    }
     try {
       const successMessage = 'Entità salvata con succeso'
       //setIsLoading(true);
+
       const enityPersisted = await persist(formData)      
       toast.success(successMessage, {
         position: 'top-center'
@@ -131,7 +144,7 @@ const EntityUpsertPage = () => {
     <>
     {CardComponent}
     <h3 className="h3-primary">{pageTitle}</h3>
-    <FormComponent entity={entity} onSubmit={saveEntity} tipi={lkp} />
+    <FormComponent entity={entity} onSubmit={saveEntity} mandatoryFields={mandatoryFields} tipi={lkp} />
     </>
   )
 }

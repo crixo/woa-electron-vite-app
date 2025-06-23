@@ -12,8 +12,7 @@ const HomePage = () => {
   const [hasMore, setHasMore] = useState(true); // Assume more data available
   const [searchNumber, setSearchNumber] = useState(0)
   const [version, setVersion] = useState("");
-
-
+console.log('home')
   const getPazienti = async (pageNumber = 1) => {
     //e.preventDefault()
 
