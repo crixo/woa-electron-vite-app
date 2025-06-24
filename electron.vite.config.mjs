@@ -50,15 +50,7 @@ export default defineConfig(({ mode }) => ({
       include: ['src/renderer/**/*.test.js', 'tests/renderer/**/*.test.js']
     },    
     plugins: [
-      react({
-      //  jsxImportSource:
-      //   mode === 'development'
-      //     ? '@welldone-software/why-did-you-render'
-      //     : 'react',       
-        // babel: {
-        //   plugins: ['@welldone-software/why-did-you-render/babel'],
-        // },
-      }),
+      react(),
       tailwindcss(),
       viteStaticCopy({
         targets: [
@@ -69,8 +61,5 @@ export default defineConfig(({ mode }) => ({
         ]
       })      
     ],
-    optimizeDeps: {
-      //disabled: true,
-    },
   }
 }))

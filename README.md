@@ -199,6 +199,31 @@ sudo spctl --master-disable
 ```
 (Not recommended for long-term security reasons!)
 
+# Create new Release
+
+- Create a build making sure "prebuild<script-name>" is enabled to increase automatically the application version in package.json. Make sure your are signing the code with a valid certificate, also a self-signed, to allow auto-update procedure. Verify in the build logs the signing procedure succeded with the following message:
+```
+signing         file=dist/mac-arm64/WOA.app platform=darwin type=distribution identity=XXX provisioningProfile=none
+```
+For standard/local build for mac arch use
+```
+npm run build:mac
+```
+
+- Create git Tag create an annotated (recommended for releases because it includes metadata). As convention matching the Build just created as per in package.json.version
+```
+git tag -a vX.X.X -m "Release version X.X.X"
+```
+
+- Push the Tag to git
+```
+git push origin vX.X.X
+```
+
+- Go to git repo and [create the Release](https://github.com/crixo/woa-electron-vite-app/releases/new) as draft selecting the tag just created
+
+- 
+
 
 ## AI
 - Installing the [model](https://cheatsheet.md/llm-leaderboard/how-to-run-mistral-locally.en)
