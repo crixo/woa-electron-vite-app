@@ -52,6 +52,7 @@
     "dompurify": "^3.2.6",
     "electron": "^35.5.1",
     "electron-builder": "^25.1.8",
+    "electron-devtools-installer": "^4.0.0",
     "electron-mocha": "^13.1.0",
     "electron-rebuild": "^3.2.9",
     "electron-vite": "^3.1.0",

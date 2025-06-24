@@ -10,29 +10,24 @@ import { setupPazienteDAL } from './pazienteDAL';
 import { dumpConfig, shareSettings, getConfig } from './config';
 import log from 'electron-log';
 import './electron-updater'
+// import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 
 // import { fileURLToPath } from 'url';
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = dirname(__filename);
-
-// const homeDir = os.homedir();
-//This will print the absolute path to the application's root directory where your package.json file is located. 
-//If you're looking for the directory where the app is running from (which may differ in a packaged app), you can use process.cwd() as well.console.log.silly(`__dirname:${__dirname}`);console.log(`app.getAppPath():${app.getAppPath()}`);
-
-
 let config
 let isDBConfigured = false;
 let locateDBWindow;
 let mainWindow;
 //const iconPath = path.join(__dirname, '../resources/icon.png')
 ///////////////////////////////////////////////////
-  console.log('loading config from app.whenReady - index.js')
-  // Configuration
-  config = await getConfig()
-  //console.log(config)
-  shareSettings(config)
-  configureLogging(config)
-  const dbStatus = setupPazienteDAL(config);
+
+// Configuration
+config = await getConfig()
+//console.log(config)
+shareSettings(config)
+configureLogging(config)
+const dbStatus = setupPazienteDAL(config)
 
 
 function createMainWindow() {
@@ -46,7 +41,8 @@ function createMainWindow() {
     //...(process.platform === 'linux' ? { icon: iconPath } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),//.mjs is creating during build due to type: module in package.json
-      sandbox: false
+      sandbox: false,
+      //devTools: true,
     }
   })
 
@@ -79,7 +75,7 @@ function createMainWindow() {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
 
     // Default open or close DevTools by F12 in development
-    // mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))//.mjs is creating during build due to type: module in package.json
   }
@@ -132,6 +128,11 @@ function createLocateDBWindow() {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+
+  // installExtension(REACT_DEVELOPER_TOOLS)
+  //   //.then((name) => console.log(`Added Extension:  ${name}`))
+  //   .then((name) => console.log('Added Extension',name))
+  //   .catch((err) => console.log('An error occurred: ', err));  
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

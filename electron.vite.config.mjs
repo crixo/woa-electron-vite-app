@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import {viteStaticCopy} from 'vite-plugin-static-copy'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   main: {
     build: {
       rollupOptions: {
@@ -50,7 +50,15 @@ export default defineConfig({
       include: ['src/renderer/**/*.test.js', 'tests/renderer/**/*.test.js']
     },    
     plugins: [
-      react(),
+      react({
+      //  jsxImportSource:
+      //   mode === 'development'
+      //     ? '@welldone-software/why-did-you-render'
+      //     : 'react',       
+        // babel: {
+        //   plugins: ['@welldone-software/why-did-you-render/babel'],
+        // },
+      }),
       tailwindcss(),
       viteStaticCopy({
         targets: [
@@ -60,6 +68,9 @@ export default defineConfig({
           }
         ]
       })      
-    ]
+    ],
+    optimizeDeps: {
+      //disabled: true,
+    },
   }
-})
+}))
