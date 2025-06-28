@@ -1,14 +1,12 @@
 import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { PazienteContext } from '../contexts/PazienteContext'
 import { ConsultoContext } from '../contexts/ConsultoContext'
+import { useSettings } from '../contexts/SettingsContext'
 import { PazienteCard } from '../components/PazienteCard'
 import PazienteConsultoCards from '../components/PazienteConsultoCards'
-import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useSettings } from '../contexts/SettingsContext'
 import { validate  } from '../utils/formUtils'
-
 import FormBuilder from '../components/FormBuilder'
 
 const EntityUpsertPage = () => {

@@ -51,55 +51,43 @@ const HomePage = () => {
   }
 
   return (
-    <div>
-      <div className="flex justify-end">
-        <Link
-          to="/paziente/create"
-          className="button-crud">
-          Crea un nuovo paziente
-        </Link>
-      </div>
-
-      <div className="flex">
-        <div className="flex-grow space-y-2 mr-6">
-          <div className="flex w-full max-w-sm mx-auto gap-4">
-            <button onClick={() => getPazientiWithManyConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400 whitespace-nowrap">
-              Pazienti con piu' consulti
-            </button>
-            <button onClick={() => getPazientiLastConsulti()} className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400 whitespace-nowrap">
-              Pazienti visitati di recente
-            </button>           
-          </div>
-
-          <div>
-            <label className='form-label'>Cognome del paziente da cercare</label>
-            <input
-              type="text"
-              value={searchCriteria}
-              onChange={(e) => setSearchCriteria(e.target.value)}
-              className="form-field"
-              placeholder="Enter paziente da cercare"
-            />
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              onClick={() => getPazienti(1)}
-              className="button-crud"
-            >
-              Cerca Paziente
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col space-y-3 ml-auto mt-6">
-
-          <Link to="/chat" className="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-400 text-center">AI Statistiche</Link>
+<>
+    <div className="flex gap-6 max-w-4xl mx-auto mt-4">
+      <div className="flex-1 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <label for="input" className="form-label">
+          Cognome del paziente da cercare
+        </label>
+        <input
+          type="text"
+          value={searchCriteria}
+          onChange={(e) => setSearchCriteria(e.target.value)}
+          className="form-field"
+          placeholder="Inserisci paziente da cercare"
+        />
+        <div class="flex justify-end mt-6">
+          <button
+            type="button"
+            onClick={() => getPazienti(1)}
+            className="button-search">
+            Search
+          </button>
         </div>
       </div>
 
-      {pazienti.length > 0  ? (
-        <div className='w-full max-w-6xl mx-auto p-6 dark:bg-gray-900 bg-white rounded-lg shadow-md'>
+      <div class="flex flex-col gap-3">
+        <Link to="/paziente/create" className="button-crud">Crea un nuovo paziente </Link>
+        <button onClick={() => getPazientiWithManyConsulti()} className="button-search">
+          Pazienti con piu' consulti
+        </button>
+        <button onClick={() => getPazientiLastConsulti()} className="button-search">
+          Pazienti visitati di recente
+        </button>    
+        <Link to="/chat" className="button-link">AI Statistiche</Link>
+      </div>
+    </div>
+
+    {pazienti.length > 0  ? (
+      <div className='w-full max-w-6xl mx-auto p-6 dark:bg-gray-900 bg-white rounded-lg shadow-md mt-4'>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {pazienti.map((p) => (
             <Paziente paziente={p} />
@@ -122,9 +110,9 @@ const HomePage = () => {
             </button>
           </div>
         </div>
-        </div>
-      ) : ( searchNumber>0  && <p>no pazienti found</p>)}
-    </div>
+      </div>
+    ) : ( searchNumber>0  && <p>no pazienti found</p>)}
+</>
   )
 }
 
