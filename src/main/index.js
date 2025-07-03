@@ -6,7 +6,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 //import icon from '../../resources/icon.png?asset';
 //import path from 'path'
 import { configureLogging } from './log';
-import { setupPazienteDAL } from './pazienteDAL';
+import { setupPazienteDAL } from './paziente-dal/index';
 import { dumpConfig, shareSettings, getConfig } from './config';
 import log from 'electron-log';
 import './electron-updater'
@@ -28,6 +28,7 @@ config = await getConfig()
 shareSettings(config)
 configureLogging(config)
 const dbStatus = setupPazienteDAL(config)
+console.log('dbStatus:',dbStatus)
 
 
 function createMainWindow() {

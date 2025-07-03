@@ -27,6 +27,7 @@ const defaultConfig = {
   dbPath: path.join(homeDir, "/woa/", "./woa.db"),
   logPath: path.join(homeDir, "/woa/", "./woa.log"),
   formatDate: 'dd/MM/yyyy',
+  auditing: true,
   mainWindow:{
     width:900,
     height:670

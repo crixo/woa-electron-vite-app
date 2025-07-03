@@ -51,7 +51,7 @@ export const ConsultoProvider = ({ children }) => {
 
   const deleteConsulto = async (consulto) => {
     console.log(consulto)
-    await dal.deleteConsulto(consulto.ID_paziente, consulto.ID)
+    await dal.deleteConsulto(consulto)
     setConsulto(null);
   }
 

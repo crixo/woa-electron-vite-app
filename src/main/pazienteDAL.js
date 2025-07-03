@@ -1,10 +1,14 @@
-import { ipcMain } from 'electron';
-import Database from "better-sqlite3";
-import log from 'electron-log';
-import * as fs from 'fs';
-import { ask, startConversation } from './chat-with-ai';
+import { ipcMain, app } from 'electron'
+import Database from "better-sqlite3"
+import log from 'electron-log'
+import * as fs from 'fs'
+import path from 'path'
+import { ask, startConversation } from './chat-with-ai'
+import { getConfig } from './config'
 
 let db
+const insertAudit = `INSERT INTO auditing (ID_paziente, ID_entity, entity, crud) VALUES (?, ?, ?, ?)`
+const migrationsPath = path.join(app.getAppPath(), 'data/migrations')
 
 export function setupPazienteDAL(config){
   try {
@@ -13,6 +17,8 @@ export function setupPazienteDAL(config){
     }
       // Initialize the DB
       db = initDatabase(config);
+
+      runMigrations(migrationsPath)
 
   } catch (error) {
       return { success: false, error: error.message };
@@ -33,20 +39,108 @@ function initDatabase(config) {
   return db;
 }
 
-ipcMain.handle('paziente-add', async (_, p) => {
-  try {
+const runMigrations = (folderPath) => {
+
+  // Ensure the migrations table exists
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS migrations (
+      [ID]	          INTEGER PRIMARY KEY AUTOINCREMENT,
+      [created_at]    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      [script_name]   nvarchar
+    )
+  `).run();
+
+  const files = fs
+    .readdirSync(folderPath)
+    .filter(file => file.endsWith('.sql'))
+    .sort();
+
+  for (const file of files) {
+    const alreadyRun = db
+      .prepare('SELECT 1 FROM migrations WHERE script_name = ?')
+      .get(file);
+
+    if (alreadyRun) {
+      log.silly(`⏭Skipping: ${file}`);
+      continue;
+    }
+
+    const filePath = path.join(folderPath, file);
+    const sql = fs.readFileSync(filePath, 'utf-8');
+
+    try {
+      db.exec(sql);
+      db.prepare('INSERT INTO migrations (script_name) VALUES (?)').run(file);
+      log.info(`Applied: ${file}`);
+    } catch (err) {
+      log.error(`Error in ${file}:`, err.message);
+      break; // Stop on first error to avoid partial execution
+    }
+  }
+
+  //db.close();
+  log.silly('Migrations completed.');
+}
+
+
+/**
+ * Wraps a CRUD handler with auditing logic.
+ * @param {Function} handler - Your actual CRUD function
+ * @param {Object} options - Options for auditing
+ * @param {string} options.entity - Entity name (e.g., 'consulto')
+ * @param {string} options.crud - 'C', 'R', 'U', or 'D'
+ * @returns Wrapped handler for ipcMain
+ */
+function withAudit(handler, { entity, crud }) {
+  return async (event, targetEntity) => {
+    const config = await getConfig()
+    try {
+      console.log(targetEntity)
+      const result = handler(targetEntity)
+      if (config.auditing){
+        // Assume result contains something like: { id: 42, idPaziente: 10 }
+        if (result && result.success !== false) {
+          let { ID: idEntity, ID_paziente: idPaziente } = result
+
+          if(entity=='paziente'){
+            idPaziente = idEntity
+          }
+
+          db.prepare(insertAudit).run(
+            idPaziente ?? null,
+            idEntity ?? null,
+            entity,
+            crud
+          )
+        }
+      }
+      return result;
+    } catch (error) {
+      console.error(`[withAudit] Error in ${entity} ${crud}:`, error);
+      throw error;
+    }
+  };
+}
+
+function addPaziente (entity) {
+  // try {
+    const p = entity
     const sql = "INSERT INTO paziente (nome,cognome,professione,indirizzo,citta,telefono,cellulare,prov,cap,email,data_nascita) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
     const stmt = db.prepare(sql);
-    const info = stmt.run(p.nome,p.cognome,p.professione,p.indirizzo,p.citta,p.telefono,p.cellulare,p.prov,p.cap,p.email,p.data_nascita);
-    const id = info.lastInsertRowid;
+    const result = stmt.run(p.nome,p.cognome,p.professione,p.indirizzo,p.citta,p.telefono,p.cellulare,p.prov,p.cap,p.email,p.data_nascita);
+    const id = result.lastInsertRowid;
     console.log(`id:${id}`);
-    p.ID = id;
-    return p;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});
+    entity.ID = id;
+    return result.changes > 0
+      ? entity
+      : { success: false };
+  // } catch (error) {
+  //   console.log('IPC Error:', error);
+  //   throw error; // Sends error back to renderer
+  // }
+}
+
+ipcMain.handle('paziente-add', withAudit(addPaziente, {entity:'paziente', crud:'I'}))
 
 ipcMain.handle('paziente-search', async (_, searchCriteria, pageSize, pageNumber) => {
   try {
@@ -110,35 +204,25 @@ ipcMain.handle('paziente-get', async (_, pazienteId) => {
   }
 });       
 
-ipcMain.handle('paziente-update', async (_, p) => {
-  try {
-    console.log(p);
-    const sql = "UPDATE paziente SET nome=?,cognome=?,professione=?,indirizzo=?,citta=?,telefono=?,cellulare=?,prov=?,cap=?,email=?,data_nascita=? WHERE ID=?";
-    const stmt = db.prepare(sql);
-    const info = stmt.run(p.nome,p.cognome,p.professione,p.indirizzo,p.citta,p.telefono,p.cellulare,p.prov,p.cap,p.email,p.data_nascita,p.ID);
-    return p;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});  
+function updatePaziente(entity){
+  const p = entity
+  const sql = "UPDATE paziente SET nome=?,cognome=?,professione=?,indirizzo=?,citta=?,telefono=?,cellulare=?,prov=?,cap=?,email=?,data_nascita=? WHERE ID=?";
+  const stmt = db.prepare(sql);
+  const info = stmt.run(p.nome,p.cognome,p.professione,p.indirizzo,p.citta,p.telefono,p.cellulare,p.prov,p.cap,p.email,p.data_nascita,p.ID);
+  return p
+}
+ipcMain.handle('paziente-update', withAudit(updatePaziente,{entity:'paziente', crud:'U'}))
 
-ipcMain.handle('anamnesiremota-add', async (_, entity) => {
-  try {
-    console.log('anamnesiremota-add'+entity);
-    const sql = "INSERT INTO anamnesi_remota (id_paziente,data,tipo,descrizione) VALUES (?,?,?,?)";
-    const stmt = db.prepare(sql);
-    const info = stmt.run(entity.ID_paziente, entity.data, entity.tipo, entity.descrizione);
-    const id = info.lastInsertRowid;
-    console.log(`id:${id}`);
-    entity.ID = id;
-    console.log(entity);
-    return entity;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});  
+function addAnamnesiRemota(entity){
+  const sql = "INSERT INTO anamnesi_remota (id_paziente,data,tipo,descrizione) VALUES (?,?,?,?)";
+  const stmt = db.prepare(sql);
+  const info = stmt.run(entity.ID_paziente, entity.data, entity.tipo, entity.descrizione);
+  const id = info.lastInsertRowid;
+  console.log(`id:${id}`);
+  entity.ID = id;
+  return entity;
+} 
+ipcMain.handle('anamnesiremota-add', withAudit(addAnamnesiRemota, {entity:'anamnesi-remota', crud:'I'}))
 
 ipcMain.handle('anamnesiremota-all', async (_, pazienteId) => {
   try {
@@ -153,16 +237,12 @@ ipcMain.handle('anamnesiremota-all', async (_, pazienteId) => {
   }
 });   
 
-ipcMain.handle('anamnesiremota-update', async (_, entity) => {
-  try {
-    console.log('anamnesiremota-update:'+entity);
-    const sql = "UPDATE anamnesi_remota SET data=?,tipo=?,descrizione=? WHERE ID = ?"
-    db.prepare(sql).run(entity.data, entity.tipo, entity.descrizione, entity.ID);
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-}); 
+function updateAnamnesiRemota(entity){
+  const sql = "UPDATE anamnesi_remota SET data=?,tipo=?,descrizione=? WHERE ID = ?"
+  db.prepare(sql).run(entity.data, entity.tipo, entity.descrizione, entity.ID)
+  return entity
+}
+ipcMain.handle('anamnesiremota-update', withAudit(updateAnamnesiRemota, {entity:'anamnesi-remota', crud:'U'}))
 
 ipcMain.handle('consulto-all', async (_, pazienteId) => {
   try {
@@ -178,19 +258,15 @@ ipcMain.handle('consulto-all', async (_, pazienteId) => {
 });  
 
 
-ipcMain.handle('consulto-add', async (_, entity) => {
-  try {
-    const sql = "INSERT INTO consulto (ID_paziente,data,problema_iniziale) VALUES (?,?,?)";
-    const stmt = db.prepare(sql);
-    const info = stmt.run(entity.ID_paziente, entity.data, entity.problema_iniziale)
-    const id = info.lastInsertRowid
-    entity.ID = id
-    return entity;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});  
+function addConsulto(entity){
+  const sql = "INSERT INTO consulto (ID_paziente,data,problema_iniziale) VALUES (?,?,?)";
+  const stmt = db.prepare(sql);
+  const info = stmt.run(entity.ID_paziente, entity.data, entity.problema_iniziale)
+  const id = info.lastInsertRowid
+  entity.ID = id
+  return entity;
+}
+ipcMain.handle('consulto-add', withAudit(addConsulto, {entity:'consulto', crud:'I'}))
 
 ipcMain.handle('consulto-get', async (_, idConsulto) => {
   try {
@@ -202,47 +278,40 @@ ipcMain.handle('consulto-get', async (_, idConsulto) => {
     console.log('IPC Error:', error);
     throw error; // Sends error back to renderer
   }
-});     
+})
 
-ipcMain.handle('consulto-update', async (_, entity) => {
-  try {
-    const sql = "UPDATE consulto SET data=?,problema_iniziale=? WHERE ID = ?"
-    db.prepare(sql).run(entity.data, entity.problema_iniziale, entity.ID)
-    return true
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});   
+function updateConsulto(entity){
+  const sql = "UPDATE consulto SET data=?,problema_iniziale=? WHERE ID = ?"
+  db.prepare(sql).run(entity.data, entity.problema_iniziale, entity.ID)
+  return entity
+}  
+ipcMain.handle('consulto-update', withAudit(updateConsulto, {entity:'consulto', crud:'U'}))
 
-ipcMain.handle('consulto-delete', async (_, ID_paziente, ID_consulto) => {
-  try {
-    console.log(`delete consulto+childreen with ID_paziente=${ID_paziente} ID_Consulto=${ID_consulto}`);
+//ipcMain.handle('consulto-delete', async (_, ID_paziente, ID_consulto) => {
+function deleteConsulto(entity){
+  console.log(`delete consulto+childreen with ID_paziente=${entity.ID_paziente} ID_Consulto=${entity.ID}`);
 
-    const statements = [
-      'DELETE FROM valutazione WHERE ID_consulto = @ID_consulto',
-      'DELETE FROM trattamento WHERE ID_consulto = @ID_consulto',
-      'DELETE FROM esame WHERE ID_consulto = @ID_consulto',
-      'DELETE FROM trattamento WHERE ID_consulto = @ID_consulto',
-      'DELETE FROM anamnesi_prossima WHERE ID_paziente=@ID_paziente AND ID_consulto=@ID_consulto',
-      'DELETE FROM consulto WHERE ID = @ID_consulto',
-    ].map(sql => db.prepare(sql));
+  const statements = [
+    'DELETE FROM valutazione WHERE ID_consulto = @ID_consulto',
+    'DELETE FROM trattamento WHERE ID_consulto = @ID_consulto',
+    'DELETE FROM esame WHERE ID_consulto = @ID_consulto',
+    'DELETE FROM trattamento WHERE ID_consulto = @ID_consulto',
+    'DELETE FROM anamnesi_prossima WHERE ID_paziente=@ID_paziente AND ID_consulto=@ID_consulto',
+    'DELETE FROM consulto WHERE ID = @ID_consulto',
+  ].map(sql => db.prepare(sql));
 
-    const myTransaction = db.transaction((values) => {
-      for (const stmt of statements) {
-        stmt.run(values);
-      }
-    });
+  const myTransaction = db.transaction((values) => {
+    for (const stmt of statements) {
+      stmt.run(values);
+    }
+  });
 
-    // Execute transaction
-    myTransaction({ID_paziente: ID_paziente, ID_consulto: ID_consulto}); // Provide values as an array
+  // Execute transaction
+  myTransaction({ID_paziente: entity.ID_paziente, ID_consulto: entity.ID}); // Provide values as an array
 
-    return true;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});   
+  return entity
+}
+ipcMain.handle('consulto-delete', withAudit(deleteConsulto, {entity:'consulto', crud:'D'}))
 
 ipcMain.handle('anamnesi-prossima-add', async (_, entity) => {
   try {
