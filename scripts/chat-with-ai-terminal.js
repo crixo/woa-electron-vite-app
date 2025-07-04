@@ -1,15 +1,15 @@
 //import { app } from 'electron'
 import fs from 'fs';
 import path from 'node:path';
-import {ChainBuilder} from './bricks/ChainBuilder.js'
-import {APIBrick} from './bricks/APIBrick.js'
-import {ProcessingContext} from './bricks/ProcessingContext.js'
-import { SQLDetectionBrick } from './bricks/SqlDetectionBrick.js';
-import { SQLExecutionBrick } from './bricks/SqlExecutionBrick.js';
-import { MockSQLExecutor } from './bricks/MockSqlExecutor.js';
-import { ResponseFormattingBrick } from './bricks/ResponseFormattingBrick.js';
-import {FinalProcessingBrick} from './bricks/FinalProcessingBrick.js'
-import { OpenAiCall } from './bricks/OpenAiCall.js';
+import {ChainBuilder} from '../src/main/bricks/ChainBuilder.js'
+import {APIBrick} from '../src/main/bricks/APIBrick.js'
+import {ProcessingContext} from '../src/main/bricks/ProcessingContext.js'
+import { SQLDetectionBrick } from '../src/main/bricks/SqlDetectionBrick.js';
+import { SQLExecutionBrick } from '../src/main/bricks/SqlExecutionBrick.js';
+import { MockSQLExecutor } from '../src/main/bricks/MockSqlExecutor.js';
+import { ResponseFormattingBrick } from '../src/main/bricks/ResponseFormattingBrick.js';
+import {FinalProcessingBrick} from '../src/main/bricks/FinalProcessingBrick.js'
+import { OpenAiCall } from '../src/main/bricks/OpenAiCall.js';
 // import Database from "better-sqlite3";
 
 

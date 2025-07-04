@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { withAudit, db } from './index'
+import { withAudit, withTryCatch, db } from './index'
 
 function addPaziente (entity) {
   // try {
@@ -21,18 +21,16 @@ function addPaziente (entity) {
 
 ipcMain.handle('paziente-add', withAudit(addPaziente, {entity:'paziente', crud:'I'}))
 
-ipcMain.handle('paziente-search', async (_, searchCriteria, pageSize, pageNumber) => {
-  try {
-    console.log(`paziente-search:${searchCriteria} pageSize:${pageSize} pageNumber:${pageNumber}`)
-    const sql = "SELECT * FROM paziente WHERE cognome LIKE ? LIMIT ? OFFSET ?"
-    const res =  db.prepare(sql).all(`%${searchCriteria}%`, pageSize, (pageSize-1) * pageNumber)
-    const stringify = JSON.stringify(res)
-    return stringify
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});    
+function searchPaziente(searchCriteria, pageSize, pageNumber){
+  //console.log('args', args)
+  //const [searchCriteria, pageSize, pageNumber] = args
+  console.log(`paziente-search:${searchCriteria} pageSize:${pageSize} pageNumber:${pageNumber}`)
+  const sql = "SELECT * FROM paziente WHERE cognome LIKE ? LIMIT ? OFFSET ?"
+  const res =  db.prepare(sql).all(`%${searchCriteria}%`, pageSize, (pageSize-1) * pageNumber)
+  const stringify = JSON.stringify(res)
+  return stringify
+} 
+ipcMain.handle('paziente-search', withTryCatch(searchPaziente))
 
 ipcMain.handle('paziente-many-consulti', async (_, topLimit=20) => {
   try {

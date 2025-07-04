@@ -11,9 +11,6 @@ function addConsulto(entity){
 }
 ipcMain.handle('consulto-add', withAudit(addConsulto, {entity:'consulto', crud:'I'}))
 
-import { ipcMain } from 'electron'
-import { withAudit, db } from './index'
-
 ipcMain.handle('consulto-get', async (_, idConsulto) => {
   try {
     console.log('consulto-get:'+idConsulto);
@@ -33,7 +30,6 @@ function updateConsulto(entity){
 }  
 ipcMain.handle('consulto-update', withAudit(updateConsulto, {entity:'consulto', crud:'U'}))
 
-//ipcMain.handle('consulto-delete', async (_, ID_paziente, ID_consulto) => {
 function deleteConsulto(entity){
   console.log(`delete consulto+childreen with ID_paziente=${entity.ID_paziente} ID_Consulto=${entity.ID}`);
 

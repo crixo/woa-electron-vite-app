@@ -7,6 +7,11 @@ import { getConfig } from '../config'
 
 export {default as paziente} from './paziente.js'
 export {default as anamnesiRemota} from './anamnesi-remota.js'
+export {default as consulto} from './consulto.js'
+export {default as anamnesiProssima} from './anamnesi-prossima.js'
+export {default as esame} from './esame.js'
+export {default as trattamento} from './trattamento.js'
+export {default as valutazione} from './valutazione.js'
 
 export let db
 const insertAudit = `INSERT INTO auditing (ID_paziente, ID_entity, entity, crud) VALUES (?, ?, ?, ?)`
@@ -45,7 +50,7 @@ const runMigrations = (folderPath) => {
 
   // Ensure the migrations table exists
   db.prepare(`
-    CREATE TABLE IF NOT EXISTS migrations (
+    CREATE TABLE IF NOT EXISTS migration (
       [ID]	          INTEGER PRIMARY KEY AUTOINCREMENT,
       [created_at]    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       [script_name]   nvarchar
@@ -59,7 +64,7 @@ const runMigrations = (folderPath) => {
 
   for (const file of files) {
     const alreadyRun = db
-      .prepare('SELECT 1 FROM migrations WHERE script_name = ?')
+      .prepare('SELECT 1 FROM migration WHERE script_name = ?')
       .get(file);
 
     if (alreadyRun) {
@@ -72,7 +77,7 @@ const runMigrations = (folderPath) => {
 
     try {
       db.exec(sql);
-      db.prepare('INSERT INTO migrations (script_name) VALUES (?)').run(file);
+      db.prepare('INSERT INTO migration (script_name) VALUES (?)').run(file);
       log.info(`Applied: ${file}`);
     } catch (err) {
       log.error(`Error in ${file}:`, err.message);
@@ -111,7 +116,7 @@ export function withAudit(handler, { entity, crud }) {
           db.prepare(insertAudit).run(
             idPaziente ?? null,
             idEntity ?? null,
-            entity,
+            entity ?? result.tableName,
             crud
           )
         }
@@ -121,18 +126,27 @@ export function withAudit(handler, { entity, crud }) {
       console.error(`[withAudit] Error in ${entity} ${crud}:`, error);
       throw error;
     }
-  };
+  }
 }
 
-ipcMain.handle('delete-leaf', async (_, tableName, ID) => {
-  try {
-    console.log(`delete ${tableName} with ID=${ID}`);
-    const sql = "DELETE FROM "+tableName+" WHERE ID=?";
-    const stmt = db.prepare(sql);
-    const info = stmt.run(ID);
-    return true;
-  } catch (error) {
-    console.log('IPC Error:', error)
-    throw error; // Sends error back to renderer
+export function withTryCatch(handler) {
+  return async (event, ...args) => {
+    try {
+      //console.log(args)
+      const result = handler(...args)
+      return result;
+    } catch (error) {
+      log.error('IPC Error:', error);
+      throw error // Sends error back to renderer
+    }
   }
-});  
+}
+
+function deleteLeaf(deleteEntity){
+  console.log(`delete ${deleteEntity.tableName} with ID=${deleteEntity.ID}`)
+  const sql = "DELETE FROM "+deleteEntity.tableName+" WHERE ID=?"
+  const stmt = db.prepare(sql)
+  const info = stmt.run(deleteEntity.ID)
+  return deleteEntity
+} 
+ipcMain.handle('delete-leaf', withAudit(deleteLeaf, {crud:'D'}))
