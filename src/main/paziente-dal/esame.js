@@ -1,16 +1,12 @@
 import { ipcMain } from 'electron'
-import { withAudit, db } from './index'
+import { withAudit, db, withTryCatch } from './index'
 
-ipcMain.handle('esame-all', async (_, idConsulto) => {
-  try {
-    const sql = "SELECT * FROM esame WHERE ID_consulto = ?"
-    const res =  db.prepare(sql).all(idConsulto)
-    return JSON.stringify(res)
-  } catch (error) {
-    console.log('IPC Error:', error)
-    throw error // Sends error back to renderer
-  }
-});    
+function getEsami(idConsulto) {
+  const sql = 'SELECT * FROM esame WHERE ID_consulto = ?'
+  const res =  db.prepare(sql).all(idConsulto)
+  return JSON.stringify(res)
+} 
+ipcMain.handle('esame-all', withTryCatch(getEsami))
 
 function addEsame(entity){
   const sql = "INSERT INTO esame (ID_paziente,ID_consulto,data,tipo,descrizione) VALUES (?,?,?,?,?)";
@@ -30,13 +26,9 @@ function updateEsame(entity){
 }
 ipcMain.handle('esame-update', withAudit(updateEsame, {entity:'esame', crud:'U'}))
 
-ipcMain.handle('tipo-esami', async (_) => {
-  try {
-    const sql = "SELECT * FROM lkp_esame"
-    const res =  db.prepare(sql).all()
-    return JSON.stringify(res)
-  } catch (error) {
-    console.log('IPC Error:', error)
-    throw error // Sends error back to renderer
-  }
-});  
+function getTipiEsame(){
+  const sql = 'SELECT * FROM lkp_esame'
+  const res =  db.prepare(sql).all()
+  return JSON.stringify(res)
+}
+ipcMain.handle('tipo-esami', withTryCatch(getTipiEsame))

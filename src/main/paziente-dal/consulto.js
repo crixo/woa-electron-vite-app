@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { withAudit, db } from './index'
+import { withAudit, db, withTryCatch } from './index'
 
 function addConsulto(entity){
   const sql = "INSERT INTO consulto (ID_paziente,data,problema_iniziale) VALUES (?,?,?)";
@@ -11,17 +11,13 @@ function addConsulto(entity){
 }
 ipcMain.handle('consulto-add', withAudit(addConsulto, {entity:'consulto', crud:'I'}))
 
-ipcMain.handle('consulto-get', async (_, idConsulto) => {
-  try {
+function getConsulto(idConsulto){
     console.log('consulto-get:'+idConsulto);
     const sql = "SELECT * FROM consulto WHERE ID = ?"
-    const p =  db.prepare(sql).get(idConsulto);
-    return JSON.stringify(p);
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-})
+    const p =  db.prepare(sql).get(idConsulto)
+    return JSON.stringify(p)
+}
+ipcMain.handle('consulto-get', withTryCatch(getConsulto))
 
 function updateConsulto(entity){
   const sql = "UPDATE consulto SET data=?,problema_iniziale=? WHERE ID = ?"

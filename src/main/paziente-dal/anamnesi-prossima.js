@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { withAudit, db } from './index'
+import { withAudit, db, withTryCatch } from './index'
 
 function addAnamnesiProssima(entity){
   const sql = "INSERT INTO anamnesi_prossima (ID_paziente,ID_consulto,prima_volta,tipologia,localizzazione,irradiazione,periodo_insorgenza,durata,familiarita,altre_terapie,varie) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -10,16 +10,12 @@ function addAnamnesiProssima(entity){
 }
 ipcMain.handle('anamnesi-prossima-add', withAudit(addAnamnesiProssima, {entity:'anamnesi-prossima', crud:'I'}))
 
-ipcMain.handle('anamnesi-prossima-all', async (_, idConsulto) => {
-  try {
-    const sql = "SELECT * FROM anamnesi_prossima WHERE ID_consulto= ?"
+function getAnamnesiProssime(idConsulto) {
+    const sql = 'SELECT * FROM anamnesi_prossima WHERE ID_consulto= ?'
     const res =  db.prepare(sql).all(idConsulto)
     return JSON.stringify(res)
-  } catch (error) {
-    console.log('IPC Error:', error)
-    throw error; // Sends error back to renderer
-  }
-});  
+}
+ipcMain.handle('anamnesi-prossima-all', withTryCatch(getAnamnesiProssime))
 
 function updateAnamnesiProssima(entity){
   const sql = "UPDATE anamnesi_prossima SET prima_volta=?,tipologia=?,localizzazione=?,irradiazione=?,periodo_insorgenza=?,durata=?,familiarita=?,altre_terapie=?,varie=? WHERE ID_paziente=? AND ID_consulto=?";

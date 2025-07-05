@@ -101,31 +101,36 @@ const runMigrations = (folderPath) => {
 export function withAudit(handler, { entity, crud }) {
   return async (event, targetEntity) => {
     const config = await getConfig()
+    let result
     try {
       console.log(targetEntity)
-      const result = handler(targetEntity)
-      if (config.auditing){
-        // Assume result contains something like: { id: 42, idPaziente: 10 }
-        if (result && result.success !== false) {
-          let { ID: idEntity, ID_paziente: idPaziente } = result
-
-          if(entity=='paziente'){
-            idPaziente = idEntity
-          }
-
-          db.prepare(insertAudit).run(
-            idPaziente ?? null,
-            idEntity ?? null,
-            entity ?? result.tableName,
-            crud
-          )
-        }
-      }
-      return result;
+      result = handler(targetEntity)
     } catch (error) {
-      console.error(`[withAudit] Error in ${entity} ${crud}:`, error);
+      log.error(`[withAudit] Error in ${entity} ${crud}:`, error);
       throw error;
     }
+
+    try{
+      // Assume result contains something like: { id: 42, idPaziente: 10 }
+      if (config.auditing && result && result.success !== false) {
+        let { ID: idEntity, ID_paziente: idPaziente } = result
+
+        if(entity=='paziente'){
+          idPaziente = idEntity
+        }
+
+        db.prepare(insertAudit).run(
+          idPaziente ?? null,
+          idEntity ?? null,
+          entity ?? result.tableName,
+          crud
+        )
+      }
+    } catch (error) {
+      log.error(`[withAudit] Error in ${entity} ${crud}:`, error);
+    }
+
+    return result;
   }
 }
 
@@ -144,7 +149,7 @@ export function withTryCatch(handler) {
 
 function deleteLeaf(deleteEntity){
   console.log(`delete ${deleteEntity.tableName} with ID=${deleteEntity.ID}`)
-  const sql = "DELETE FROM "+deleteEntity.tableName+" WHERE ID=?"
+  const sql = `DELETE FROM ${deleteEntity.tableName} WHERE ID=?`
   const stmt = db.prepare(sql)
   const info = stmt.run(deleteEntity.ID)
   return deleteEntity

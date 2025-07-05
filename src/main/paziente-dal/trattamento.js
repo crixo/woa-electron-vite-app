@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron'
-import { withAudit, db } from './index'
+import { withAudit, db, withTryCatch } from './index'
 
 function addTrattamento(entity){
-  const sql = "INSERT INTO trattamento (ID_paziente,ID_consulto,data,descrizione) VALUES (?,?,?,?)"
+  const sql = 'INSERT INTO trattamento (ID_paziente,ID_consulto,data,descrizione) VALUES (?,?,?,?)'
   const stmt = db.prepare(sql)
   const info = stmt.run(entity.ID_paziente, entity.ID_consulto, entity.data, entity.descrizione)
   const id = info.lastInsertRowid
@@ -11,20 +11,16 @@ function addTrattamento(entity){
 }
 ipcMain.handle('trattamento-add', withAudit(addTrattamento, {entity:'trattamento', crud:'I'}))
 
-ipcMain.handle('trattamento-all', async (_, idConsulto) => {
-  try {
-    const sql = "SELECT * FROM trattamento WHERE ID_consulto = ?"
-    const res =  db.prepare(sql).all(idConsulto);
-    const stringify = JSON.stringify(res);
-    return stringify;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});    
+function getTrattamenti(idConsulto){
+  const sql = 'SELECT * FROM trattamento WHERE ID_consulto = ?'
+  const res =  db.prepare(sql).all(idConsulto)
+  const stringify = JSON.stringify(res)
+  return stringify
+}
+ipcMain.handle('trattamento-all', withTryCatch(getTrattamenti))
 
 function updateTrattamento(entity){
-  const sql = "UPDATE trattamento SET data=?,descrizione=? WHERE ID=?";
+  const sql = 'UPDATE trattamento SET data=?,descrizione=? WHERE ID=?'
   const stmt = db.prepare(sql)
   const info = stmt.run(entity.data, entity.descrizione, entity.ID)
   return entity

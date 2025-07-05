@@ -2,7 +2,6 @@ import { ipcMain } from 'electron'
 import { withAudit, withTryCatch, db } from './index'
 
 function addPaziente (entity) {
-  // try {
     const p = entity
     const sql = "INSERT INTO paziente (nome,cognome,professione,indirizzo,citta,telefono,cellulare,prov,cap,email,data_nascita) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
     const stmt = db.prepare(sql);
@@ -12,13 +11,11 @@ function addPaziente (entity) {
     entity.ID = id;
     return result.changes > 0
       ? entity
-      : { success: false };
-  // } catch (error) {
-  //   console.log('IPC Error:', error);
-  //   throw error; // Sends error back to renderer
-  // }
+      : { success: false }
 }
-
+// NOTE
+// the underscore (_) is used as a placeholder for the first parameter, 
+// which is typically the event object in Electron's IPC (Inter-Process Communication) system.
 ipcMain.handle('paziente-add', withAudit(addPaziente, {entity:'paziente', crud:'I'}))
 
 function searchPaziente(searchCriteria, pageSize, pageNumber){
@@ -32,54 +29,41 @@ function searchPaziente(searchCriteria, pageSize, pageNumber){
 } 
 ipcMain.handle('paziente-search', withTryCatch(searchPaziente))
 
-ipcMain.handle('paziente-many-consulti', async (_, topLimit=20) => {
-  try {
-    const sql = `SELECT p.*, COUNT(c.ID) AS num_consulti 
-    FROM paziente p 
-    JOIN consulto c ON p.ID = c.ID_paziente 
-    GROUP BY p.ID
-    ORDER BY num_consulti DESC 
-    LIMIT ?`
-    const res =  db.prepare(sql).all(topLimit);
-    const stringify = JSON.stringify(res);
-    return stringify;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});    
+function getPazientiWithManyConsulti(topLimit=20) {
+  console.log(`topLimit:${topLimit}`)
+  const sql = `SELECT p.*, COUNT(c.ID) AS num_consulti 
+  FROM paziente p 
+  JOIN consulto c ON p.ID = c.ID_paziente 
+  GROUP BY p.ID
+  ORDER BY num_consulti DESC 
+  LIMIT ?`
+  const res =  db.prepare(sql).all(topLimit)
+  const stringify = JSON.stringify(res)
+  return stringify
+}   
+ipcMain.handle('paziente-many-consulti', withTryCatch(getPazientiWithManyConsulti))
 
-// NOTE
-// the underscore (_) is used as a placeholder for the first parameter, 
-// which is typically the event object in Electron's IPC (Inter-Process Communication) system.
-ipcMain.handle('paziente-last-consulti', async (_, topLimit=20) => {
-  try {
+
+function getRecentlyVisitedPazienti(topLimit=20) {
     const sql = `SELECT p.*, max(c.data) as last_consulto_at
     FROM paziente p 
     JOIN consulto c ON p.ID = c.ID_paziente 
     GROUP BY p.ID
     ORDER BY c.data DESC 
     LIMIT ?`
-    const res =  db.prepare(sql).all(topLimit);
-    const stringify = JSON.stringify(res);
-    return stringify;
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});   
+    const res =  db.prepare(sql).all(topLimit)
+    const stringify = JSON.stringify(res)
+    return stringify
+} 
+ipcMain.handle('paziente-last-consulti', withTryCatch(getRecentlyVisitedPazienti))
 
-ipcMain.handle('paziente-get', async (_, pazienteId) => {
-  try {
+function getPaziente(pazienteId) {
     console.log('paziente-get:'+pazienteId);
-    const sql = "SELECT * FROM paziente WHERE ID = ?"
-    const p =  db.prepare(sql).get(pazienteId); 
-    return JSON.stringify(p);
-  } catch (error) {
-    console.log('IPC Error:', error);
-    throw error; // Sends error back to renderer
-  }
-});       
+    const sql = 'SELECT * FROM paziente WHERE ID = ?'
+    const p =  db.prepare(sql).get(pazienteId)
+    return JSON.stringify(p)
+}
+ipcMain.handle('paziente-get', withTryCatch(getPaziente))
 
 function updatePaziente(entity){
   const p = entity
