@@ -43,7 +43,7 @@ contextBridge.exposeInMainWorld('dal', {
   getAnamnesiProssimeByConsulto: (idConsulto) => ipcRenderer.invoke('anamnesi-prossima-all', idConsulto),
   addAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-add', entity),  
   updateAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-update', entity),  
-  deleteAnamnesiProssima: (ID_paziente, ID_consulto) => ipcRenderer.invoke('anamnesi-prossima-delete', ID_paziente, ID_consulto),  
+  deleteAnamnesiProssima: (entity) => ipcRenderer.invoke('anamnesi-prossima-delete', entity),  
 
   getEsamiByConsulto: (idConsulto) => ipcRenderer.invoke('esame-all', idConsulto),
   addEsame: (entity) => ipcRenderer.invoke('esame-add', entity),  
@@ -57,7 +57,7 @@ contextBridge.exposeInMainWorld('dal', {
   addValutazione: (entity) => ipcRenderer.invoke('valutazione-add', entity),  
   updateValutazione: (entity) => ipcRenderer.invoke('valutazione-update', entity),  
 
-  deleteLeaf: (tableName, ID) => ipcRenderer.invoke('delete-leaf', tableName, ID),  
+  deleteLeaf: (deleteEntity) => ipcRenderer.invoke('delete-leaf', deleteEntity),  
 
   getTipologiaEsame: () => ipcRenderer.invoke('tipo-esami'),
   getTipologiaAnamnesiRemota: () => ipcRenderer.invoke('tipo-anamnesi-remota'),

@@ -1,4 +1,4 @@
-import { app } from 'electron'
+import { app, ipcMain } from 'electron'
 import os from 'os'
 import fs from 'fs';
 import path from 'node:path';
@@ -105,3 +105,21 @@ export async function ask(conversationId, userQuestion) {
   saveHistoryToFile(conversationId, conversationHistory)
   return answer
 }
+
+ipcMain.handle('ai-start-conversation', async (_, aiProvider) => {
+  try {
+    return startConversation(aiProvider)
+  } catch (error) {
+    console.log('IPC Error:', error)
+    throw error // Sends error back to renderer
+  }
+});
+
+ipcMain.handle('ai-ask', async (_, conversationId, question) => {
+  try {
+    return ask(conversationId, question)
+  } catch (error) {
+    console.log('IPC Error:', error)
+    throw error // Sends error back to renderer
+  }
+});

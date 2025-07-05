@@ -6,6 +6,7 @@ directories:
 files:
   - 'out/**/*'
   - 'prompts/**'
+  - 'data/migrations/**'
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'

@@ -1,4 +1,4 @@
-import { executeSQL } from "../pazienteDAL";
+import { executeSQL } from "../paziente-dal/index";
 
 class SQLiteSQLExecutor {
 

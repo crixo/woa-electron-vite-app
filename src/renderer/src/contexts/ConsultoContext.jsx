@@ -6,6 +6,10 @@ export const ConsultoProvider = ({ children }) => {
   const [consulto, setConsulto] = useState(null)
   const [tipoEsami, setTipoEsami] = useState(null)
 
+  const deleteEntityFactory = (tableName, entityId, pazienteId) => {
+    return { tableName: tableName, ID: entityId, ID_paziente: pazienteId }
+  }
+
   const fetchConsulto = async (idConsulto) => {
       console.log('fetching consulto for ID: '+idConsulto)
       const cRawResponse = await dal.getConsulto(idConsulto);
@@ -51,7 +55,7 @@ export const ConsultoProvider = ({ children }) => {
 
   const deleteConsulto = async (consulto) => {
     console.log(consulto)
-    await dal.deleteConsulto(consulto.ID_paziente, consulto.ID)
+    await dal.deleteConsulto(consulto)
     setConsulto(null);
   }
 
@@ -72,7 +76,7 @@ export const ConsultoProvider = ({ children }) => {
   }  
 
   const deleteAnamnesiProssima = async (entity) => {
-    await dal.deleteAnamnesiProssima(entity.ID_paziente, entity.ID_consulto)
+    await dal.deleteAnamnesiProssima(entity)
   }
 
   const addEsame = async (esameData) => {
@@ -88,7 +92,7 @@ export const ConsultoProvider = ({ children }) => {
   }  
 
   const deleteEsame = async (entity) => {
-    await dal.deleteLeaf('esame', entity.ID);
+    await dal.deleteLeaf(deleteEntityFactory('esame', entity.ID, entity.ID_paziente))
   }  
 
   
@@ -116,7 +120,7 @@ export const ConsultoProvider = ({ children }) => {
   }  
 
   const deleteTrattamento = async (entity) => {
-    await dal.deleteLeaf('trattamento', entity.ID);
+    await dal.deleteLeaf(deleteEntityFactory('trattamento', entity.ID, entity.ID_paziente))
   }
 
   const addValutazione = async (entityData) => {
@@ -132,7 +136,7 @@ export const ConsultoProvider = ({ children }) => {
   }  
 
   const deleteValutazione = async (entity) => {
-      await dal.deleteLeaf('valutazione', entity.ID)
+    await dal.deleteLeaf(deleteEntityFactory('valutazione', entity.ID, entity.ID_paziente))
   }
 
   return <ConsultoContext.Provider value={{ consulto, fetchConsulto, add, update, deleteConsulto,

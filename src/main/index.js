@@ -1,15 +1,15 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { dirname, join } from 'path';
-// import path from 'node:path';
-
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-//import icon from '../../resources/icon.png?asset';
+import { dirname, join } from 'path'
+//import path from 'node:path'
 //import path from 'path'
-import { configureLogging } from './log';
-import { setupPazienteDAL } from './pazienteDAL';
-import { dumpConfig, shareSettings, getConfig } from './config';
-import log from 'electron-log';
+import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import log from 'electron-log'
+//import icon from '../../resources/icon.png?asset';
+import { configureLogging } from './log'
+import { setupPazienteDAL } from './paziente-dal/index'
+import { dumpConfig, shareSettings, getConfig } from './config'
 import './electron-updater'
+import './chat-with-ai'
 // import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 
 // import { fileURLToPath } from 'url';
@@ -28,6 +28,7 @@ config = await getConfig()
 shareSettings(config)
 configureLogging(config)
 const dbStatus = setupPazienteDAL(config)
+console.log('dbStatus:',dbStatus)
 
 
 function createMainWindow() {
@@ -141,8 +142,6 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-
- 
   if (!dbStatus.success) {
       createLocateDBWindow(); // Forces user to select a DB
   } else {
