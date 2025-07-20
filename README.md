@@ -179,9 +179,8 @@ xattr -p com.apple.quarantine /path/to/YourApp.app
 ```
 remove the flag
 ```
-xattr -d com.apple.quarantine /path/to/YourApp.app
+sudo xattr -rd com.apple.quarantine “path/to/YourApp.app"
 ```
-
 
 - Add the app to the Gatekeeper exception list
 ```
@@ -192,14 +191,20 @@ Then, check the status with:
 ```
 spctl --status
 ```
-If it's enabled, you can disable Gatekeeper temporarily:
-
+If it's enabled, you can disable Gatekeeper temporarily (Not recommended for long-term security reasons!):
 ```
 sudo spctl --master-disable
 ```
-(Not recommended for long-term security reasons!)
+
+- Alternatively you can use the UI as well.
+
+System Settings -> Privacy & Security In the Security section you'll see a box for the WOA app you previously tried to open with a button to unlock it
+
+![](readme-resources/woa-unlock-signing-issue.jpeg)
 
 ## Create new Release
+
+- Make sure the are no uncommited or unpushed file on the master branch. Build should be made from master branch for long-term releases.
 
 - Create a build making sure "prebuild<script-name>" is enabled to increase automatically the application version in package.json. Make sure your are signing the code with a valid certificate, also a self-signed, to allow auto-update procedure. Verify in the build logs the signing procedure succeded with the following message:
 ```
@@ -209,6 +214,8 @@ For standard/local build for mac arch use
 ```
 npm run build:mac
 ```
+
+- Create a final commit asociated to the build just executed. The build increased the version into the package json.
 
 - Create git Tag create an annotated (recommended for releases because it includes metadata). As convention matching the Build just created as per in package.json.version
 ```

@@ -1,7 +1,7 @@
 {
   "name": "woa",
   "type": "module",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Web Osteopathic Application",
   "main": "./out/main/index.mjs",
   "author": "Crixo",
