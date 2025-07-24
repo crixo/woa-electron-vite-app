@@ -169,7 +169,7 @@ open /path/to/YourApp.app
 ```
 This might still trigger Gatekeeper warnings, but it attempts to launch the app.
 
-- Try to remove the attribute if present
+- Verify if attributes are present
 ```
 xattr /path/to/YourApp.app
 ```
@@ -177,26 +177,24 @@ get more detials about quarantine flag
 ```
 xattr -p com.apple.quarantine /path/to/YourApp.app
 ```
-remove the flag
+- Remove the Attributes and add the app to the Gatekeeper exception list
 ```
-sudo xattr -rd com.apple.quarantine “path/to/YourApp.app"
+sudo xattr -rd com.apple.quarantine “~/Applications/WOA.app"
+sudo spctl —add —label “WOA” “~/Applications/WOA.app"
+Sudo spctl —enable —label “WOA”
 ```
 
-- Add the app to the Gatekeeper exception list
-```
-sudo spctl --add /path/to/YourApp.app
-```
-Then, check the status with:
-
+- Check the Gatekeeper status with:
 ```
 spctl --status
 ```
+
 If it's enabled, you can disable Gatekeeper temporarily (Not recommended for long-term security reasons!):
 ```
 sudo spctl --master-disable
 ```
 
-- Alternatively you can use the UI as well.
+- Alternatively you can use the UI as well **but you need to repeat it on each relese**
 
 System Settings -> Privacy & Security In the Security section you'll see a box for the WOA app you previously tried to open with a button to unlock it
 
