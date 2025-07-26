@@ -171,18 +171,29 @@ This might still trigger Gatekeeper warnings, but it attempts to launch the app.
 
 - Verify if attributes are present
 ```
-xattr /path/to/YourApp.app
+xattr ~/Applications/WOA.app
 ```
 get more detials about quarantine flag
 ```
 xattr -p com.apple.quarantine /path/to/YourApp.app
 ```
-- Remove the Attributes and add the app to the Gatekeeper exception list
+- Remove the Attributes
 ```
-sudo xattr -rd com.apple.quarantine “~/Applications/WOA.app"
-sudo spctl —add —label “WOA” “~/Applications/WOA.app"
-Sudo spctl —enable —label “WOA”
+sudo xattr -rd com.apple.quarantine ~/Applications/WOA.app
 ```
+
+For previous version of Mac you can add the app in the trusted list of Gatekeeper
+```
+sudo spctl —-add —-label “WOA” ~/Applications/WOA.app
+sudo spctl —-enable —-label “WOA”
+```
+For new OS wersion you can only remove quarantine flag after each update. See src/main/electron-updater.js:
+```
+autoUpdater.on('update-downloaded'...
+....
+exec(`xattr -d com.apple.quarantine "${appBundlePath}"`, (error) => {...
+```
+
 
 - Check the Gatekeeper status with:
 ```

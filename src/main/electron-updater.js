@@ -1,6 +1,8 @@
-const {app, dialog} = require('electron');
-const log = require('electron-log');
-const {autoUpdater} = require("electron-updater");
+const {app, dialog} = require('electron')
+const log = require('electron-log')
+const {autoUpdater} = require("electron-updater")
+const { exec } = require('child_process')
+const path = require('path')
 
 //-------------------------------------------------------------------
 // Logging
@@ -50,7 +52,9 @@ autoUpdater.on('download-progress', (progressObj) => {
   sendStatusToWindow(log_message);
 })
 autoUpdater.on('update-downloaded', (info) => {
-  sendStatusToWindow('Update downloaded');
+  sendStatusToWindow('Update downloaded')
+  const appBundlePath = path.dirname(app.getPath('exe'))
+  sendStatusToWindow(`Updating ${appBundlePath}`)
   // Prompt the user to install update
   dialog.showMessageBox({
     type: 'info',
@@ -59,7 +63,21 @@ autoUpdater.on('update-downloaded', (info) => {
     buttons: ['Yes', 'Later']
   }).then(res => {
     let buttonIndex = res.response
-    if(buttonIndex === 0) autoUpdater.quitAndInstall(false, true)
+    if(buttonIndex === 0) {
+      // Remove quarantine flag
+      sendStatusToWindow(`removing quarantine flag for ${appBundlePath}`)
+      exec(`xattr -d com.apple.quarantine "${appBundlePath}"`, (error) => {
+        if (error) {
+          console.error('Failed to remove quarantine:', error)
+        } else {
+          console.log('Quarantine flag removed successfully.')
+          autoUpdater.quitAndInstall();
+        }
+      })
+
+      // Proceed with update installation
+      autoUpdater.quitAndInstall();
+    }
   })  
 });
 
